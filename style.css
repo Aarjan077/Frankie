@@ -1,14 +1,13 @@
 
-/* =====================================
+/* ========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   CLASSIC BLACK & WHITE DESIGN
-===================================== */
+   BLACK & WHITE DESIGN
+======================================== */
 
 :root {
   --white: #ffffff;
   --black: #111111;
   --grey: #777777;
-  --light-grey: #eeeeee;
   --serif: 'Italiana', Georgia, serif;
   --sans: 'DM Sans', Arial, sans-serif;
 }
@@ -34,8 +33,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-button,
-a {
+button, a {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -53,9 +51,7 @@ img {
   max-width: 100%;
 }
 
-/* =====================================
-   ANIMATED BACKGROUND
-===================================== */
+/* BACKGROUND */
 
 .background-texture {
   position: fixed;
@@ -71,7 +67,7 @@ img {
   width: 450px;
   height: 450px;
   border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.035);
+  border: 1px solid rgba(0,0,0,.035);
   animation: floatTexture 18s ease-in-out infinite alternate;
 }
 
@@ -89,131 +85,184 @@ img {
 }
 
 @keyframes floatTexture {
-  from {
-    transform: translate(0,0);
-  }
-
-  to {
-    transform: translate(45px,35px);
-  }
+  from { transform: translate(0,0); }
+  to { transform: translate(45px,35px); }
 }
 
-/* =====================================
+/* ========================================
    CENTERED TOP NAVIGATION
-===================================== */
+======================================== */
 
 .top-header {
   position: relative;
   width: 100%;
   min-height: 105px;
-
   padding: 25px 5%;
 
   display: grid;
-
-  /*
-    Equal left and right columns ensure
-    navigation is exactly centred.
-  */
   grid-template-columns: 1fr auto 1fr;
-
   align-items: center;
 
   background: #ffffff;
   z-index: 10;
 }
 
-/* NAVIGATION IN THE MIDDLE */
-
 .top-navigation {
   grid-column: 2;
   grid-row: 1;
 
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
-  gap: clamp(20px, 3vw, 48px);
-
+  gap: clamp(20px,3vw,48px);
   white-space: nowrap;
 }
-
-/* NAVIGATION TEXT */
 
 .nav-link {
   position: relative;
   display: inline-block;
-
   flex-shrink: 0;
 
   font-family: var(--serif);
-  font-size: clamp(18px, 1.65vw, 25px);
-
+  font-size: clamp(18px,1.65vw,25px);
   line-height: 1.4;
-  color: #111111;
 
   transition:
-    transform 0.35s ease,
-    color 0.35s ease;
+    transform .35s ease,
+    color .35s ease;
 }
-
-/* POP-UP EFFECT */
 
 .nav-link:hover {
   transform: translateY(-7px) scale(1.1);
   color: #777777;
 }
 
-/* SUBTLE UNDERLINE */
-
 .nav-link::after {
   content: "";
   position: absolute;
-
   bottom: -7px;
   left: 50%;
 
   width: 0;
   height: 1px;
-
   background: #111111;
 
   transform: translateX(-50%);
-  transition: width 0.35s ease;
+  transition: width .35s ease;
 }
 
 .nav-link:hover::after {
   width: 100%;
 }
 
-/* MUSIC BUTTON */
+/* ========================================
+   MUSIC TOGGLE BUTTON
+======================================== */
 
 .music-button {
+  position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
+  width: 35px;
+  height: 35px;
   padding: 5px;
 
-  border: none;
+  flex-shrink: 0;
   background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
 
   color: #111111;
   cursor: pointer;
 
   transition:
-    transform 0.35s ease,
-    color 0.35s ease;
+    transform .35s ease,
+    background .35s ease,
+    border-color .35s ease;
 }
 
 .music-button:hover {
-  transform: translateY(-6px) rotate(12deg);
-  color: #777777;
+  transform: translateY(-5px) scale(1.1);
+  background: #f4f4f4;
 }
 
-/* =====================================
-   HAMBURGER ON THE RIGHT
-===================================== */
+.music-icon {
+  display: block;
+}
+
+.music-muted-line {
+  opacity: 1;
+  transition: opacity .3s ease;
+}
+
+/* Music ON */
+
+.music-button.is-playing {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+.music-button.is-playing .music-muted-line {
+  opacity: 0;
+}
+
+/* Gentle animation while music plays */
+
+.music-button.is-playing .music-icon {
+  animation: musicPulse 2s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.14);
+  }
+}
+
+/* Tooltip beneath music button */
+
+.music-tooltip {
+  position: absolute;
+  top: calc(100% + 13px);
+  left: 50%;
+
+  transform: translate(-50%,-5px);
+
+  background: #111111;
+  color: #ffffff;
+
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 1px;
+
+  padding: 7px 10px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+}
+
+.music-button:hover .music-tooltip,
+.music-button:focus-visible .music-tooltip {
+  opacity: 1;
+  transform: translate(-50%,0);
+}
+
+/* ========================================
+   HAMBURGER
+======================================== */
 
 .menu-button {
   grid-column: 3;
@@ -241,8 +290,8 @@ img {
   background: #111111;
 
   transition:
-    width 0.35s ease,
-    transform 0.35s ease;
+    width .35s ease,
+    transform .35s ease;
 }
 
 .menu-button span:nth-child(2) {
@@ -253,24 +302,19 @@ img {
   width: 100%;
 }
 
-.menu-button:hover span:first-child {
-  transform: translateX(-5px);
-}
-
-/* =====================================
-   HERO SECTION
-===================================== */
+/* ========================================
+   HERO
+======================================== */
 
 .hero {
   min-height: 690px;
-  height: max(690px, calc(100svh - 105px));
+  height: max(690px,calc(100svh - 105px));
   max-height: 900px;
 
   display: grid;
   grid-template-columns: 45% 55%;
 
   position: relative;
-
   padding: 30px 7% 85px;
 }
 
@@ -281,8 +325,6 @@ img {
   align-items: flex-start;
   z-index: 2;
 }
-
-/* FRANKIE NAME */
 
 .name-container {
   margin-bottom: 27px;
@@ -302,7 +344,7 @@ img {
 
 .hero-name {
   font-family: var(--serif);
-  font-size: clamp(76px, 10vw, 160px);
+  font-size: clamp(76px,10vw,160px);
   line-height: 1;
   letter-spacing: -5px;
   font-weight: 400;
@@ -325,26 +367,26 @@ img {
   color: #666666;
 
   margin-top: 12px;
-  opacity: 0;
 
+  opacity: 0;
   animation: fadeUp 1s ease .8s forwards;
 }
 
-/* =====================================
-   MAIN PORTRAIT
-   KEEP HAIR VISIBLE
-===================================== */
+/* PORTRAIT */
 
 .portrait-frame {
-  width: min(100%, 370px);
+  width: min(100%,370px);
   position: relative;
 }
 
 .portrait-image {
+  display: block;
   width: 100%;
-  height: clamp(320px, 42vh, 470px);
+  height: clamp(320px,42vh,470px);
 
   object-fit: cover;
+
+  /* Keep face and hair visible */
   object-position: center top;
 
   filter: grayscale(100%);
@@ -367,9 +409,9 @@ img {
   color: #777777;
 }
 
-/* =====================================
-   CURVED PHOTOGRAPHS
-===================================== */
+/* ========================================
+   CURVED FEATURED PICTURES
+======================================== */
 
 .hero-right {
   position: relative;
@@ -387,8 +429,7 @@ img {
   cursor: zoom-in;
   overflow: hidden;
 
-  box-shadow:
-    0 12px 35px rgba(0,0,0,.07);
+  box-shadow: 0 12px 35px rgba(0,0,0,.07);
 
   transition:
     box-shadow .5s ease,
@@ -410,9 +451,7 @@ img {
 .featured-photo:hover {
   scale: 1.07;
   z-index: 5;
-
-  box-shadow:
-    0 22px 50px rgba(0,0,0,.16);
+  box-shadow: 0 22px 50px rgba(0,0,0,.16);
 }
 
 .featured-photo:hover img {
@@ -420,35 +459,27 @@ img {
   filter: grayscale(35%);
 }
 
-/* CURVED POSITIONS */
-
 .featured-one {
   width: 195px;
   height: 235px;
-
   top: 2%;
   left: 14%;
-
   transform: rotate(-9deg);
 }
 
 .featured-two {
   width: 230px;
   height: 280px;
-
   top: 31%;
   right: 1%;
-
   transform: rotate(5deg);
 }
 
 .featured-three {
   width: 190px;
   height: 230px;
-
   bottom: 0;
   left: 16%;
-
   transform: rotate(-5deg);
 }
 
@@ -464,7 +495,7 @@ img {
   color: #999999;
 }
 
-/* IMAGE PLACEHOLDERS */
+/* MISSING IMAGE PLACEHOLDER */
 
 .photo-fallback {
   position: absolute;
@@ -496,13 +527,10 @@ img {
   cursor: default;
 }
 
-/* =====================================
-   SCROLL INDICATOR
-===================================== */
+/* SCROLL INDICATOR */
 
 .scroll-indicator {
   position: absolute;
-
   bottom: 26px;
   left: 50%;
 
@@ -521,13 +549,10 @@ img {
 .scroll-line {
   height: 30px;
   width: 1px;
-
   background: #111111;
 
   transform-origin: top;
-
-  animation:
-    scrollPulse 2s ease-in-out infinite;
+  animation: scrollPulse 2s ease-in-out infinite;
 }
 
 @keyframes scrollPulse {
@@ -537,13 +562,12 @@ img {
   }
 }
 
-/* =====================================
-   GALLERY SECTION
-===================================== */
+/* ========================================
+   GALLERY
+======================================== */
 
 .gallery-section {
   padding: 130px 8% 120px;
-
   max-width: 1500px;
   margin: auto;
 }
@@ -557,8 +581,7 @@ img {
 .content-inner h2 {
   font-family: var(--serif);
   font-weight: 400;
-
-  font-size: clamp(55px, 8vw, 105px);
+  font-size: clamp(55px,8vw,105px);
   margin: 20px 0;
 }
 
@@ -568,12 +591,9 @@ img {
   letter-spacing: 1px;
 }
 
-/* GALLERY GRID */
-
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-
+  grid-template-columns: repeat(12,1fr);
   gap: 65px 35px;
   align-items: start;
 }
@@ -584,8 +604,8 @@ img {
 
   width: 100%;
   padding: 0;
-
   border: none;
+
   background: #f3f3f3;
 
   overflow: hidden;
@@ -616,14 +636,12 @@ img {
   margin-top: 50px;
 }
 
-/* GALLERY IMAGES */
-
 .gallery-item img {
   width: 100%;
   height: auto;
   max-height: 650px;
-
   object-fit: cover;
+
   filter: grayscale(100%);
 
   transition:
@@ -635,8 +653,6 @@ img {
   transform: scale(1.065);
   filter: grayscale(20%);
 }
-
-/* GALLERY HOVER OVERLAY */
 
 .gallery-overlay {
   position: absolute;
@@ -655,7 +671,6 @@ img {
     );
 
   color: #ffffff;
-
   font-size: 10px;
   letter-spacing: 1.5px;
 
@@ -676,13 +691,12 @@ img {
   display: none;
 }
 
-/* =====================================
+/* ========================================
    CONTENT SECTIONS
-===================================== */
+======================================== */
 
 .content-section {
   min-height: 420px;
-
   padding: 110px 8%;
 
   border-top: 1px solid #eeeeee;
@@ -698,7 +712,7 @@ img {
 }
 
 .content-inner h2 {
-  font-size: clamp(48px, 6vw, 85px);
+  font-size: clamp(48px,6vw,85px);
 }
 
 .placeholder-text {
@@ -712,9 +726,9 @@ img {
   min-height: 500px;
 }
 
-/* =====================================
-   LIGHTBOX POPUP
-===================================== */
+/* ========================================
+   LIGHTBOX
+======================================== */
 
 .lightbox {
   position: fixed;
@@ -756,16 +770,10 @@ img {
   font-size: 42px;
   cursor: pointer;
   z-index: 2;
-
-  transition: transform .3s ease;
-}
-
-.lightbox-close:hover {
-  transform: rotate(90deg);
 }
 
 .lightbox-content {
-  width: min(100%, 1000px);
+  width: min(100%,1000px);
   max-height: 100%;
 
   display: flex;
@@ -791,8 +799,8 @@ img {
 
 .lightbox-info {
   width: 100%;
+  color: white;
   text-align: center;
-  color: #ffffff;
 }
 
 #lightbox-title {
@@ -807,9 +815,7 @@ img {
   min-height: 20px;
 }
 
-/* =====================================
-   FOOTER
-===================================== */
+/* FOOTER */
 
 .footer {
   display: flex;
@@ -817,7 +823,6 @@ img {
   gap: 20px;
 
   padding: 30px 8%;
-
   border-top: 1px solid #eeeeee;
 
   font-size: 10px;
@@ -829,9 +834,9 @@ img {
   color: #111111;
 }
 
-/* =====================================
+/* ========================================
    ENTRANCE ANIMATIONS
-===================================== */
+======================================== */
 
 .photo-entrance {
   opacity: 0;
@@ -885,7 +890,7 @@ img {
   }
 }
 
-/* SCROLL ANIMATIONS */
+/* SCROLL REVEAL */
 
 .reveal {
   opacity: 0;
@@ -901,12 +906,11 @@ img {
   transform: translateY(0);
 }
 
-/* =====================================
-   SMALL DESKTOP AND TABLET
-===================================== */
+/* ========================================
+   TABLET
+======================================== */
 
 @media (max-width: 1100px) {
-
   .top-header {
     padding-left: 3%;
     padding-right: 3%;
@@ -922,7 +926,6 @@ img {
 }
 
 @media (max-width: 1000px) {
-
   .hero {
     grid-template-columns: 48% 52%;
     padding-left: 5%;
@@ -949,23 +952,15 @@ img {
   }
 }
 
-/* =====================================
-   MOBILE SCREENS
-===================================== */
+/* ========================================
+   MOBILE
+======================================== */
 
 @media (max-width: 800px) {
-
-  /*
-    Mobile layout:
-    hamburger stays top right,
-    navigation remains centred underneath.
-  */
-
   .top-header {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
     row-gap: 22px;
-
     padding: 22px 5%;
   }
 
@@ -979,7 +974,6 @@ img {
     grid-row: 2;
 
     width: 100%;
-
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -994,7 +988,6 @@ img {
 }
 
 @media (max-width: 700px) {
-
   .hero {
     height: auto;
     max-height: none;
@@ -1012,10 +1005,8 @@ img {
   }
 
   .hero-name {
-    font-size: clamp(70px, 16vw, 110px);
+    font-size: clamp(70px,16vw,110px);
   }
-
-  /* MOBILE PORTRAIT */
 
   .portrait-frame {
     width: 78%;
@@ -1026,8 +1017,6 @@ img {
     height: 390px;
     object-position: center center;
   }
-
-  /* CURVED IMAGES */
 
   .hero-right {
     width: 100%;
@@ -1058,8 +1047,6 @@ img {
   .scroll-indicator {
     bottom: 15px;
   }
-
-  /* MOBILE GALLERY */
 
   .gallery-section {
     padding: 85px 6%;
@@ -1096,12 +1083,7 @@ img {
   }
 }
 
-/* =====================================
-   SMALL PHONES
-===================================== */
-
 @media (max-width: 400px) {
-
   .hero-name {
     font-size: 65px;
   }
@@ -1125,9 +1107,9 @@ img {
   }
 }
 
-/* =====================================
+/* ========================================
    ACCESSIBILITY
-===================================== */
+======================================== */
 
 :focus-visible {
   outline: 2px solid #777777;
@@ -1135,7 +1117,6 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {

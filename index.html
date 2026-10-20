@@ -4,13 +4,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#ffffff">
+
+  <meta name="description"
+        content="Frankie - Photography Portfolio">
 
   <title>Frankie | Photography Portfolio</title>
 
-  <meta name="description"
-        content="Frankie Photography Portfolio">
-
+  <!-- FONTS -->
   <link rel="preconnect"
         href="https://fonts.googleapis.com">
 
@@ -22,23 +26,47 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
     rel="stylesheet">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
+  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- BACKGROUND -->
+  <!-- BACKGROUND TEXTURES -->
   <div class="background-texture" aria-hidden="true">
     <div class="texture-circle circle-one"></div>
     <div class="texture-circle circle-two"></div>
   </div>
 
-  <!-- HEADER -->
+  <!-- ===================================
+       BACKGROUND MUSIC
+  ==================================== -->
+
+  <!--
+    Upload background-music.mp3 directly
+    into your Frankie GitHub repository.
+
+    Music does not autoplay.
+    It begins only when the visitor clicks.
+  -->
+
+  <audio
+    id="background-music"
+    src="background-music.mp3"
+    preload="none"
+    loop>
+  </audio>
+
+  <!-- ===================================
+       TOP NAVIGATION
+  ==================================== -->
+
   <header class="top-header">
 
-    <!-- CENTRED NAVIGATION -->
+    <!-- CENTERED NAVIGATION -->
     <nav class="top-navigation entrance-nav"
          aria-label="Main navigation">
 
@@ -62,14 +90,17 @@
         Contact
       </a>
 
-      <!-- MUSIC BUTTON -->
+      <!-- MUSIC ON/OFF BUTTON -->
       <button
+        id="music-toggle"
         class="music-button"
         type="button"
-        aria-label="Music coming soon"
-        title="Music coming soon">
+        aria-label="Play background music"
+        aria-pressed="false"
+        title="Play background music">
 
         <svg
+          class="music-icon"
           viewBox="0 0 24 24"
           width="23"
           height="23"
@@ -84,12 +115,23 @@
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
 
+          <!-- Visible slash when music is off -->
+          <path
+            class="music-muted-line"
+            d="M3 3L21 21">
+          </path>
+
         </svg>
+
+        <span class="music-tooltip" aria-hidden="true">
+          MUSIC OFF
+        </span>
+
       </button>
 
     </nav>
 
-    <!-- RIGHT HAMBURGER -->
+    <!-- HAMBURGER PLACEHOLDER -->
     <button
       class="menu-button entrance-nav"
       type="button"
@@ -106,12 +148,14 @@
 
   <main>
 
-    <!-- HERO SECTION -->
+    <!-- ===================================
+         HERO
+    ==================================== -->
+
     <section class="hero" id="home">
 
       <div class="hero-left">
 
-        <!-- NAME -->
         <div class="name-container">
 
           <p class="eyebrow name-intro">
@@ -128,7 +172,7 @@
 
         </div>
 
-        <!-- PORTRAIT -->
+        <!-- MAIN PORTRAIT -->
         <div class="portrait-frame photo-entrance">
 
           <img
@@ -144,18 +188,18 @@
 
       </div>
 
-      <!-- CURVED PHOTOGRAPHS -->
+      <!-- FEATURED PHOTOGRAPHS -->
       <div class="hero-right">
 
         <button
           class="featured-photo featured-one photo-entrance"
           type="button"
           data-image="featured-1.jpg"
-          data-title="01 / Featured">
+          data-title="01 / Featured"
+          aria-label="View featured photograph one">
 
-          <img
-            src="featured-1.jpg"
-            alt="Featured photograph one">
+          <img src="featured-1.jpg"
+               alt="Featured photograph one">
 
           <span class="photo-fallback">
             FEATURED / 01
@@ -167,11 +211,11 @@
           class="featured-photo featured-two photo-entrance"
           type="button"
           data-image="featured-2.jpg"
-          data-title="02 / Featured">
+          data-title="02 / Featured"
+          aria-label="View featured photograph two">
 
-          <img
-            src="featured-2.jpg"
-            alt="Featured photograph two">
+          <img src="featured-2.jpg"
+               alt="Featured photograph two">
 
           <span class="photo-fallback">
             FEATURED / 02
@@ -183,11 +227,11 @@
           class="featured-photo featured-three photo-entrance"
           type="button"
           data-image="featured-3.jpg"
-          data-title="03 / Featured">
+          data-title="03 / Featured"
+          aria-label="View featured photograph three">
 
-          <img
-            src="featured-3.jpg"
-            alt="Featured photograph three">
+          <img src="featured-3.jpg"
+               alt="Featured photograph three">
 
           <span class="photo-fallback">
             FEATURED / 03
@@ -208,7 +252,10 @@
 
     </section>
 
-    <!-- GALLERY -->
+    <!-- ===================================
+         GALLERY
+    ==================================== -->
+
     <section class="gallery-section" id="gallery">
 
       <div class="section-heading reveal">
@@ -229,18 +276,20 @@
 
       <div class="gallery-grid">
 
+        <!-- IMAGE 1 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-1.jpg"
           data-title="01 / Untitled">
 
-          <img
-            src="gallery-1.jpg"
-            alt="Gallery photograph one"
-            loading="lazy">
+          <img src="gallery-1.jpg"
+               alt="Gallery photograph one"
+               loading="lazy">
 
-          <span class="photo-fallback">PHOTOGRAPH / 01</span>
+          <span class="photo-fallback">
+            PHOTOGRAPH / 01
+          </span>
 
           <span class="gallery-overlay">
             <span>01 / UNTITLED</span>
@@ -249,18 +298,20 @@
 
         </button>
 
+        <!-- IMAGE 2 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-2.jpg"
           data-title="02 / Untitled">
 
-          <img
-            src="gallery-2.jpg"
-            alt="Gallery photograph two"
-            loading="lazy">
+          <img src="gallery-2.jpg"
+               alt="Gallery photograph two"
+               loading="lazy">
 
-          <span class="photo-fallback">PHOTOGRAPH / 02</span>
+          <span class="photo-fallback">
+            PHOTOGRAPH / 02
+          </span>
 
           <span class="gallery-overlay">
             <span>02 / UNTITLED</span>
@@ -269,18 +320,20 @@
 
         </button>
 
+        <!-- IMAGE 3 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-3.jpg"
           data-title="03 / Untitled">
 
-          <img
-            src="gallery-3.jpg"
-            alt="Gallery photograph three"
-            loading="lazy">
+          <img src="gallery-3.jpg"
+               alt="Gallery photograph three"
+               loading="lazy">
 
-          <span class="photo-fallback">PHOTOGRAPH / 03</span>
+          <span class="photo-fallback">
+            PHOTOGRAPH / 03
+          </span>
 
           <span class="gallery-overlay">
             <span>03 / UNTITLED</span>
@@ -289,18 +342,20 @@
 
         </button>
 
+        <!-- IMAGE 4 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-4.jpg"
           data-title="04 / Untitled">
 
-          <img
-            src="gallery-4.jpg"
-            alt="Gallery photograph four"
-            loading="lazy">
+          <img src="gallery-4.jpg"
+               alt="Gallery photograph four"
+               loading="lazy">
 
-          <span class="photo-fallback">PHOTOGRAPH / 04</span>
+          <span class="photo-fallback">
+            PHOTOGRAPH / 04
+          </span>
 
           <span class="gallery-overlay">
             <span>04 / UNTITLED</span>
@@ -309,18 +364,20 @@
 
         </button>
 
+        <!-- IMAGE 5 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-5.jpg"
           data-title="05 / Untitled">
 
-          <img
-            src="gallery-5.jpg"
-            alt="Gallery photograph five"
-            loading="lazy">
+          <img src="gallery-5.jpg"
+               alt="Gallery photograph five"
+               loading="lazy">
 
-          <span class="photo-fallback">PHOTOGRAPH / 05</span>
+          <span class="photo-fallback">
+            PHOTOGRAPH / 05
+          </span>
 
           <span class="gallery-overlay">
             <span>05 / UNTITLED</span>
@@ -398,8 +455,9 @@
     </section>
 
     <!-- CONTACT -->
-    <section class="content-section contact-section"
-             id="contact">
+    <section
+      class="content-section contact-section"
+      id="contact">
 
       <div class="content-inner reveal">
 
@@ -421,7 +479,10 @@
 
   </main>
 
-  <!-- IMAGE POPUP -->
+  <!-- ===================================
+       PHOTOGRAPH LIGHTBOX
+  ==================================== -->
+
   <div
     class="lightbox"
     id="lightbox"
@@ -439,9 +500,8 @@
 
     <div class="lightbox-content">
 
-      <img
-        id="lightbox-image"
-        alt="Expanded photograph">
+      <img id="lightbox-image"
+           alt="Expanded photograph">
 
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
