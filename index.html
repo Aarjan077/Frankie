@@ -5,270 +5,503 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
+
   <meta name="description" content="Frankie — Photography Portfolio">
+
   <title>Frankie | Photography Portfolio</title>
 
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- JavaScript -->
   <script src="script.js" defer></script>
 </head>
+
 <body>
 
-  <!-- Subtle animated background -->
+  <!-- ANIMATED BACKGROUND -->
   <div class="background-texture" aria-hidden="true">
     <div class="texture-circle circle-one"></div>
     <div class="texture-circle circle-two"></div>
   </div>
 
-  <!-- Top right hamburger button -->
+  <!-- TOP NAVIGATION BUTTON -->
   <header class="top-header">
-    <button class="menu-button entrance-nav"
-            type="button"
-            aria-label="Menu">
+
+    <button
+      class="menu-button entrance-nav"
+      type="button"
+      aria-label="Menu"
+    >
       <span></span>
       <span></span>
       <span></span>
     </button>
+
   </header>
 
   <main>
 
-    <!-- HERO SECTION -->
+    <!-- =========================
+         HERO SECTION
+    ========================== -->
+
     <section class="hero" id="home">
 
+      <!-- NAME AND PORTRAIT -->
       <div class="hero-left">
+
         <div class="name-container">
-          <p class="eyebrow name-intro">PHOTOGRAPHY PORTFOLIO</p>
-          <h1 class="hero-name">FRANKIE<span class="name-dot">.</span></h1>
-          <p class="name-subtitle">A collection of moments.</p>
+
+          <p class="eyebrow name-intro">
+            PHOTOGRAPHY PORTFOLIO
+          </p>
+
+          <h1 class="hero-name">
+            FRANKIE<span class="name-dot">.</span>
+          </h1>
+
+          <p class="name-subtitle">
+            A collection of moments.
+          </p>
+
         </div>
 
+        <!-- MAIN PORTRAIT -->
         <div class="portrait-frame photo-entrance">
+
           <img
-            src="images/frankie-portrait.jpg"
+            src="frankie-portrait.jpg"
             alt="Portrait of Frankie"
             class="portrait-image"
           >
-          <span class="portrait-caption">THE PERSON BEHIND THE LENS</span>
+
+          <span class="portrait-caption">
+            THE PERSON BEHIND THE LENS
+          </span>
+
         </div>
+
       </div>
 
-      <!-- Three images arranged in a curve -->
+      <!-- THREE CURVED FEATURED PICTURES -->
       <div class="hero-right">
 
-        <button class="featured-photo featured-one photo-entrance"
-                type="button"
-                data-image="images/featured-1.jpg"
-                data-title="01 / Featured">
-          <img src="images/featured-1.jpg" alt="Featured photograph one">
+        <!-- FIRST PICTURE -->
+        <button
+          class="featured-photo featured-one photo-entrance"
+          type="button"
+          data-image="featured-1.jpg"
+          data-title="01 / Featured"
+        >
+
+          <img
+            src="featured-1.jpg"
+            alt="Featured photograph one"
+          >
+
         </button>
 
-        <button class="featured-photo featured-two photo-entrance"
-                type="button"
-                data-image="images/featured-2.jpg"
-                data-title="02 / Featured">
-          <img src="images/featured-2.jpg" alt="Featured photograph two">
+        <!-- SECOND PICTURE -->
+        <button
+          class="featured-photo featured-two photo-entrance"
+          type="button"
+          data-image="featured-2.jpg"
+          data-title="02 / Featured"
+        >
+
+          <img
+            src="featured-2.jpg"
+            alt="Featured photograph two"
+          >
+
         </button>
 
-        <button class="featured-photo featured-three photo-entrance"
-                type="button"
-                data-image="images/featured-3.jpg"
-                data-title="03 / Featured">
-          <img src="images/featured-3.jpg" alt="Featured photograph three">
+        <!-- THIRD PICTURE -->
+        <button
+          class="featured-photo featured-three photo-entrance"
+          type="button"
+          data-image="featured-3.jpg"
+          data-title="03 / Featured"
+        >
+
+          <img
+            src="featured-3.jpg"
+            alt="Featured photograph three"
+          >
+
         </button>
 
-        <span class="hero-side-text">ART IN EVERY FRAME — 2026</span>
+        <span class="hero-side-text">
+          ART IN EVERY FRAME — 2026
+        </span>
+
       </div>
 
+      <!-- SCROLL INDICATOR -->
       <div class="scroll-indicator">
+
         <span>SCROLL TO EXPLORE</span>
         <span class="scroll-line"></span>
+
       </div>
 
     </section>
 
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav entrance-bottom"
-         aria-label="Main navigation">
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
 
-      <a href="#about" class="nav-link">About</a>
-      <a href="#gallery" class="nav-link">Gallery</a>
-      <a href="#skills" class="nav-link">Skills &amp; Qualification</a>
-      <a href="#socials" class="nav-link">Socials</a>
-      <a href="#contact" class="nav-link">Contact</a>
+    <nav
+      class="bottom-nav entrance-bottom"
+      aria-label="Main navigation"
+    >
 
-      <!-- Music functionality can be added later -->
-      <button class="music-button"
-              type="button"
-              aria-label="Music player coming soon"
-              title="Music coming soon">
-        <svg viewBox="0 0 24 24"
-             width="22"
-             height="22"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="1.5"
-             stroke-linecap="round"
-             stroke-linejoin="round"
-             aria-hidden="true">
+      <a href="#about" class="nav-link">
+        About
+      </a>
+
+      <a href="#gallery" class="nav-link">
+        Gallery
+      </a>
+
+      <a href="#skills" class="nav-link">
+        Skills &amp; Qualification
+      </a>
+
+      <a href="#socials" class="nav-link">
+        Socials
+      </a>
+
+      <a href="#contact" class="nav-link">
+        Contact
+      </a>
+
+      <!-- FUTURE MUSIC BUTTON -->
+      <button
+        class="music-button"
+        type="button"
+        aria-label="Music player coming soon"
+        title="Music coming soon"
+      >
+
+        <svg
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
+
         </svg>
+
       </button>
 
     </nav>
 
-    <!-- GALLERY SECTION -->
+    <!-- =========================
+         GALLERY SECTION
+    ========================== -->
+
     <section class="gallery-section" id="gallery">
 
       <div class="section-heading reveal">
-        <p class="section-number">01 / SELECTED WORK</p>
-        <h2>The Gallery<span class="heading-dot">.</span></h2>
+
+        <p class="section-number">
+          01 / SELECTED WORK
+        </p>
+
+        <h2>
+          The Gallery<span class="heading-dot">.</span>
+        </h2>
+
         <p class="section-description">
           Moments captured. Stories preserved.
         </p>
+
       </div>
 
       <div class="gallery-grid">
 
-        <button class="gallery-item reveal"
-                type="button"
-                data-image="images/gallery-1.jpg"
-                data-title="01 / Untitled">
-          <img src="images/gallery-1.jpg" alt="Gallery photograph one" loading="lazy">
+        <!-- GALLERY IMAGE 1 -->
+        <button
+          class="gallery-item reveal"
+          type="button"
+          data-image="gallery-1.jpg"
+          data-title="01 / Untitled"
+        >
+
+          <img
+            src="gallery-1.jpg"
+            alt="Gallery photograph one"
+            loading="lazy"
+          >
+
           <span class="gallery-overlay">
             <span>01 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <button class="gallery-item reveal"
-                type="button"
-                data-image="images/gallery-2.jpg"
-                data-title="02 / Untitled">
-          <img src="images/gallery-2.jpg" alt="Gallery photograph two" loading="lazy">
+        <!-- GALLERY IMAGE 2 -->
+        <button
+          class="gallery-item reveal"
+          type="button"
+          data-image="gallery-2.jpg"
+          data-title="02 / Untitled"
+        >
+
+          <img
+            src="gallery-2.jpg"
+            alt="Gallery photograph two"
+            loading="lazy"
+          >
+
           <span class="gallery-overlay">
             <span>02 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <button class="gallery-item reveal"
-                type="button"
-                data-image="images/gallery-3.jpg"
-                data-title="03 / Untitled">
-          <img src="images/gallery-3.jpg" alt="Gallery photograph three" loading="lazy">
+        <!-- GALLERY IMAGE 3 -->
+        <button
+          class="gallery-item reveal"
+          type="button"
+          data-image="gallery-3.jpg"
+          data-title="03 / Untitled"
+        >
+
+          <img
+            src="gallery-3.jpg"
+            alt="Gallery photograph three"
+            loading="lazy"
+          >
+
           <span class="gallery-overlay">
             <span>03 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <button class="gallery-item reveal"
-                type="button"
-                data-image="images/gallery-4.jpg"
-                data-title="04 / Untitled">
-          <img src="images/gallery-4.jpg" alt="Gallery photograph four" loading="lazy">
+        <!-- GALLERY IMAGE 4 -->
+        <button
+          class="gallery-item reveal"
+          type="button"
+          data-image="gallery-4.jpg"
+          data-title="04 / Untitled"
+        >
+
+          <img
+            src="gallery-4.jpg"
+            alt="Gallery photograph four"
+            loading="lazy"
+          >
+
           <span class="gallery-overlay">
             <span>04 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <button class="gallery-item reveal"
-                type="button"
-                data-image="images/gallery-5.jpg"
-                data-title="05 / Untitled">
-          <img src="images/gallery-5.jpg" alt="Gallery photograph five" loading="lazy">
+        <!-- GALLERY IMAGE 5 -->
+        <button
+          class="gallery-item reveal"
+          type="button"
+          data-image="gallery-5.jpg"
+          data-title="05 / Untitled"
+        >
+
+          <img
+            src="gallery-5.jpg"
+            alt="Gallery photograph five"
+            loading="lazy"
+          >
+
           <span class="gallery-overlay">
             <span>05 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
       </div>
+
     </section>
 
-    <!-- ABOUT -->
+    <!-- =========================
+         ABOUT SECTION
+    ========================== -->
+
     <section class="content-section" id="about">
+
       <div class="content-inner reveal">
-        <p class="section-number">02 / THE PERSON</p>
-        <h2>About Frankie<span class="heading-dot">.</span></h2>
+
+        <p class="section-number">
+          02 / THE PERSON
+        </p>
+
+        <h2>
+          About Frankie<span class="heading-dot">.</span>
+        </h2>
+
         <p class="placeholder-text">
           Your introduction and personal story will go here.
         </p>
+
       </div>
+
     </section>
 
-    <!-- SKILLS -->
+    <!-- =========================
+         SKILLS SECTION
+    ========================== -->
+
     <section class="content-section" id="skills">
+
       <div class="content-inner reveal">
-        <p class="section-number">03 / EXPERIENCE</p>
-        <h2>Skills &amp; Qualification<span class="heading-dot">.</span></h2>
+
+        <p class="section-number">
+          03 / EXPERIENCE
+        </p>
+
+        <h2>
+          Skills &amp; Qualification<span class="heading-dot">.</span>
+        </h2>
+
         <p class="placeholder-text">
           Photography skills, experience and qualifications will go here.
         </p>
+
       </div>
+
     </section>
 
-    <!-- SOCIALS -->
+    <!-- =========================
+         SOCIALS SECTION
+    ========================== -->
+
     <section class="content-section" id="socials">
+
       <div class="content-inner reveal">
-        <p class="section-number">04 / CONNECT</p>
-        <h2>Socials<span class="heading-dot">.</span></h2>
+
+        <p class="section-number">
+          04 / CONNECT
+        </p>
+
+        <h2>
+          Socials<span class="heading-dot">.</span>
+        </h2>
+
         <p class="placeholder-text">
           Social media links will be added here.
         </p>
+
       </div>
+
     </section>
 
-    <!-- CONTACT -->
-    <section class="content-section contact-section" id="contact">
+    <!-- =========================
+         CONTACT SECTION
+    ========================== -->
+
+    <section
+      class="content-section contact-section"
+      id="contact"
+    >
+
       <div class="content-inner reveal">
-        <p class="section-number">05 / GET IN TOUCH</p>
-        <h2>Let's Create<span class="heading-dot">.</span></h2>
+
+        <p class="section-number">
+          05 / GET IN TOUCH
+        </p>
+
+        <h2>
+          Let's Create<span class="heading-dot">.</span>
+        </h2>
+
         <p class="placeholder-text">
           Contact information will be added here.
         </p>
+
       </div>
+
     </section>
 
   </main>
 
-  <!-- IMAGE POPUP / LIGHTBOX -->
-  <div class="lightbox"
-       id="lightbox"
-       role="dialog"
-       aria-modal="true"
-       aria-label="Photograph preview"
-       aria-hidden="true">
+  <!-- =========================
+       IMAGE POPUP
+  ========================== -->
 
-    <button class="lightbox-close"
-            type="button"
-            aria-label="Close photograph">
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Photograph preview"
+    aria-hidden="true"
+  >
+
+    <!-- CLOSE POPUP -->
+    <button
+      class="lightbox-close"
+      type="button"
+      aria-label="Close photograph"
+    >
       &times;
     </button>
 
     <div class="lightbox-content">
-      <img id="lightbox-image" src="" alt="Expanded photograph">
+
+      <!-- EXPANDED IMAGE -->
+      <img
+        id="lightbox-image"
+        src=""
+        alt="Expanded photograph"
+      >
 
       <div class="lightbox-info">
+
         <p id="lightbox-title"></p>
 
-        <!-- Intentionally blank description -->
+        <!-- BLANK DESCRIPTION FOR FUTURE USE -->
         <p id="lightbox-description"></p>
+
       </div>
+
     </div>
 
   </div>
 
+  <!-- FOOTER -->
   <footer class="footer">
-    <span>© 2026 FRANKIE</span>
-    <a href="#home">BACK TO TOP ↑</a>
+
+    <span>
+      © 2026 FRANKIE
+    </span>
+
+    <a href="#home">
+      BACK TO TOP ↑
+    </a>
+
   </footer>
 
 </body>
