@@ -1,8 +1,8 @@
 
-/* ========================================
+/* ==========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   BLACK & WHITE DESIGN
-======================================== */
+   ANIMATED MONOCHROME EDITION
+========================================== */
 
 :root {
   --white: #ffffff;
@@ -12,7 +12,9 @@
   --sans: 'DM Sans', Arial, sans-serif;
 }
 
-/* RESET */
+/* ==========================================
+   RESET
+========================================== */
 
 * {
   margin: 0;
@@ -33,7 +35,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-button, a {
+button,
+a {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -51,60 +54,359 @@ img {
   max-width: 100%;
 }
 
-/* BACKGROUND */
+/* Keep content ABOVE the moving background */
+
+.top-header,
+main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   ANIMATED BACKGROUND CONTAINER
+========================================== */
 
 .background-texture {
   position: fixed;
   inset: 0;
-  z-index: -1;
-  pointer-events: none;
+  z-index: 0;
+
+  width: 100%;
+  height: 100%;
+
   overflow: hidden;
+  pointer-events: none;
+
   background: #ffffff;
 }
 
-.texture-circle {
+/* ==========================================
+   SOFT FLOATING GRADIENT SHAPES
+========================================== */
+
+.ambient-glow {
   position: absolute;
-  width: 450px;
-  height: 450px;
   border-radius: 50%;
-  border: 1px solid rgba(0,0,0,.035);
-  animation: floatTexture 18s ease-in-out infinite alternate;
+  pointer-events: none;
+
+  background: radial-gradient(
+    circle,
+    rgba(140, 140, 140, 0.085) 0%,
+    rgba(185, 185, 185, 0.04) 45%,
+    rgba(255, 255, 255, 0) 74%
+  );
+
+  filter: blur(13px);
+  will-change: transform;
 }
 
-.circle-one {
-  top: -240px;
-  right: -160px;
+.glow-one {
+  width: 680px;
+  height: 680px;
+  top: -390px;
+  left: -200px;
+
+  animation:
+    glowFloatOne 25s ease-in-out infinite alternate;
 }
 
-.circle-two {
-  bottom: -300px;
-  left: -180px;
-  width: 600px;
-  height: 600px;
-  animation-delay: -7s;
+.glow-two {
+  width: 760px;
+  height: 760px;
+  top: 20%;
+  right: -320px;
+
+  animation:
+    glowFloatTwo 30s ease-in-out infinite alternate;
 }
 
-@keyframes floatTexture {
-  from { transform: translate(0,0); }
-  to { transform: translate(45px,35px); }
+.glow-three {
+  width: 850px;
+  height: 850px;
+  bottom: -570px;
+  left: 15%;
+
+  animation:
+    glowFloatThree 34s ease-in-out infinite alternate;
 }
 
-/* ========================================
-   CENTERED TOP NAVIGATION
-======================================== */
+@keyframes glowFloatOne {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(115px, 75px, 0);
+  }
+}
+
+@keyframes glowFloatTwo {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-130px, 90px, 0);
+  }
+}
+
+@keyframes glowFloatThree {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(95px, -110px, 0);
+  }
+}
+
+/* ==========================================
+   ANIMATED CONTOUR WAVE LINES
+========================================== */
+
+.wave-canvas {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  opacity: 0.85;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Individual wave lines created in JavaScript */
+
+.wave-line {
+  fill: none;
+  stroke: url(#wave-gradient);
+  stroke-width: 1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* First flowing ribbon */
+
+#wave-group-one {
+  opacity: 0.60;
+}
+
+/* Second flowing ribbon */
+
+#wave-group-two {
+  opacity: 0.38;
+}
+
+/* ==========================================
+   SUBTLE OUTLINE CIRCLES
+========================================== */
+
+.outline-circle {
+  position: absolute;
+  border: 1px solid rgba(90, 90, 90, 0.07);
+  border-radius: 50%;
+
+  will-change: transform;
+  pointer-events: none;
+}
+
+.outline-one {
+  width: 550px;
+  height: 550px;
+
+  top: -360px;
+  right: -210px;
+
+  animation:
+    circleFloatOne 28s ease-in-out infinite alternate;
+}
+
+.outline-two {
+  width: 650px;
+  height: 650px;
+
+  bottom: -465px;
+  left: -260px;
+
+  animation:
+    circleFloatTwo 35s ease-in-out infinite alternate;
+}
+
+.outline-three {
+  width: 340px;
+  height: 340px;
+
+  top: 37%;
+  left: 42%;
+
+  border-color: rgba(90, 90, 90, 0.035);
+
+  animation:
+    circleFloatThree 32s ease-in-out infinite alternate;
+}
+
+@keyframes circleFloatOne {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-60px, 55px, 0) scale(1.09);
+  }
+}
+
+@keyframes circleFloatTwo {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(85px, -45px, 0) scale(1.07);
+  }
+}
+
+@keyframes circleFloatThree {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.95);
+  }
+
+  to {
+    transform: translate3d(-70px, 65px, 0) scale(1.15);
+  }
+}
+
+/* ==========================================
+   FLOATING TRANSLUCENT PARTICLES
+========================================== */
+
+.floating-particle {
+  position: absolute;
+  display: block;
+
+  border-radius: 50%;
+  pointer-events: none;
+
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 255, 255, 0.95),
+    rgba(170, 170, 170, 0.22) 55%,
+    rgba(130, 130, 130, 0.07) 78%,
+    transparent 100%
+  );
+
+  box-shadow:
+    inset -3px -3px 9px rgba(0, 0, 0, 0.025),
+    0 5px 15px rgba(0, 0, 0, 0.025);
+
+  animation:
+    particleDrift var(--duration, 17s)
+    ease-in-out infinite alternate;
+
+  animation-delay: var(--delay, 0s);
+}
+
+.particle-one {
+  width: 23px;
+  height: 23px;
+  top: 17%;
+  left: 72%;
+  --duration: 19s;
+}
+
+.particle-two {
+  width: 35px;
+  height: 35px;
+  top: 61%;
+  left: 46%;
+  --duration: 24s;
+  --delay: -6s;
+}
+
+.particle-three {
+  width: 15px;
+  height: 15px;
+  top: 43%;
+  left: 6%;
+  --duration: 16s;
+  --delay: -4s;
+}
+
+.particle-four {
+  width: 18px;
+  height: 18px;
+  top: 78%;
+  right: 19%;
+  --duration: 22s;
+  --delay: -9s;
+}
+
+.particle-five {
+  width: 13px;
+  height: 13px;
+  top: 28%;
+  left: 57%;
+  --duration: 20s;
+  --delay: -12s;
+}
+
+.particle-six {
+  width: 20px;
+  height: 20px;
+  bottom: 13%;
+  left: 14%;
+  --duration: 26s;
+  --delay: -5s;
+}
+
+@keyframes particleDrift {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate3d(32px, -48px, 0);
+    opacity: 0.45;
+  }
+}
+
+/* ==========================================
+   SUBTLE PHOTOGRAPHIC FILM GRAIN
+========================================== */
+
+.film-grain {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  opacity: 0.038;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* ==========================================
+   CENTRED TOP NAVIGATION
+========================================== */
 
 .top-header {
-  position: relative;
   width: 100%;
   min-height: 105px;
   padding: 25px 5%;
 
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
+  grid-template-columns:
+    minmax(0, 1fr) auto minmax(0, 1fr);
 
-  background: #ffffff;
-  z-index: 10;
+  align-items: center;
+  background: transparent;
 }
 
 .top-navigation {
@@ -112,25 +414,26 @@ img {
   grid-row: 1;
 
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
-  gap: clamp(20px,3vw,48px);
+  gap: clamp(20px, 3vw, 48px);
   white-space: nowrap;
 }
 
 .nav-link {
   position: relative;
   display: inline-block;
+
   flex-shrink: 0;
 
   font-family: var(--serif);
-  font-size: clamp(18px,1.65vw,25px);
+  font-size: clamp(18px, 1.65vw, 25px);
   line-height: 1.4;
 
   transition:
-    transform .35s ease,
-    color .35s ease;
+    transform 0.35s ease,
+    color 0.35s ease;
 }
 
 .nav-link:hover {
@@ -141,24 +444,25 @@ img {
 .nav-link::after {
   content: "";
   position: absolute;
-  bottom: -7px;
+
   left: 50%;
+  bottom: -7px;
 
   width: 0;
   height: 1px;
   background: #111111;
 
   transform: translateX(-50%);
-  transition: width .35s ease;
+  transition: width 0.35s ease;
 }
 
 .nav-link:hover::after {
   width: 100%;
 }
 
-/* ========================================
-   MUSIC TOGGLE BUTTON
-======================================== */
+/* ==========================================
+   MUSIC BUTTON
+========================================== */
 
 .music-button {
   position: relative;
@@ -172,6 +476,7 @@ img {
   padding: 5px;
 
   flex-shrink: 0;
+
   background: transparent;
   border: 1px solid transparent;
   border-radius: 50%;
@@ -180,38 +485,29 @@ img {
   cursor: pointer;
 
   transition:
-    transform .35s ease,
-    background .35s ease,
-    border-color .35s ease;
+    transform 0.35s ease,
+    background 0.35s ease,
+    color 0.35s ease;
 }
 
 .music-button:hover {
   transform: translateY(-5px) scale(1.1);
-  background: #f4f4f4;
-}
-
-.music-icon {
-  display: block;
+  background: #f1f1f1;
 }
 
 .music-muted-line {
   opacity: 1;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 }
-
-/* Music ON */
 
 .music-button.is-playing {
   background: #111111;
   color: #ffffff;
-  border-color: #111111;
 }
 
 .music-button.is-playing .music-muted-line {
   opacity: 0;
 }
-
-/* Gentle animation while music plays */
 
 .music-button.is-playing .music-icon {
   animation: musicPulse 2s ease-in-out infinite;
@@ -227,14 +523,14 @@ img {
   }
 }
 
-/* Tooltip beneath music button */
-
 .music-tooltip {
   position: absolute;
   top: calc(100% + 13px);
   left: 50%;
 
-  transform: translate(-50%,-5px);
+  transform: translate(-50%, -5px);
+
+  padding: 7px 10px;
 
   background: #111111;
   color: #ffffff;
@@ -242,27 +538,25 @@ img {
   font-family: var(--sans);
   font-size: 9px;
   letter-spacing: 1px;
-
-  padding: 7px 10px;
   white-space: nowrap;
 
   opacity: 0;
   pointer-events: none;
 
   transition:
-    opacity .25s ease,
-    transform .25s ease;
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .music-button:hover .music-tooltip,
 .music-button:focus-visible .music-tooltip {
   opacity: 1;
-  transform: translate(-50%,0);
+  transform: translate(-50%, 0);
 }
 
-/* ========================================
-   HAMBURGER
-======================================== */
+/* ==========================================
+   HAMBURGER MENU
+========================================== */
 
 .menu-button {
   grid-column: 3;
@@ -290,8 +584,8 @@ img {
   background: #111111;
 
   transition:
-    width .35s ease,
-    transform .35s ease;
+    width 0.35s ease,
+    transform 0.35s ease;
 }
 
 .menu-button span:nth-child(2) {
@@ -302,13 +596,17 @@ img {
   width: 100%;
 }
 
-/* ========================================
-   HERO
-======================================== */
+.menu-button:hover span:first-child {
+  transform: translateX(-5px);
+}
+
+/* ==========================================
+   HERO SECTION
+========================================== */
 
 .hero {
   min-height: 690px;
-  height: max(690px,calc(100svh - 105px));
+  height: max(690px, calc(100svh - 105px));
   max-height: 900px;
 
   display: grid;
@@ -323,12 +621,18 @@ img {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+
+  position: relative;
   z-index: 2;
 }
 
 .name-container {
   margin-bottom: 27px;
 }
+
+/* ==========================================
+   FRANKIE NAME
+========================================== */
 
 .eyebrow,
 .section-number {
@@ -339,12 +643,13 @@ img {
 
 .name-intro {
   opacity: 0;
-  animation: fadeUp .9s ease .15s forwards;
+  animation: fadeUp 0.9s ease 0.15s forwards;
 }
 
 .hero-name {
   font-family: var(--serif);
-  font-size: clamp(76px,10vw,160px);
+
+  font-size: clamp(76px, 10vw, 160px);
   line-height: 1;
   letter-spacing: -5px;
   font-weight: 400;
@@ -352,8 +657,8 @@ img {
   opacity: 0;
 
   animation:
-    fadeUp 1.3s cubic-bezier(.2,.8,.2,1)
-    .3s forwards;
+    fadeUp 1.3s cubic-bezier(.2, .8, .2, 1)
+    0.3s forwards;
 }
 
 .name-dot,
@@ -369,31 +674,33 @@ img {
   margin-top: 12px;
 
   opacity: 0;
-  animation: fadeUp 1s ease .8s forwards;
+  animation: fadeUp 1s ease 0.8s forwards;
 }
 
-/* PORTRAIT */
+/* ==========================================
+   MAIN PORTRAIT
+========================================== */
 
 .portrait-frame {
-  width: min(100%,370px);
+  width: min(100%, 370px);
   position: relative;
 }
 
 .portrait-image {
   display: block;
   width: 100%;
-  height: clamp(320px,42vh,470px);
+  height: clamp(320px, 42vh, 470px);
 
   object-fit: cover;
 
-  /* Keep face and hair visible */
+  /* Keep Frankie's hair and face visible */
   object-position: center top;
 
   filter: grayscale(100%);
 
   transition:
-    filter .7s ease,
-    transform .7s ease;
+    filter 0.7s ease,
+    transform 0.7s ease;
 }
 
 .portrait-frame:hover .portrait-image {
@@ -404,14 +711,15 @@ img {
 .portrait-caption {
   display: block;
   margin-top: 13px;
+
   font-size: 9px;
   letter-spacing: 2.3px;
   color: #777777;
 }
 
-/* ========================================
-   CURVED FEATURED PICTURES
-======================================== */
+/* ==========================================
+   CURVED FEATURED PHOTOGRAPHS
+========================================== */
 
 .hero-right {
   position: relative;
@@ -429,11 +737,11 @@ img {
   cursor: zoom-in;
   overflow: hidden;
 
-  box-shadow: 0 12px 35px rgba(0,0,0,.07);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07);
 
   transition:
-    box-shadow .5s ease,
-    scale .5s ease;
+    box-shadow 0.5s ease,
+    scale 0.5s ease;
 }
 
 .featured-photo img {
@@ -444,14 +752,15 @@ img {
   filter: grayscale(100%);
 
   transition:
-    transform .7s ease,
-    filter .7s ease;
+    transform 0.7s ease,
+    filter 0.7s ease;
 }
 
 .featured-photo:hover {
   scale: 1.07;
   z-index: 5;
-  box-shadow: 0 22px 50px rgba(0,0,0,.16);
+
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.16);
 }
 
 .featured-photo:hover img {
@@ -459,11 +768,14 @@ img {
   filter: grayscale(35%);
 }
 
+/* Positions remain curved */
+
 .featured-one {
   width: 195px;
   height: 235px;
   top: 2%;
   left: 14%;
+
   transform: rotate(-9deg);
 }
 
@@ -472,6 +784,7 @@ img {
   height: 280px;
   top: 31%;
   right: 1%;
+
   transform: rotate(5deg);
 }
 
@@ -480,6 +793,7 @@ img {
   height: 230px;
   bottom: 0;
   left: 16%;
+
   transform: rotate(-5deg);
 }
 
@@ -495,7 +809,9 @@ img {
   color: #999999;
 }
 
-/* MISSING IMAGE PLACEHOLDER */
+/* ==========================================
+   MISSING IMAGE PLACEHOLDERS
+========================================== */
 
 .photo-fallback {
   position: absolute;
@@ -511,6 +827,7 @@ img {
   font-size: 10px;
   letter-spacing: 2px;
   text-align: center;
+
   pointer-events: none;
 }
 
@@ -527,7 +844,9 @@ img {
   cursor: default;
 }
 
-/* SCROLL INDICATOR */
+/* ==========================================
+   SCROLL INDICATOR
+========================================== */
 
 .scroll-indicator {
   position: absolute;
@@ -557,14 +876,14 @@ img {
 
 @keyframes scrollPulse {
   50% {
-    transform: scaleY(.35);
-    opacity: .3;
+    transform: scaleY(0.35);
+    opacity: 0.3;
   }
 }
 
-/* ========================================
+/* ==========================================
    GALLERY
-======================================== */
+========================================== */
 
 .gallery-section {
   padding: 130px 8% 120px;
@@ -581,7 +900,7 @@ img {
 .content-inner h2 {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(55px,8vw,105px);
+  font-size: clamp(55px, 8vw, 105px);
   margin: 20px 0;
 }
 
@@ -593,7 +912,7 @@ img {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(12,1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 65px 35px;
   align-items: start;
 }
@@ -640,19 +959,21 @@ img {
   width: 100%;
   height: auto;
   max-height: 650px;
-  object-fit: cover;
 
+  object-fit: cover;
   filter: grayscale(100%);
 
   transition:
-    transform .8s ease,
-    filter .8s ease;
+    transform 0.8s ease,
+    filter 0.8s ease;
 }
 
 .gallery-item:hover img {
   transform: scale(1.065);
   filter: grayscale(20%);
 }
+
+/* Gallery captions */
 
 .gallery-overlay {
   position: absolute;
@@ -664,11 +985,10 @@ img {
   justify-content: space-between;
   gap: 15px;
 
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.65)
-    );
+  background: linear-gradient(
+    transparent,
+    rgba(0, 0, 0, 0.65)
+  );
 
   color: #ffffff;
   font-size: 10px;
@@ -678,8 +998,8 @@ img {
   transform: translateY(12px);
 
   transition:
-    opacity .35s ease,
-    transform .35s ease;
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -691,15 +1011,15 @@ img {
   display: none;
 }
 
-/* ========================================
-   CONTENT SECTIONS
-======================================== */
+/* ==========================================
+   ABOUT / SKILLS / SOCIALS / CONTACT
+========================================== */
 
 .content-section {
   min-height: 420px;
   padding: 110px 8%;
 
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 
   display: flex;
   align-items: center;
@@ -712,13 +1032,13 @@ img {
 }
 
 .content-inner h2 {
-  font-size: clamp(48px,6vw,85px);
+  font-size: clamp(48px, 6vw, 85px);
 }
 
 .placeholder-text {
   font-size: 14px;
   line-height: 1.9;
-  color: #888888;
+  color: #777777;
   max-width: 600px;
 }
 
@@ -726,9 +1046,9 @@ img {
   min-height: 500px;
 }
 
-/* ========================================
-   LIGHTBOX
-======================================== */
+/* ==========================================
+   PHOTOGRAPH LIGHTBOX
+========================================== */
 
 .lightbox {
   position: fixed;
@@ -741,15 +1061,15 @@ img {
 
   padding: 55px 20px;
 
-  background: rgba(10,10,10,.96);
+  background: rgba(10, 10, 10, 0.96);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
   transition:
-    opacity .4s ease,
-    visibility .4s ease;
+    opacity 0.4s ease,
+    visibility 0.4s ease;
 }
 
 .lightbox.active {
@@ -770,10 +1090,16 @@ img {
   font-size: 42px;
   cursor: pointer;
   z-index: 2;
+
+  transition: transform 0.3s ease;
+}
+
+.lightbox-close:hover {
+  transform: rotate(90deg);
 }
 
 .lightbox-content {
-  width: min(100%,1000px);
+  width: min(100%, 1000px);
   max-height: 100%;
 
   display: flex;
@@ -781,8 +1107,8 @@ img {
   align-items: center;
   gap: 22px;
 
-  transform: scale(.94);
-  transition: transform .45s ease;
+  transform: scale(0.94);
+  transition: transform 0.45s ease;
 }
 
 .lightbox.active .lightbox-content {
@@ -799,8 +1125,8 @@ img {
 
 .lightbox-info {
   width: 100%;
-  color: white;
   text-align: center;
+  color: #ffffff;
 }
 
 #lightbox-title {
@@ -815,7 +1141,9 @@ img {
   min-height: 20px;
 }
 
-/* FOOTER */
+/* ==========================================
+   FOOTER
+========================================== */
 
 .footer {
   display: flex;
@@ -823,7 +1151,7 @@ img {
   gap: 20px;
 
   padding: 30px 8%;
-  border-top: 1px solid #eeeeee;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 
   font-size: 10px;
   letter-spacing: 2px;
@@ -834,9 +1162,9 @@ img {
   color: #111111;
 }
 
-/* ========================================
-   ENTRANCE ANIMATIONS
-======================================== */
+/* ==========================================
+   PAGE ENTRANCE ANIMATIONS
+========================================== */
 
 .photo-entrance {
   opacity: 0;
@@ -861,7 +1189,7 @@ img {
 
 .entrance-nav {
   opacity: 0;
-  animation: fadeUp .8s ease 2.7s forwards;
+  animation: fadeUp 0.8s ease 2.7s forwards;
 }
 
 @keyframes fadeUp {
@@ -890,15 +1218,17 @@ img {
   }
 }
 
-/* SCROLL REVEAL */
+/* ==========================================
+   SCROLL REVEAL
+========================================== */
 
 .reveal {
   opacity: 0;
   transform: translateY(55px);
 
   transition:
-    opacity .9s ease,
-    transform .9s cubic-bezier(.2,.8,.2,1);
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(.2, .8, .2, 1);
 }
 
 .reveal.visible {
@@ -906,11 +1236,12 @@ img {
   transform: translateY(0);
 }
 
-/* ========================================
-   TABLET
-======================================== */
+/* ==========================================
+   SMALL DESKTOP / TABLET
+========================================== */
 
 @media (max-width: 1100px) {
+
   .top-header {
     padding-left: 3%;
     padding-right: 3%;
@@ -926,6 +1257,7 @@ img {
 }
 
 @media (max-width: 1000px) {
+
   .hero {
     grid-template-columns: 48% 52%;
     padding-left: 5%;
@@ -952,11 +1284,12 @@ img {
   }
 }
 
-/* ========================================
-   MOBILE
-======================================== */
+/* ==========================================
+   MOBILE NAVIGATION
+========================================== */
 
 @media (max-width: 800px) {
+
   .top-header {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
@@ -974,6 +1307,7 @@ img {
     grid-row: 2;
 
     width: 100%;
+
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -987,7 +1321,34 @@ img {
   }
 }
 
+/* ==========================================
+   MOBILE LAYOUT
+========================================== */
+
 @media (max-width: 700px) {
+
+  /* Background stays subtle */
+
+  .glow-one,
+  .glow-two,
+  .glow-three {
+    opacity: 0.65;
+  }
+
+  .wave-canvas {
+    opacity: 0.58;
+  }
+
+  .film-grain {
+    opacity: 0.025;
+  }
+
+  .floating-particle {
+    opacity: 0.5;
+  }
+
+  /* Hero */
+
   .hero {
     height: auto;
     max-height: none;
@@ -1005,8 +1366,10 @@ img {
   }
 
   .hero-name {
-    font-size: clamp(70px,16vw,110px);
+    font-size: clamp(70px, 16vw, 110px);
   }
+
+  /* Portrait */
 
   .portrait-frame {
     width: 78%;
@@ -1017,6 +1380,8 @@ img {
     height: 390px;
     object-position: center center;
   }
+
+  /* Featured photos */
 
   .hero-right {
     width: 100%;
@@ -1048,12 +1413,14 @@ img {
     bottom: 15px;
   }
 
+  /* Gallery */
+
   .gallery-section {
     padding: 85px 6%;
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 35px 15px;
   }
 
@@ -1083,7 +1450,12 @@ img {
   }
 }
 
+/* ==========================================
+   SMALL PHONES
+========================================== */
+
 @media (max-width: 400px) {
+
   .hero-name {
     font-size: 65px;
   }
@@ -1107,9 +1479,9 @@ img {
   }
 }
 
-/* ========================================
+/* ==========================================
    ACCESSIBILITY
-======================================== */
+========================================== */
 
 :focus-visible {
   outline: 2px solid #777777;
@@ -1117,12 +1489,13 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
-    animation-duration: .01ms !important;
+    animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
-    transition-duration: .01ms !important;
+    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 

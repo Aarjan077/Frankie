@@ -1,57 +1,117 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
-
   <meta name="theme-color" content="#ffffff">
-
   <meta name="description"
-        content="Frankie - Photography Portfolio">
+        content="Frankie — Photography Portfolio">
 
   <title>Frankie | Photography Portfolio</title>
 
   <!-- FONTS -->
   <link rel="preconnect"
         href="https://fonts.googleapis.com">
-
   <link rel="preconnect"
         href="https://fonts.gstatic.com"
         crossorigin>
-
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
     rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- BACKGROUND TEXTURES -->
+  <!-- =====================================
+       ANIMATED MONOCHROME BACKGROUND
+  ====================================== -->
+
   <div class="background-texture" aria-hidden="true">
-    <div class="texture-circle circle-one"></div>
-    <div class="texture-circle circle-two"></div>
+
+    <!-- Gentle drifting grey gradients -->
+    <div class="ambient-glow glow-one"></div>
+    <div class="ambient-glow glow-two"></div>
+    <div class="ambient-glow glow-three"></div>
+
+    <!-- Animated flowing contour lines -->
+    <svg
+      id="contour-waves"
+      class="wave-canvas"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg">
+
+      <defs>
+        <linearGradient
+          id="wave-gradient"
+          x1="0%" y1="0%"
+          x2="100%" y2="0%">
+          <stop offset="0%"
+                stop-color="#999999"
+                stop-opacity="0"/>
+          <stop offset="20%"
+                stop-color="#999999"
+                stop-opacity=".42"/>
+          <stop offset="55%"
+                stop-color="#777777"
+                stop-opacity=".62"/>
+          <stop offset="85%"
+                stop-color="#999999"
+                stop-opacity=".36"/>
+          <stop offset="100%"
+                stop-color="#999999"
+                stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <!-- JavaScript creates and animates the lines -->
+      <g id="wave-group-one"></g>
+      <g id="wave-group-two"></g>
+
+    </svg>
+
+    <!-- Large subtle decorative rings -->
+    <div class="outline-circle outline-one"></div>
+    <div class="outline-circle outline-two"></div>
+    <div class="outline-circle outline-three"></div>
+
+    <!-- Floating translucent particles -->
+    <span class="floating-particle particle-one"></span>
+    <span class="floating-particle particle-two"></span>
+    <span class="floating-particle particle-three"></span>
+    <span class="floating-particle particle-four"></span>
+    <span class="floating-particle particle-five"></span>
+    <span class="floating-particle particle-six"></span>
+
+    <!-- Subtle photographic film grain -->
+    <svg
+      class="film-grain"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true">
+      <filter id="grain-filter">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency=".55"
+          numOctaves="3"
+          stitchTiles="stitch"
+          seed="4"/>
+      </filter>
+      <rect
+        width="100%"
+        height="100%"
+        filter="url(#grain-filter)"/>
+    </svg>
+
   </div>
 
-  <!-- ===================================
+  <!-- =====================================
        BACKGROUND MUSIC
-  ==================================== -->
-
-  <!--
-    Upload background-music.mp3 directly
-    into your Frankie GitHub repository.
-
-    Music does not autoplay.
-    It begins only when the visitor clicks.
-  -->
+  ====================================== -->
 
   <audio
     id="background-music"
@@ -60,37 +120,28 @@
     loop>
   </audio>
 
-  <!-- ===================================
+  <!-- =====================================
        TOP NAVIGATION
-  ==================================== -->
+  ====================================== -->
 
   <header class="top-header">
 
-    <!-- CENTERED NAVIGATION -->
     <nav class="top-navigation entrance-nav"
          aria-label="Main navigation">
 
-      <a href="#about" class="nav-link">
-        About
-      </a>
+      <a href="#about" class="nav-link">About</a>
 
-      <a href="#gallery" class="nav-link">
-        Gallery
-      </a>
+      <a href="#gallery" class="nav-link">Gallery</a>
 
       <a href="#skills" class="nav-link">
         Skills &amp; Qualification
       </a>
 
-      <a href="#socials" class="nav-link">
-        Socials
-      </a>
+      <a href="#socials" class="nav-link">Socials</a>
 
-      <a href="#contact" class="nav-link">
-        Contact
-      </a>
+      <a href="#contact" class="nav-link">Contact</a>
 
-      <!-- MUSIC ON/OFF BUTTON -->
+      <!-- MUSIC BUTTON -->
       <button
         id="music-toggle"
         class="music-button"
@@ -115,7 +166,6 @@
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
 
-          <!-- Visible slash when music is off -->
           <path
             class="music-muted-line"
             d="M3 3L21 21">
@@ -137,20 +187,18 @@
       type="button"
       aria-label="Menu coming soon"
       title="Menu coming soon">
-
       <span></span>
       <span></span>
       <span></span>
-
     </button>
 
   </header>
 
   <main>
 
-    <!-- ===================================
-         HERO
-    ==================================== -->
+    <!-- =====================================
+         HOME / HERO SECTION
+    ====================================== -->
 
     <section class="hero" id="home">
 
@@ -177,8 +225,8 @@
 
           <img
             src="frankie-portrait.jpg"
-            alt="Portrait of Frankie"
-            class="portrait-image">
+            class="portrait-image"
+            alt="Portrait of Frankie">
 
           <span class="portrait-caption">
             THE PERSON BEHIND THE LENS
@@ -188,7 +236,7 @@
 
       </div>
 
-      <!-- FEATURED PHOTOGRAPHS -->
+      <!-- THREE CURVED FEATURED PHOTOGRAPHS -->
       <div class="hero-right">
 
         <button
@@ -198,8 +246,9 @@
           data-title="01 / Featured"
           aria-label="View featured photograph one">
 
-          <img src="featured-1.jpg"
-               alt="Featured photograph one">
+          <img
+            src="featured-1.jpg"
+            alt="Featured photograph one">
 
           <span class="photo-fallback">
             FEATURED / 01
@@ -214,8 +263,9 @@
           data-title="02 / Featured"
           aria-label="View featured photograph two">
 
-          <img src="featured-2.jpg"
-               alt="Featured photograph two">
+          <img
+            src="featured-2.jpg"
+            alt="Featured photograph two">
 
           <span class="photo-fallback">
             FEATURED / 02
@@ -230,8 +280,9 @@
           data-title="03 / Featured"
           aria-label="View featured photograph three">
 
-          <img src="featured-3.jpg"
-               alt="Featured photograph three">
+          <img
+            src="featured-3.jpg"
+            alt="Featured photograph three">
 
           <span class="photo-fallback">
             FEATURED / 03
@@ -252,9 +303,9 @@
 
     </section>
 
-    <!-- ===================================
-         GALLERY
-    ==================================== -->
+    <!-- =====================================
+         GALLERY SECTION
+    ====================================== -->
 
     <section class="gallery-section" id="gallery">
 
@@ -276,16 +327,17 @@
 
       <div class="gallery-grid">
 
-        <!-- IMAGE 1 -->
+        <!-- PHOTO 1 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-1.jpg"
           data-title="01 / Untitled">
 
-          <img src="gallery-1.jpg"
-               alt="Gallery photograph one"
-               loading="lazy">
+          <img
+            src="gallery-1.jpg"
+            alt="Gallery photograph one"
+            loading="lazy">
 
           <span class="photo-fallback">
             PHOTOGRAPH / 01
@@ -298,16 +350,17 @@
 
         </button>
 
-        <!-- IMAGE 2 -->
+        <!-- PHOTO 2 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-2.jpg"
           data-title="02 / Untitled">
 
-          <img src="gallery-2.jpg"
-               alt="Gallery photograph two"
-               loading="lazy">
+          <img
+            src="gallery-2.jpg"
+            alt="Gallery photograph two"
+            loading="lazy">
 
           <span class="photo-fallback">
             PHOTOGRAPH / 02
@@ -320,16 +373,17 @@
 
         </button>
 
-        <!-- IMAGE 3 -->
+        <!-- PHOTO 3 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-3.jpg"
           data-title="03 / Untitled">
 
-          <img src="gallery-3.jpg"
-               alt="Gallery photograph three"
-               loading="lazy">
+          <img
+            src="gallery-3.jpg"
+            alt="Gallery photograph three"
+            loading="lazy">
 
           <span class="photo-fallback">
             PHOTOGRAPH / 03
@@ -342,16 +396,17 @@
 
         </button>
 
-        <!-- IMAGE 4 -->
+        <!-- PHOTO 4 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-4.jpg"
           data-title="04 / Untitled">
 
-          <img src="gallery-4.jpg"
-               alt="Gallery photograph four"
-               loading="lazy">
+          <img
+            src="gallery-4.jpg"
+            alt="Gallery photograph four"
+            loading="lazy">
 
           <span class="photo-fallback">
             PHOTOGRAPH / 04
@@ -364,16 +419,17 @@
 
         </button>
 
-        <!-- IMAGE 5 -->
+        <!-- PHOTO 5 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-5.jpg"
           data-title="05 / Untitled">
 
-          <img src="gallery-5.jpg"
-               alt="Gallery photograph five"
-               loading="lazy">
+          <img
+            src="gallery-5.jpg"
+            alt="Gallery photograph five"
+            loading="lazy">
 
           <span class="photo-fallback">
             PHOTOGRAPH / 05
@@ -390,7 +446,10 @@
 
     </section>
 
-    <!-- ABOUT -->
+    <!-- =====================================
+         ABOUT
+    ====================================== -->
+
     <section class="content-section" id="about">
 
       <div class="content-inner reveal">
@@ -411,7 +470,10 @@
 
     </section>
 
-    <!-- SKILLS -->
+    <!-- =====================================
+         SKILLS AND QUALIFICATION
+    ====================================== -->
+
     <section class="content-section" id="skills">
 
       <div class="content-inner reveal">
@@ -433,7 +495,10 @@
 
     </section>
 
-    <!-- SOCIALS -->
+    <!-- =====================================
+         SOCIALS
+    ====================================== -->
+
     <section class="content-section" id="socials">
 
       <div class="content-inner reveal">
@@ -454,7 +519,10 @@
 
     </section>
 
-    <!-- CONTACT -->
+    <!-- =====================================
+         CONTACT
+    ====================================== -->
+
     <section
       class="content-section contact-section"
       id="contact">
@@ -479,9 +547,9 @@
 
   </main>
 
-  <!-- ===================================
-       PHOTOGRAPH LIGHTBOX
-  ==================================== -->
+  <!-- =====================================
+       PHOTO POPUP
+  ====================================== -->
 
   <div
     class="lightbox"
@@ -500,11 +568,14 @@
 
     <div class="lightbox-content">
 
-      <img id="lightbox-image"
-           alt="Expanded photograph">
+      <img
+        id="lightbox-image"
+        alt="Expanded photograph">
 
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
+
+        <!-- Descriptions can be added later -->
         <p id="lightbox-description"></p>
       </div>
 
@@ -517,9 +588,7 @@
 
     <span>© 2026 FRANKIE</span>
 
-    <a href="#home">
-      BACK TO TOP ↑
-    </a>
+    <a href="#home">BACK TO TOP ↑</a>
 
   </footer>
 

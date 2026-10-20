@@ -1,37 +1,262 @@
 
-/* ========================================
+/* ==========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   JAVASCRIPT
-======================================== */
+   ANIMATED MONOCHROME EDITION
+========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =====================================
-  // 1. BACKGROUND MUSIC PLAYER
-  // =====================================
+  /* ========================================
+     1. ANIMATED FLOWING CONTOUR WAVES
+  ======================================== */
 
-  const music = document.getElementById(
-    "background-music"
+  const svgNamespace = "http://www.w3.org/2000/svg";
+
+  const waveGroupOne =
+    document.getElementById("wave-group-one");
+
+  const waveGroupTwo =
+    document.getElementById("wave-group-two");
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
   );
 
-  const musicButton = document.getElementById(
-    "music-toggle"
+  const wavePaths = [];
+
+  let waveAnimationFrame = null;
+  let lastWaveFrame = 0;
+
+  /*
+    Each wave is a real SVG path.
+
+    JavaScript changes the path coordinates
+    smoothly over time to create the effect
+    of constantly flowing contour lines.
+  */
+
+  function createWaveGroup(group, count, field) {
+
+    if (!group) return;
+
+    for (let i = 0; i < count; i++) {
+
+      const path = document.createElementNS(
+        svgNamespace,
+        "path"
+      );
+
+      path.setAttribute("class", "wave-line");
+
+      group.appendChild(path);
+
+      wavePaths.push({
+        element: path,
+        index: i,
+        total: count,
+        field: field
+      });
+    }
+  }
+
+  // Main flowing wave ribbon
+  createWaveGroup(waveGroupOne, 18, 0);
+
+  // Secondary softer wave ribbon
+  createWaveGroup(waveGroupTwo, 12, 1);
+
+  function drawWaves(time) {
+
+    const seconds = time / 1000;
+
+    wavePaths.forEach((wave) => {
+
+      const {
+        element,
+        index,
+        total,
+        field
+      } = wave;
+
+      const relativeIndex =
+        index - (total - 1) / 2;
+
+      // Different heights for the two ribbons
+      const baseHeight = field === 0
+        ? 635
+        : 325;
+
+      const lineSpacing = field === 0
+        ? 9
+        : 11;
+
+      const amplitude = field === 0
+        ? 68
+        : 58;
+
+      const baseY =
+        baseHeight + relativeIndex * lineSpacing;
+
+      let pathData = "";
+
+      // Draw across the full SVG width.
+      for (let x = -100; x <= 1540; x += 36) {
+
+        /*
+          Layered sine waves produce organic
+          movement rather than rigid motion.
+        */
+
+        const primaryWave = Math.sin(
+          x / 205
+          - seconds * 0.23
+          + index * 0.045
+          + field
+        ) * amplitude;
+
+        const secondaryWave = Math.sin(
+          x / 380
+          + seconds * 0.16
+          + field * 1.8
+        ) * 21;
+
+        const fineWave = Math.sin(
+          x / 120
+          + seconds * 0.12
+          + index * 0.025
+        ) * 8;
+
+        const y =
+          baseY
+          + primaryWave
+          + secondaryWave
+          + fineWave;
+
+        pathData +=
+          (x === -100 ? "M" : "L") +
+          x + " " + y.toFixed(2) + " ";
+      }
+
+      element.setAttribute("d", pathData);
+
+    });
+  }
+
+  /*
+    Limit the animation to approximately
+    30 frames per second on desktop, and
+    slightly fewer frames on small screens.
+  */
+
+  function animateWaves(time) {
+
+    const frameInterval =
+      window.innerWidth < 700 ? 42 : 33;
+
+    if (time - lastWaveFrame >= frameInterval) {
+
+      drawWaves(time);
+      lastWaveFrame = time;
+    }
+
+    waveAnimationFrame =
+      requestAnimationFrame(animateWaves);
+  }
+
+  function stopWaveAnimation() {
+
+    if (waveAnimationFrame !== null) {
+
+      cancelAnimationFrame(waveAnimationFrame);
+
+      waveAnimationFrame = null;
+    }
+  }
+
+  function startWaveAnimation() {
+
+    if (
+      reducedMotion.matches ||
+      document.hidden ||
+      waveAnimationFrame !== null
+    ) {
+      return;
+    }
+
+    lastWaveFrame = 0;
+
+    waveAnimationFrame =
+      requestAnimationFrame(animateWaves);
+  }
+
+  // Draw the first frame immediately.
+  drawWaves(0);
+
+  // Start continuous movement.
+  startWaveAnimation();
+
+  // Pause animations when the tab is hidden.
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+
+      if (document.hidden) {
+        stopWaveAnimation();
+      } else {
+        startWaveAnimation();
+      }
+
+    }
   );
 
-  const musicTooltip = document.querySelector(
-    ".music-tooltip"
-  );
+  // Respect accessibility motion preferences.
+  function handleMotionPreference() {
 
-  // Default volume: 35%
-  const MAX_VOLUME = 0.35;
+    if (reducedMotion.matches) {
 
-  // Duration of volume transitions
-  const FADE_DURATION = 600;
+      stopWaveAnimation();
+      drawWaves(0);
 
-  let fadeFrame = null;
-  let isStarting = false;
+    } else {
 
-  // Start paused and silent
+      startWaveAnimation();
+    }
+  }
+
+  if (reducedMotion.addEventListener) {
+
+    reducedMotion.addEventListener(
+      "change",
+      handleMotionPreference
+    );
+
+  } else if (reducedMotion.addListener) {
+
+    reducedMotion.addListener(
+      handleMotionPreference
+    );
+  }
+
+  /* ========================================
+     2. BACKGROUND MUSIC PLAYER
+  ======================================== */
+
+  const music =
+    document.getElementById("background-music");
+
+  const musicButton =
+    document.getElementById("music-toggle");
+
+  const musicTooltip =
+    document.querySelector(".music-tooltip");
+
+  const MUSIC_VOLUME = 0.35;
+  const MUSIC_FADE_DURATION = 600;
+
+  let wantsMusic = false;
+  let musicFadeFrame = null;
+
+  // Website always opens with the music off.
   music.pause();
   music.volume = 0;
 
@@ -47,173 +272,197 @@ document.addEventListener("DOMContentLoaded", () => {
       String(isPlaying)
     );
 
-    musicButton.setAttribute(
-      "aria-label",
-      isPlaying
-        ? "Pause background music"
-        : "Play background music"
-    );
-
-    musicButton.title = isPlaying
+    const label = isPlaying
       ? "Pause background music"
       : "Play background music";
+
+    musicButton.setAttribute(
+      "aria-label",
+      label
+    );
+
+    musicButton.title = label;
 
     musicTooltip.textContent = isPlaying
       ? "MUSIC ON"
       : "MUSIC OFF";
   }
 
-  // Set initial button state
   updateMusicButton(false);
 
-  // Smoothly change music volume
-  function fadeVolume(targetVolume, onComplete) {
+  function cancelMusicFade() {
 
-    if (fadeFrame !== null) {
-      cancelAnimationFrame(fadeFrame);
-      fadeFrame = null;
+    if (musicFadeFrame !== null) {
+
+      cancelAnimationFrame(musicFadeFrame);
+
+      musicFadeFrame = null;
     }
+  }
 
-    const startVolume = music.volume;
-    const difference = targetVolume - startVolume;
+  function fadeMusic(targetVolume, onComplete) {
+
+    cancelMusicFade();
+
+    const startingVolume = music.volume;
+
+    const difference =
+      targetVolume - startingVolume;
+
     const startTime = performance.now();
 
     function animateVolume(currentTime) {
 
-      const elapsed = currentTime - startTime;
+      const elapsed =
+        currentTime - startTime;
 
       const progress = Math.min(
-        elapsed / FADE_DURATION,
+        elapsed / MUSIC_FADE_DURATION,
         1
       );
 
-      // Smooth ease-in-out
+      // Smooth ease-in-out transition.
       const eased = progress < 0.5
         ? 2 * progress * progress
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
-      const newVolume =
-        startVolume + difference * eased;
+      const nextVolume =
+        startingVolume + difference * eased;
 
       music.volume = Math.max(
         0,
-        Math.min(1, newVolume)
+        Math.min(1, nextVolume)
       );
 
       if (progress < 1) {
 
-        fadeFrame = requestAnimationFrame(
+        musicFadeFrame = requestAnimationFrame(
           animateVolume
         );
 
       } else {
 
-        fadeFrame = null;
+        musicFadeFrame = null;
 
         if (typeof onComplete === "function") {
           onComplete();
         }
-
       }
     }
 
-    fadeFrame = requestAnimationFrame(
-      animateVolume
-    );
+    musicFadeFrame =
+      requestAnimationFrame(animateVolume);
   }
 
-  // PLAY MUSIC
+  // Turn the music on.
   async function playMusic() {
 
-    if (isStarting || !music.paused) return;
-
-    isStarting = true;
+    cancelMusicFade();
 
     try {
 
-      // A new play starts at zero volume.
-      // Resuming after a fade-out also starts quietly.
-      music.volume = 0;
+      if (music.paused) {
 
-      await music.play();
+        music.volume = 0;
+
+        // Called directly from the click action.
+        await music.play();
+      }
+
+      // Handle clicks made during loading.
+      if (!wantsMusic) {
+
+        fadeMusic(0, () => {
+          if (!wantsMusic) music.pause();
+        });
+
+        return;
+      }
 
       updateMusicButton(true);
-
-      fadeVolume(MAX_VOLUME);
+      fadeMusic(MUSIC_VOLUME);
 
     } catch (error) {
 
       console.error(
-        "Could not play background music:",
+        "Unable to play the music:",
         error
       );
 
+      wantsMusic = false;
       updateMusicButton(false);
-
-    } finally {
-
-      isStarting = false;
-
     }
   }
 
-  // PAUSE MUSIC
+  // Turn the music off.
   function pauseMusic() {
-
-    if (music.paused) return;
 
     updateMusicButton(false);
 
-    fadeVolume(0, () => {
-      music.pause();
+    if (music.paused) {
+      cancelMusicFade();
+      music.volume = 0;
+      return;
+    }
+
+    fadeMusic(0, () => {
+
+      if (!wantsMusic) {
+        music.pause();
+      }
     });
   }
 
-  // MUSIC BUTTON CLICK
   musicButton.addEventListener("click", () => {
 
-    if (music.paused) {
+    wantsMusic = !wantsMusic;
+
+    if (wantsMusic) {
       playMusic();
     } else {
-      // If fading out, another click can restart
-      // the music instead of waiting.
-      if (musicButton.classList.contains("is-playing")) {
-        pauseMusic();
-      } else {
-        updateMusicButton(true);
-        fadeVolume(MAX_VOLUME);
-      }
+      pauseMusic();
     }
-
   });
 
-  // Handle unexpected playback ending
   music.addEventListener("pause", () => {
+
+    if (wantsMusic) {
+      wantsMusic = false;
+    }
+
     updateMusicButton(false);
   });
 
   music.addEventListener("error", () => {
 
-    console.error(
-      "Music file could not be loaded. " +
-      "Check background-music.mp3 in GitHub."
-    );
+    cancelMusicFade();
+
+    wantsMusic = false;
 
     updateMusicButton(false);
 
+    musicTooltip.textContent = "AUDIO NOT FOUND";
+
+    console.error(
+      "Check that background-music.mp3 " +
+      "exists in the GitHub repository."
+    );
   });
 
-  // =====================================
-  // 2. SCROLL REVEAL
-  // =====================================
+  /* ========================================
+     3. SCROLL REVEAL ANIMATIONS
+  ======================================== */
 
   const revealElements =
     document.querySelectorAll(".reveal");
 
-  if ("IntersectionObserver" in window) {
+  if (
+    "IntersectionObserver" in window &&
+    !reducedMotion.matches
+  ) {
 
-    const observer = new IntersectionObserver(
-      (entries, observerInstance) => {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
 
         entries.forEach((entry) => {
 
@@ -221,14 +470,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             entry.target.classList.add("visible");
 
-            observerInstance.unobserve(
-              entry.target
-            );
-
+            observer.unobserve(entry.target);
           }
-
         });
-
       },
       {
         threshold: 0.12,
@@ -237,7 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     revealElements.forEach((element) => {
-      observer.observe(element);
+      revealObserver.observe(element);
     });
 
   } else {
@@ -245,12 +489,11 @@ document.addEventListener("DOMContentLoaded", () => {
     revealElements.forEach((element) => {
       element.classList.add("visible");
     });
-
   }
 
-  // =====================================
-  // 3. PHOTO LOADING
-  // =====================================
+  /* ========================================
+     4. PHOTO LOADING AND PLACEHOLDERS
+  ======================================== */
 
   const photoButtons =
     document.querySelectorAll(
@@ -271,29 +514,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
       button.setAttribute(
         "aria-label",
-        "Photo not yet uploaded"
+        "Photograph not yet uploaded"
       );
     }
 
-    if (image.complete && image.naturalWidth === 0) {
-      markMissing();
-    }
-
-    image.addEventListener("error", markMissing);
-
-    image.addEventListener("load", () => {
+    function markLoaded() {
 
       button.classList.remove("image-missing");
 
       button.disabled = false;
+    }
 
-    });
+    image.addEventListener("error", markMissing);
+    image.addEventListener("load", markLoaded);
 
+    if (image.complete && image.currentSrc) {
+
+      if (image.naturalWidth === 0) {
+        markMissing();
+      } else {
+        markLoaded();
+      }
+    }
   });
 
-  // =====================================
-  // 4. PHOTO LIGHTBOX
-  // =====================================
+  /* ========================================
+     5. PHOTOGRAPH LIGHTBOX
+  ======================================== */
 
   const lightbox =
     document.getElementById("lightbox");
@@ -312,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let previousFocus = null;
 
-  // Descriptions intentionally left blank
+  // Descriptions intentionally left blank.
   const photoDescriptions = {
     "featured-1.jpg": "",
     "featured-2.jpg": "",
@@ -326,7 +573,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openLightbox(photo) {
 
-    if (photo.classList.contains("image-missing")) {
+    if (
+      photo.classList.contains("image-missing")
+    ) {
       return;
     }
 
@@ -392,7 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
     photo.addEventListener("click", () => {
       openLightbox(photo);
     });
-
   });
 
   closeButton.addEventListener(
@@ -400,14 +648,15 @@ document.addEventListener("DOMContentLoaded", () => {
     closeLightbox
   );
 
+  // Close by clicking the dark background.
   lightbox.addEventListener("click", (event) => {
 
     if (event.target === lightbox) {
       closeLightbox();
     }
-
   });
 
+  // Close with Escape.
   document.addEventListener("keydown", (event) => {
 
     if (!lightbox.classList.contains("active")) {
@@ -421,16 +670,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (event.key === "Tab") {
 
       event.preventDefault();
-
       closeButton.focus();
-
     }
-
   });
 
-  // =====================================
-  // 5. SMOOTH NAVIGATION
-  // =====================================
+  /* ========================================
+     6. SMOOTH NAVIGATION
+  ======================================== */
 
   const navigationLinks =
     document.querySelectorAll('a[href^="#"]');
@@ -449,23 +695,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       event.preventDefault();
 
-      const reducedMotion =
-        window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-
       target.scrollIntoView({
-        behavior: reducedMotion ? "auto" : "smooth",
+        behavior: reducedMotion.matches
+          ? "auto"
+          : "smooth",
         block: "start"
       });
-
     });
-
   });
 
-  // =====================================
-  // 6. GALLERY HOVER
-  // =====================================
+  /* ========================================
+     7. GALLERY HOVER
+  ======================================== */
 
   const galleryItems =
     document.querySelectorAll(".gallery-item");
@@ -479,12 +720,11 @@ document.addEventListener("DOMContentLoaded", () => {
     item.addEventListener("mouseleave", () => {
       item.style.zIndex = "";
     });
-
   });
 
-  // =====================================
-  // 7. PORTRAIT FALLBACK
-  // =====================================
+  /* ========================================
+     8. PORTRAIT IMAGE FALLBACK
+  ======================================== */
 
   const portrait =
     document.querySelector(".portrait-image");
@@ -492,28 +732,21 @@ document.addEventListener("DOMContentLoaded", () => {
   if (portrait) {
 
     portrait.addEventListener("error", () => {
+
       portrait.style.background = "#eeeeee";
     });
-
   }
 
-  // =====================================
-  // 8. FUTURE HAMBURGER MENU
-  // =====================================
+  /* ========================================
+     9. HAMBURGER PLACEHOLDER
+  ======================================== */
 
-  const menuButton =
-    document.querySelector(".menu-button");
-
-  if (menuButton) {
-
-    menuButton.addEventListener("click", () => {
-      // Menu functionality will be added later.
-    });
-
-  }
+  // The hamburger icon remains available
+  // for you to add functionality later.
 
   console.log(
-    "Frankie Photography Portfolio loaded."
+    "Frankie Photography Portfolio " +
+    "with animated background loaded."
   );
 
 });
