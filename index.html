@@ -1,62 +1,62 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
 
-  <meta name="description" content="Frankie — Photography Portfolio">
+  <meta name="description"
+        content="Frankie - Photography Portfolio">
 
   <title>Frankie | Photography Portfolio</title>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- FONTS -->
+  <link rel="preconnect"
+        href="https://fonts.googleapis.com">
 
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+  <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
+        rel="stylesheet">
 
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- JavaScript -->
+  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- ANIMATED BACKGROUND -->
+  <!-- BACKGROUND TEXTURES -->
   <div class="background-texture" aria-hidden="true">
     <div class="texture-circle circle-one"></div>
     <div class="texture-circle circle-two"></div>
   </div>
 
-  <!-- TOP NAVIGATION BUTTON -->
+  <!-- TOP HAMBURGER -->
   <header class="top-header">
-
-    <button
-      class="menu-button entrance-nav"
-      type="button"
-      aria-label="Menu"
-    >
+    <button class="menu-button entrance-nav"
+            type="button"
+            aria-label="Menu coming soon">
       <span></span>
       <span></span>
       <span></span>
     </button>
-
   </header>
 
   <main>
 
-    <!-- =========================
-         HERO SECTION
-    ========================== -->
-
+    <!-- HERO SECTION -->
     <section class="hero" id="home">
 
-      <!-- NAME AND PORTRAIT -->
       <div class="hero-left">
 
+        <!-- NAME -->
         <div class="name-container">
 
           <p class="eyebrow name-intro">
@@ -90,16 +90,15 @@
 
       </div>
 
-      <!-- THREE CURVED FEATURED PICTURES -->
+      <!-- THREE CURVED PHOTOGRAPHS -->
       <div class="hero-right">
 
-        <!-- FIRST PICTURE -->
         <button
           class="featured-photo featured-one photo-entrance"
           type="button"
           data-image="featured-1.jpg"
           data-title="01 / Featured"
-        >
+          aria-label="View featured photo one">
 
           <img
             src="featured-1.jpg"
@@ -108,13 +107,12 @@
 
         </button>
 
-        <!-- SECOND PICTURE -->
         <button
           class="featured-photo featured-two photo-entrance"
           type="button"
           data-image="featured-2.jpg"
           data-title="02 / Featured"
-        >
+          aria-label="View featured photo two">
 
           <img
             src="featured-2.jpg"
@@ -123,13 +121,12 @@
 
         </button>
 
-        <!-- THIRD PICTURE -->
         <button
           class="featured-photo featured-three photo-entrance"
           type="button"
           data-image="featured-3.jpg"
           data-title="03 / Featured"
-        >
+          aria-label="View featured photo three">
 
           <img
             src="featured-3.jpg"
@@ -146,50 +143,34 @@
 
       <!-- SCROLL INDICATOR -->
       <div class="scroll-indicator">
-
         <span>SCROLL TO EXPLORE</span>
         <span class="scroll-line"></span>
-
       </div>
 
     </section>
 
-    <!-- =========================
-         BOTTOM NAVIGATION
-    ========================== -->
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav entrance-bottom"
+         aria-label="Main navigation">
 
-    <nav
-      class="bottom-nav entrance-bottom"
-      aria-label="Main navigation"
-    >
+      <a href="#about" class="nav-link">About</a>
 
-      <a href="#about" class="nav-link">
-        About
-      </a>
-
-      <a href="#gallery" class="nav-link">
-        Gallery
-      </a>
+      <a href="#gallery" class="nav-link">Gallery</a>
 
       <a href="#skills" class="nav-link">
         Skills &amp; Qualification
       </a>
 
-      <a href="#socials" class="nav-link">
-        Socials
-      </a>
+      <a href="#socials" class="nav-link">Socials</a>
 
-      <a href="#contact" class="nav-link">
-        Contact
-      </a>
+      <a href="#contact" class="nav-link">Contact</a>
 
-      <!-- FUTURE MUSIC BUTTON -->
+      <!-- MUSIC BUTTON -->
       <button
         class="music-button"
         type="button"
-        aria-label="Music player coming soon"
-        title="Music coming soon"
-      >
+        aria-label="Music coming soon"
+        title="Music coming soon">
 
         <svg
           viewBox="0 0 24 24"
@@ -200,8 +181,7 @@
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
-          aria-hidden="true"
-        >
+          aria-hidden="true">
 
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
@@ -213,10 +193,7 @@
 
     </nav>
 
-    <!-- =========================
-         GALLERY SECTION
-    ========================== -->
-
+    <!-- GALLERY -->
     <section class="gallery-section" id="gallery">
 
       <div class="section-heading reveal">
@@ -237,19 +214,16 @@
 
       <div class="gallery-grid">
 
-        <!-- GALLERY IMAGE 1 -->
+        <!-- PHOTO 1 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-1.jpg"
-          data-title="01 / Untitled"
-        >
+          data-title="01 / Untitled">
 
-          <img
-            src="gallery-1.jpg"
-            alt="Gallery photograph one"
-            loading="lazy"
-          >
+          <img src="gallery-1.jpg"
+               alt="Gallery photograph one"
+               loading="lazy">
 
           <span class="gallery-overlay">
             <span>01 / UNTITLED</span>
@@ -258,19 +232,16 @@
 
         </button>
 
-        <!-- GALLERY IMAGE 2 -->
+        <!-- PHOTO 2 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-2.jpg"
-          data-title="02 / Untitled"
-        >
+          data-title="02 / Untitled">
 
-          <img
-            src="gallery-2.jpg"
-            alt="Gallery photograph two"
-            loading="lazy"
-          >
+          <img src="gallery-2.jpg"
+               alt="Gallery photograph two"
+               loading="lazy">
 
           <span class="gallery-overlay">
             <span>02 / UNTITLED</span>
@@ -279,19 +250,16 @@
 
         </button>
 
-        <!-- GALLERY IMAGE 3 -->
+        <!-- PHOTO 3 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-3.jpg"
-          data-title="03 / Untitled"
-        >
+          data-title="03 / Untitled">
 
-          <img
-            src="gallery-3.jpg"
-            alt="Gallery photograph three"
-            loading="lazy"
-          >
+          <img src="gallery-3.jpg"
+               alt="Gallery photograph three"
+               loading="lazy">
 
           <span class="gallery-overlay">
             <span>03 / UNTITLED</span>
@@ -300,19 +268,16 @@
 
         </button>
 
-        <!-- GALLERY IMAGE 4 -->
+        <!-- PHOTO 4 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-4.jpg"
-          data-title="04 / Untitled"
-        >
+          data-title="04 / Untitled">
 
-          <img
-            src="gallery-4.jpg"
-            alt="Gallery photograph four"
-            loading="lazy"
-          >
+          <img src="gallery-4.jpg"
+               alt="Gallery photograph four"
+               loading="lazy">
 
           <span class="gallery-overlay">
             <span>04 / UNTITLED</span>
@@ -321,19 +286,16 @@
 
         </button>
 
-        <!-- GALLERY IMAGE 5 -->
+        <!-- PHOTO 5 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-5.jpg"
-          data-title="05 / Untitled"
-        >
+          data-title="05 / Untitled">
 
-          <img
-            src="gallery-5.jpg"
-            alt="Gallery photograph five"
-            loading="lazy"
-          >
+          <img src="gallery-5.jpg"
+               alt="Gallery photograph five"
+               loading="lazy">
 
           <span class="gallery-overlay">
             <span>05 / UNTITLED</span>
@@ -346,17 +308,12 @@
 
     </section>
 
-    <!-- =========================
-         ABOUT SECTION
-    ========================== -->
-
+    <!-- ABOUT -->
     <section class="content-section" id="about">
 
       <div class="content-inner reveal">
 
-        <p class="section-number">
-          02 / THE PERSON
-        </p>
+        <p class="section-number">02 / THE PERSON</p>
 
         <h2>
           About Frankie<span class="heading-dot">.</span>
@@ -370,41 +327,32 @@
 
     </section>
 
-    <!-- =========================
-         SKILLS SECTION
-    ========================== -->
-
+    <!-- SKILLS -->
     <section class="content-section" id="skills">
 
       <div class="content-inner reveal">
 
-        <p class="section-number">
-          03 / EXPERIENCE
-        </p>
+        <p class="section-number">03 / EXPERIENCE</p>
 
         <h2>
           Skills &amp; Qualification<span class="heading-dot">.</span>
         </h2>
 
         <p class="placeholder-text">
-          Photography skills, experience and qualifications will go here.
+          Photography skills, experience and qualifications
+          will go here.
         </p>
 
       </div>
 
     </section>
 
-    <!-- =========================
-         SOCIALS SECTION
-    ========================== -->
-
+    <!-- SOCIALS -->
     <section class="content-section" id="socials">
 
       <div class="content-inner reveal">
 
-        <p class="section-number">
-          04 / CONNECT
-        </p>
+        <p class="section-number">04 / CONNECT</p>
 
         <h2>
           Socials<span class="heading-dot">.</span>
@@ -418,20 +366,13 @@
 
     </section>
 
-    <!-- =========================
-         CONTACT SECTION
-    ========================== -->
-
-    <section
-      class="content-section contact-section"
-      id="contact"
-    >
+    <!-- CONTACT -->
+    <section class="content-section contact-section"
+             id="contact">
 
       <div class="content-inner reveal">
 
-        <p class="section-number">
-          05 / GET IN TOUCH
-        </p>
+        <p class="section-number">05 / GET IN TOUCH</p>
 
         <h2>
           Let's Create<span class="heading-dot">.</span>
@@ -447,42 +388,30 @@
 
   </main>
 
-  <!-- =========================
-       IMAGE POPUP
-  ========================== -->
+  <!-- PHOTO POPUP -->
+  <div class="lightbox"
+       id="lightbox"
+       role="dialog"
+       aria-modal="true"
+       aria-label="Photograph preview"
+       aria-hidden="true">
 
-  <div
-    class="lightbox"
-    id="lightbox"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Photograph preview"
-    aria-hidden="true"
-  >
-
-    <!-- CLOSE POPUP -->
-    <button
-      class="lightbox-close"
-      type="button"
-      aria-label="Close photograph"
-    >
+    <button class="lightbox-close"
+            type="button"
+            aria-label="Close photograph">
       &times;
     </button>
 
     <div class="lightbox-content">
 
-      <!-- EXPANDED IMAGE -->
-      <img
-        id="lightbox-image"
-        src=""
-        alt="Expanded photograph"
-      >
+      <img id="lightbox-image"
+           alt="Expanded photograph">
 
       <div class="lightbox-info">
 
         <p id="lightbox-title"></p>
 
-        <!-- BLANK DESCRIPTION FOR FUTURE USE -->
+        <!-- DESCRIPTION LEFT BLANK -->
         <p id="lightbox-description"></p>
 
       </div>
@@ -494,15 +423,13 @@
   <!-- FOOTER -->
   <footer class="footer">
 
-    <span>
-      © 2026 FRANKIE
-    </span>
+    <span>© 2026 FRANKIE</span>
 
     <a href="#home">
       BACK TO TOP ↑
     </a>
 
-</footer>
+  </footer>
 
 </body>
 </html>

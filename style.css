@@ -1,9 +1,8 @@
 
-/* ========================================
+/* =========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   BLACK & WHITE MINIMAL DESIGN
-   DESKTOP PORTRAIT FIX INCLUDED
-======================================== */
+   BLACK & WHITE DESIGN
+========================================= */
 
 :root {
   --white: #ffffff;
@@ -14,7 +13,7 @@
   --sans: 'DM Sans', Arial, sans-serif;
 }
 
-/* GLOBAL RESET */
+/* RESET */
 
 * {
   margin: 0;
@@ -35,8 +34,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-button,
-a {
+button, a {
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -54,9 +52,7 @@ img {
   max-width: 100%;
 }
 
-/* ========================================
-   ANIMATED BACKGROUND TEXTURES
-======================================== */
+/* BACKGROUND TEXTURES */
 
 .background-texture {
   position: fixed;
@@ -64,7 +60,7 @@ img {
   z-index: -1;
   pointer-events: none;
   overflow: hidden;
-  background: #ffffff;
+  background: #fff;
 }
 
 .texture-circle {
@@ -72,7 +68,7 @@ img {
   width: 450px;
   height: 450px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0,0,0,0.035);
   animation: floatTexture 18s ease-in-out infinite alternate;
 }
 
@@ -91,17 +87,14 @@ img {
 
 @keyframes floatTexture {
   from {
-    transform: translate(0, 0) rotate(0);
+    transform: translate(0,0) rotate(0);
   }
-
   to {
-    transform: translate(45px, 35px) rotate(20deg);
+    transform: translate(45px,35px) rotate(20deg);
   }
 }
 
-/* ========================================
-   TOP HAMBURGER MENU
-======================================== */
+/* HAMBURGER */
 
 .top-header {
   position: absolute;
@@ -129,11 +122,9 @@ img {
 
 .menu-button span {
   height: 1.5px;
-  background: #111111;
+  background: #111;
   width: 100%;
-  transition:
-    width 0.35s ease,
-    transform 0.35s ease;
+  transition: width .35s ease, transform .35s ease;
 }
 
 .menu-button span:nth-child(2) {
@@ -148,9 +139,7 @@ img {
   transform: translateX(-5px);
 }
 
-/* ========================================
-   HERO SECTION
-======================================== */
+/* HERO */
 
 .hero {
   min-height: 810px;
@@ -169,9 +158,7 @@ img {
   z-index: 2;
 }
 
-/* ========================================
-   FRANKIE NAME
-======================================== */
+/* FRANKIE NAME */
 
 .name-container {
   margin-bottom: 27px;
@@ -186,7 +173,7 @@ img {
 
 .name-intro {
   opacity: 0;
-  animation: fadeUp 0.9s ease 0.15s forwards;
+  animation: fadeUp .9s ease .15s forwards;
 }
 
 .hero-name {
@@ -196,57 +183,57 @@ img {
   letter-spacing: -5px;
   font-weight: 400;
   opacity: 0;
-
-  animation:
-    fadeUp 1.3s cubic-bezier(.2, .8, .2, 1)
-    0.3s forwards;
+  animation: fadeUp 1.3s cubic-bezier(.2,.8,.2,1)
+             .3s forwards;
 }
 
 .name-dot,
 .heading-dot {
-  color: #999999;
+  color: #999;
 }
 
 .name-subtitle {
   font-size: 12px;
   letter-spacing: 3px;
-  color: #666666;
+  color: #666;
   margin-top: 12px;
   opacity: 0;
-  animation: fadeUp 1s ease 0.8s forwards;
+  animation: fadeUp 1s ease .8s forwards;
 }
 
-/* ========================================
-   MAIN PORTRAIT
-   FIXED DESKTOP FACE VISIBILITY
-======================================== */
+/* =========================================
+   MAIN PORTRAIT — HAIR & FACE FIX
+========================================= */
 
 .portrait-frame {
   width: min(100%, 370px);
   position: relative;
-  overflow: visible;
 }
 
+/*
+  Image starts from the TOP of its original
+  photograph.
+
+  If cropping is required, it happens
+  at the BOTTOM instead of the hair.
+*/
+
 .portrait-image {
+  display: block;
   width: 100%;
 
-  /* Keep original desktop portrait size */
-  height: clamp(300px, 39vh, 440px);
+  height: clamp(320px, 42vh, 470px);
 
   object-fit: cover;
 
-  /*
-    IMPORTANT FIX:
-    Prioritise the upper portion of the image
-    so Frankie's face remains visible.
-  */
-  object-position: center 20%;
+  /* IMPORTANT: KEEP HAIR VISIBLE */
+  object-position: 50% 0%;
 
   filter: grayscale(100%);
 
   transition:
-    filter 0.7s ease,
-    transform 0.7s ease;
+    filter .7s ease,
+    transform .7s ease;
 }
 
 .portrait-frame:hover .portrait-image {
@@ -259,12 +246,10 @@ img {
   margin-top: 13px;
   font-size: 9px;
   letter-spacing: 2.3px;
-  color: #777777;
+  color: #777;
 }
 
-/* ========================================
-   THREE CURVED FEATURED PHOTOGRAPHS
-======================================== */
+/* CURVED FEATURED PHOTOS */
 
 .hero-right {
   position: relative;
@@ -276,16 +261,11 @@ img {
   display: block;
   padding: 0;
   border: none;
-  background: #eeeeee;
+  background: #eee;
   cursor: zoom-in;
   overflow: hidden;
-
-  box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.07);
-
-  transition:
-    box-shadow 0.5s ease,
-    scale 0.5s ease;
+  box-shadow: 0 12px 35px rgba(0,0,0,.07);
+  transition: box-shadow .5s ease, scale .5s ease;
 }
 
 .featured-photo img {
@@ -293,26 +273,19 @@ img {
   height: 100%;
   object-fit: cover;
   filter: grayscale(100%);
-
-  transition:
-    transform 0.7s ease,
-    filter 0.7s ease;
+  transition: transform .7s ease, filter .7s ease;
 }
 
 .featured-photo:hover {
   scale: 1.07;
   z-index: 5;
-
-  box-shadow:
-    0 22px 50px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 22px 50px rgba(0,0,0,.16);
 }
 
 .featured-photo:hover img {
   transform: scale(1.08);
   filter: grayscale(35%);
 }
-
-/* FIRST FEATURED PHOTO */
 
 .featured-one {
   width: 195px;
@@ -322,8 +295,6 @@ img {
   transform: rotate(-9deg);
 }
 
-/* SECOND FEATURED PHOTO */
-
 .featured-two {
   width: 230px;
   height: 280px;
@@ -331,8 +302,6 @@ img {
   right: 1%;
   transform: rotate(5deg);
 }
-
-/* THIRD FEATURED PHOTO */
 
 .featured-three {
   width: 190px;
@@ -349,49 +318,41 @@ img {
   transform: rotate(90deg);
   font-size: 9px;
   letter-spacing: 3px;
-  color: #999999;
+  color: #999;
 }
 
-/* ========================================
-   SCROLL INDICATOR
-======================================== */
+/* SCROLL INDICATOR */
 
 .scroll-indicator {
   position: absolute;
   bottom: 26px;
   left: 50%;
   transform: translateX(-50%);
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-
   font-size: 9px;
   letter-spacing: 2px;
-  color: #777777;
+  color: #777;
 }
 
 .scroll-line {
   height: 30px;
   width: 1px;
-  background: #111111;
+  background: #111;
   transform-origin: top;
-
-  animation:
-    scrollPulse 2s ease-in-out infinite;
+  animation: scrollPulse 2s ease-in-out infinite;
 }
 
 @keyframes scrollPulse {
   50% {
-    transform: scaleY(0.35);
-    opacity: 0.3;
+    transform: scaleY(.35);
+    opacity: .3;
   }
 }
 
-/* ========================================
-   BOTTOM NAVIGATION
-======================================== */
+/* BOTTOM NAVIGATION */
 
 .bottom-nav {
   width: 100%;
@@ -399,15 +360,11 @@ img {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-
   gap: clamp(15px, 3.5vw, 55px);
-
   padding: 28px 5%;
-
-  border-top: 1px solid #eeeeee;
-  border-bottom: 1px solid #eeeeee;
-
-  background: #ffffff;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  background: #fff;
 }
 
 .nav-link {
@@ -415,34 +372,26 @@ img {
   font-family: var(--serif);
   font-size: clamp(19px, 2.4vw, 31px);
   white-space: nowrap;
-
-  transition:
-    transform 0.35s ease,
-    color 0.35s ease;
+  transition: transform .35s ease, color .35s ease;
 }
 
 .nav-link:hover {
   transform: translateY(-7px) scale(1.1);
-  color: #777777;
+  color: #777;
 }
-
-/* MUSIC BUTTON */
 
 .music-button {
   border: none;
   background: none;
   cursor: pointer;
-
-  transition: transform 0.3s ease;
+  transition: transform .3s ease;
 }
 
 .music-button:hover {
   transform: translateY(-5px) rotate(12deg);
 }
 
-/* ========================================
-   GALLERY SECTION
-======================================== */
+/* GALLERY */
 
 .gallery-section {
   padding: 130px 8% 120px;
@@ -464,14 +413,12 @@ img {
 }
 
 .section-description {
-  color: #888888;
+  color: #888;
   font-size: 13px;
   letter-spacing: 1px;
 }
 
-/* ========================================
-   GALLERY GRID
-======================================== */
+/* ASYMMETRICAL GALLERY */
 
 .gallery-grid {
   display: grid;
@@ -491,8 +438,6 @@ img {
   cursor: zoom-in;
   text-align: left;
 }
-
-/* ASYMMETRICAL GALLERY POSITIONS */
 
 .gallery-item:nth-child(1) {
   grid-column: 1 / 7;
@@ -517,18 +462,13 @@ img {
   margin-top: 50px;
 }
 
-/* GALLERY IMAGES */
-
 .gallery-item img {
   width: 100%;
   height: auto;
   max-height: 650px;
   object-fit: cover;
   filter: grayscale(100%);
-
-  transition:
-    transform 0.8s ease,
-    filter 0.8s ease;
+  transition: transform .8s ease, filter .8s ease;
 }
 
 .gallery-item:hover img {
@@ -542,27 +482,19 @@ img {
   position: absolute;
   inset: auto 0 0;
   padding: 55px 20px 20px;
-
   display: flex;
   justify-content: space-between;
   gap: 15px;
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0, 0, 0, 0.65)
-    );
-
+  background: linear-gradient(
+    transparent,
+    rgba(0,0,0,.65)
+  );
   color: white;
   font-size: 10px;
   letter-spacing: 1.5px;
-
   opacity: 0;
   transform: translateY(12px);
-
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+  transition: opacity .35s ease, transform .35s ease;
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -570,15 +502,12 @@ img {
   transform: translateY(0);
 }
 
-/* ========================================
-   ABOUT / SKILLS / SOCIALS / CONTACT
-======================================== */
+/* CONTENT SECTIONS */
 
 .content-section {
   min-height: 420px;
   padding: 110px 8%;
-  border-top: 1px solid #eeeeee;
-
+  border-top: 1px solid #eee;
   display: flex;
   align-items: center;
 }
@@ -596,7 +525,7 @@ img {
 .placeholder-text {
   font-size: 14px;
   line-height: 1.9;
-  color: #888888;
+  color: #888;
   max-width: 600px;
 }
 
@@ -604,30 +533,21 @@ img {
   min-height: 500px;
 }
 
-/* ========================================
-   IMAGE POPUP / LIGHTBOX
-======================================== */
+/* IMAGE POPUP */
 
 .lightbox {
   position: fixed;
   inset: 0;
   z-index: 1000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 55px 20px;
-
-  background: rgba(10, 10, 10, 0.96);
-
+  background: rgba(10,10,10,.96);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-
-  transition:
-    opacity 0.4s ease,
-    visibility 0.4s ease;
+  transition: opacity .4s ease, visibility .4s ease;
 }
 
 .lightbox.active {
@@ -636,42 +556,32 @@ img {
   pointer-events: auto;
 }
 
-/* CLOSE BUTTON */
-
 .lightbox-close {
   position: absolute;
   top: 20px;
   right: 35px;
-
-  color: #ffffff;
+  color: #fff;
   background: none;
   border: none;
-
   font-size: 42px;
   cursor: pointer;
   z-index: 2;
-
-  transition: transform 0.3s ease;
+  transition: transform .3s ease;
 }
 
 .lightbox-close:hover {
   transform: rotate(90deg);
 }
 
-/* EXPANDED IMAGE */
-
 .lightbox-content {
   width: min(100%, 1000px);
   max-height: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 22px;
-
-  transform: scale(0.94);
-
-  transition: transform 0.45s ease;
+  transform: scale(.94);
+  transition: transform .45s ease;
 }
 
 .lightbox.active .lightbox-content {
@@ -685,10 +595,8 @@ img {
   filter: grayscale(100%);
 }
 
-/* DESCRIPTION AREA */
-
 .lightbox-info {
-  color: #ffffff;
+  color: #fff;
   width: 100%;
   text-align: center;
 }
@@ -700,43 +608,34 @@ img {
 
 #lightbox-description {
   margin-top: 10px;
-  color: #aaaaaa;
+  color: #aaa;
   font-size: 13px;
   min-height: 20px;
 }
 
-/* ========================================
-   FOOTER
-======================================== */
+/* FOOTER */
 
 .footer {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-
   padding: 30px 8%;
-
-  border-top: 1px solid #eeeeee;
-
+  border-top: 1px solid #eee;
   font-size: 10px;
   letter-spacing: 2px;
-  color: #888888;
+  color: #888;
 }
 
 .footer a:hover {
-  color: #111111;
+  color: #111;
 }
 
-/* ========================================
-   ENTRANCE ANIMATIONS
-======================================== */
+/* PAGE LOAD ANIMATIONS */
 
 .photo-entrance {
   opacity: 0;
   animation: fadePhoto 1.1s ease forwards;
 }
-
-/* ANIMATION ORDER */
 
 .portrait-frame {
   animation-delay: 1.15s;
@@ -756,12 +655,12 @@ img {
 
 .entrance-nav {
   opacity: 0;
-  animation: fadeUp 0.8s ease 2.6s forwards;
+  animation: fadeUp .8s ease 2.6s forwards;
 }
 
 .entrance-bottom {
   opacity: 0;
-  animation: fadeUp 0.9s ease 2.9s forwards;
+  animation: fadeUp .9s ease 2.9s forwards;
 }
 
 @keyframes fadeUp {
@@ -769,7 +668,6 @@ img {
     opacity: 0;
     translate: 0 25px;
   }
-
   to {
     opacity: 1;
     translate: 0 0;
@@ -782,7 +680,6 @@ img {
     translate: 0 35px;
     filter: blur(8px);
   }
-
   to {
     opacity: 1;
     translate: 0 0;
@@ -790,17 +687,14 @@ img {
   }
 }
 
-/* ========================================
-   SCROLL REVEAL ANIMATIONS
-======================================== */
+/* SCROLL REVEAL */
 
 .reveal {
   opacity: 0;
   transform: translateY(55px);
-
   transition:
-    opacity 0.9s ease,
-    transform 0.9s cubic-bezier(.2, .8, .2, 1);
+    opacity .9s ease,
+    transform .9s cubic-bezier(.2,.8,.2,1);
 }
 
 .reveal.visible {
@@ -808,12 +702,9 @@ img {
   transform: translateY(0);
 }
 
-/* ========================================
-   TABLET RESPONSIVE DESIGN
-======================================== */
+/* TABLET */
 
 @media (max-width: 1000px) {
-
   .hero {
     grid-template-columns: 48% 52%;
     padding-left: 5%;
@@ -840,12 +731,9 @@ img {
   }
 }
 
-/* ========================================
-   MOBILE RESPONSIVE DESIGN
-======================================== */
+/* MOBILE */
 
 @media (max-width: 700px) {
-
   .top-header {
     padding: 25px 6%;
   }
@@ -853,10 +741,8 @@ img {
   .hero {
     height: auto;
     min-height: auto;
-
     display: flex;
     flex-direction: column;
-
     padding: 110px 7% 80px;
     gap: 40px;
   }
@@ -869,8 +755,6 @@ img {
     font-size: clamp(70px, 16vw, 110px);
   }
 
-  /* MOBILE PORTRAIT */
-
   .portrait-frame {
     width: 78%;
     max-width: 370px;
@@ -879,14 +763,9 @@ img {
   .portrait-image {
     height: 390px;
 
-    /*
-      Preserve the original mobile framing.
-      This overrides the desktop face adjustment.
-    */
+    /* Preserve original mobile framing */
     object-position: center center;
   }
-
-  /* MOBILE FEATURED IMAGES */
 
   .hero-right {
     width: 100%;
@@ -918,8 +797,6 @@ img {
     bottom: 15px;
   }
 
-  /* MOBILE NAVIGATION */
-
   .bottom-nav {
     gap: 22px;
     padding: 30px 5%;
@@ -929,14 +806,12 @@ img {
     font-size: 23px;
   }
 
-  /* MOBILE GALLERY */
-
   .gallery-section {
     padding: 85px 6%;
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2,1fr);
     gap: 35px 15px;
   }
 
@@ -960,20 +835,15 @@ img {
     font-size: 8px;
   }
 
-  /* MOBILE CONTENT SECTIONS */
-
   .content-section {
     min-height: 350px;
     padding: 80px 7%;
   }
 }
 
-/* ========================================
-   SMALL MOBILE DEVICES
-======================================== */
+/* SMALL PHONES */
 
 @media (max-width: 400px) {
-
   .hero-name {
     font-size: 65px;
   }
@@ -996,23 +866,20 @@ img {
   }
 }
 
-/* ========================================
-   ACCESSIBILITY
-======================================== */
+/* ACCESSIBILITY */
 
 :focus-visible {
-  outline: 2px solid #777777;
+  outline: 2px solid #777;
   outline-offset: 5px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: .01ms !important;
     animation-delay: 0ms !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
 
