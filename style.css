@@ -1,7 +1,7 @@
 
 /* ==========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   ANIMATED MONOCHROME EDITION
+   STICKY NAVIGATION + ANIMATED BACKGROUND
 ========================================== */
 
 :root {
@@ -10,10 +10,13 @@
   --grey: #777777;
   --serif: 'Italiana', Georgia, serif;
   --sans: 'DM Sans', Arial, sans-serif;
+
+  /* Automatically adjusted by JavaScript */
+  --header-height: 105px;
 }
 
 /* ==========================================
-   RESET
+   GLOBAL STYLES
 ========================================== */
 
 * {
@@ -24,14 +27,16 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 40px;
+
+  /* Prevent section titles hiding under the header */
+  scroll-padding-top: calc(var(--header-height) + 16px);
 }
 
 body {
   background: #ffffff;
   color: var(--black);
   font-family: var(--sans);
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -54,9 +59,8 @@ img {
   max-width: 100%;
 }
 
-/* Keep content ABOVE the moving background */
+/* Content above animated background */
 
-.top-header,
 main,
 .footer {
   position: relative;
@@ -64,7 +68,7 @@ main,
 }
 
 /* ==========================================
-   ANIMATED BACKGROUND CONTAINER
+   ANIMATED BACKGROUND
 ========================================== */
 
 .background-texture {
@@ -74,27 +78,23 @@ main,
 
   width: 100%;
   height: 100%;
-
   overflow: hidden;
-  pointer-events: none;
 
   background: #ffffff;
+  pointer-events: none;
 }
 
-/* ==========================================
-   SOFT FLOATING GRADIENT SHAPES
-========================================== */
+/* Soft drifting gradients */
 
 .ambient-glow {
   position: absolute;
   border-radius: 50%;
-  pointer-events: none;
 
   background: radial-gradient(
     circle,
-    rgba(140, 140, 140, 0.085) 0%,
-    rgba(185, 185, 185, 0.04) 45%,
-    rgba(255, 255, 255, 0) 74%
+    rgba(140,140,140,.085) 0%,
+    rgba(185,185,185,.04) 45%,
+    transparent 74%
   );
 
   filter: blur(13px);
@@ -132,52 +132,34 @@ main,
 }
 
 @keyframes glowFloatOne {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  100% {
-    transform: translate3d(115px, 75px, 0);
+  to {
+    transform: translate3d(115px,75px,0);
   }
 }
 
 @keyframes glowFloatTwo {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  100% {
-    transform: translate3d(-130px, 90px, 0);
+  to {
+    transform: translate3d(-130px,90px,0);
   }
 }
 
 @keyframes glowFloatThree {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  100% {
-    transform: translate3d(95px, -110px, 0);
+  to {
+    transform: translate3d(95px,-110px,0);
   }
 }
 
-/* ==========================================
-   ANIMATED CONTOUR WAVE LINES
-========================================== */
+/* Flowing SVG wave ribbons */
 
 .wave-canvas {
   position: absolute;
   inset: 0;
-
   width: 100%;
   height: 100%;
 
-  opacity: 0.85;
-  overflow: visible;
+  opacity: .85;
   pointer-events: none;
 }
-
-/* Individual wave lines created in JavaScript */
 
 .wave-line {
   fill: none;
@@ -187,35 +169,27 @@ main,
   vector-effect: non-scaling-stroke;
 }
 
-/* First flowing ribbon */
-
 #wave-group-one {
-  opacity: 0.60;
+  opacity: .60;
 }
-
-/* Second flowing ribbon */
 
 #wave-group-two {
-  opacity: 0.38;
+  opacity: .38;
 }
 
-/* ==========================================
-   SUBTLE OUTLINE CIRCLES
-========================================== */
+/* Large faint outlined circles */
 
 .outline-circle {
   position: absolute;
-  border: 1px solid rgba(90, 90, 90, 0.07);
+  border: 1px solid rgba(90,90,90,.07);
   border-radius: 50%;
 
   will-change: transform;
-  pointer-events: none;
 }
 
 .outline-one {
   width: 550px;
   height: 550px;
-
   top: -360px;
   right: -210px;
 
@@ -226,7 +200,6 @@ main,
 .outline-two {
   width: 650px;
   height: 650px;
-
   bottom: -465px;
   left: -260px;
 
@@ -237,74 +210,57 @@ main,
 .outline-three {
   width: 340px;
   height: 340px;
-
   top: 37%;
   left: 42%;
 
-  border-color: rgba(90, 90, 90, 0.035);
+  border-color: rgba(90,90,90,.035);
 
   animation:
     circleFloatThree 32s ease-in-out infinite alternate;
 }
 
 @keyframes circleFloatOne {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
   to {
-    transform: translate3d(-60px, 55px, 0) scale(1.09);
+    transform: translate3d(-60px,55px,0) scale(1.09);
   }
 }
 
 @keyframes circleFloatTwo {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
   to {
-    transform: translate3d(85px, -45px, 0) scale(1.07);
+    transform: translate3d(85px,-45px,0) scale(1.07);
   }
 }
 
 @keyframes circleFloatThree {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.95);
-  }
-
   to {
-    transform: translate3d(-70px, 65px, 0) scale(1.15);
+    transform: translate3d(-70px,65px,0) scale(1.15);
   }
 }
 
-/* ==========================================
-   FLOATING TRANSLUCENT PARTICLES
-========================================== */
+/* Floating translucent particles */
 
 .floating-particle {
   position: absolute;
   display: block;
-
   border-radius: 50%;
-  pointer-events: none;
 
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(255, 255, 255, 0.95),
-    rgba(170, 170, 170, 0.22) 55%,
-    rgba(130, 130, 130, 0.07) 78%,
-    transparent 100%
+    rgba(255,255,255,.95),
+    rgba(170,170,170,.22) 55%,
+    rgba(130,130,130,.07) 78%,
+    transparent
   );
 
   box-shadow:
-    inset -3px -3px 9px rgba(0, 0, 0, 0.025),
-    0 5px 15px rgba(0, 0, 0, 0.025);
+    inset -3px -3px 9px rgba(0,0,0,.025),
+    0 5px 15px rgba(0,0,0,.025);
 
   animation:
-    particleDrift var(--duration, 17s)
+    particleDrift var(--duration,17s)
     ease-in-out infinite alternate;
 
-  animation-delay: var(--delay, 0s);
+  animation-delay: var(--delay,0s);
 }
 
 .particle-one {
@@ -361,53 +317,114 @@ main,
 }
 
 @keyframes particleDrift {
-  0% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0.35;
+  from {
+    transform: translate3d(0,0,0);
+    opacity: .35;
   }
 
   50% {
-    opacity: 0.8;
+    opacity: .8;
   }
 
-  100% {
-    transform: translate3d(32px, -48px, 0);
-    opacity: 0.45;
+  to {
+    transform: translate3d(32px,-48px,0);
+    opacity: .45;
   }
 }
 
-/* ==========================================
-   SUBTLE PHOTOGRAPHIC FILM GRAIN
-========================================== */
+/* Fine photographic grain */
 
 .film-grain {
   position: absolute;
   inset: 0;
-
   width: 100%;
   height: 100%;
 
-  opacity: 0.038;
+  opacity: .038;
   mix-blend-mode: multiply;
-  pointer-events: none;
 }
 
 /* ==========================================
-   CENTRED TOP NAVIGATION
+   STICKY FROSTED HEADER
 ========================================== */
 
+/*
+   NEW FEATURE:
+
+   position: sticky keeps the navigation
+   at the top while visitors scroll.
+
+   The translucent background allows the
+   photography and background texture
+   underneath to blend softly.
+*/
+
 .top-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+
   width: 100%;
   min-height: 105px;
   padding: 25px 5%;
 
   display: grid;
   grid-template-columns:
-    minmax(0, 1fr) auto minmax(0, 1fr);
+    minmax(0,1fr) auto minmax(0,1fr);
 
   align-items: center;
-  background: transparent;
+
+  background: rgba(255,255,255,.72);
+
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+
+  border-bottom: 1px solid rgba(0,0,0,.025);
+
+  transition:
+    background .45s ease,
+    box-shadow .45s ease,
+    border-color .45s ease,
+    backdrop-filter .45s ease,
+    -webkit-backdrop-filter .45s ease;
 }
+
+/*
+   Added automatically after scrolling.
+
+   Creates a floating, premium glass
+   appearance over photographs.
+*/
+
+.top-header.is-scrolled {
+  background: rgba(255,255,255,.86);
+
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+
+  border-bottom:
+    1px solid rgba(0,0,0,.075);
+
+  box-shadow:
+    0 7px 30px rgba(0,0,0,.045),
+    0 1px 5px rgba(0,0,0,.018);
+}
+
+/* Optional fallback if blur unsupported */
+
+@supports not (backdrop-filter: blur(10px)) {
+  .top-header {
+    background: rgba(255,255,255,.94);
+  }
+
+  .top-header.is-scrolled {
+    background: rgba(255,255,255,.97);
+  }
+}
+
+/* ==========================================
+   CENTRED NAVIGATION
+========================================== */
 
 .top-navigation {
   grid-column: 2;
@@ -417,43 +434,46 @@ main,
   justify-content: center;
   align-items: center;
 
-  gap: clamp(20px, 3vw, 48px);
+  gap: clamp(20px,3vw,48px);
   white-space: nowrap;
 }
 
 .nav-link {
   position: relative;
   display: inline-block;
-
   flex-shrink: 0;
 
   font-family: var(--serif);
-  font-size: clamp(18px, 1.65vw, 25px);
+  font-size: clamp(18px,1.65vw,25px);
   line-height: 1.4;
+  color: #111111;
 
   transition:
-    transform 0.35s ease,
-    color 0.35s ease;
+    color .35s ease,
+    transform .35s ease;
 }
 
 .nav-link:hover {
-  transform: translateY(-7px) scale(1.1);
   color: #777777;
+  transform: translateY(-7px) scale(1.1);
 }
+
+/* Animated underline */
 
 .nav-link::after {
   content: "";
   position: absolute;
 
-  left: 50%;
   bottom: -7px;
+  left: 50%;
 
   width: 0;
   height: 1px;
+
   background: #111111;
 
   transform: translateX(-50%);
-  transition: width 0.35s ease;
+  transition: width .35s ease;
 }
 
 .nav-link:hover::after {
@@ -471,11 +491,11 @@ main,
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   width: 35px;
   height: 35px;
   padding: 5px;
-
-  flex-shrink: 0;
 
   background: transparent;
   border: 1px solid transparent;
@@ -485,20 +505,22 @@ main,
   cursor: pointer;
 
   transition:
-    transform 0.35s ease,
-    background 0.35s ease,
-    color 0.35s ease;
+    transform .35s ease,
+    background .35s ease,
+    color .35s ease;
 }
 
 .music-button:hover {
   transform: translateY(-5px) scale(1.1);
-  background: #f1f1f1;
+  background: rgba(0,0,0,.055);
 }
 
 .music-muted-line {
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity .3s ease;
 }
+
+/* Music playing */
 
 .music-button.is-playing {
   background: #111111;
@@ -514,10 +536,6 @@ main,
 }
 
 @keyframes musicPulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-
   50% {
     transform: scale(1.14);
   }
@@ -528,7 +546,7 @@ main,
   top: calc(100% + 13px);
   left: 50%;
 
-  transform: translate(-50%, -5px);
+  transform: translate(-50%,-5px);
 
   padding: 7px 10px;
 
@@ -544,18 +562,18 @@ main,
   pointer-events: none;
 
   transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
+    opacity .25s ease,
+    transform .25s ease;
 }
 
 .music-button:hover .music-tooltip,
 .music-button:focus-visible .music-tooltip {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translate(-50%,0);
 }
 
 /* ==========================================
-   HAMBURGER MENU
+   HAMBURGER
 ========================================== */
 
 .menu-button {
@@ -573,7 +591,7 @@ main,
 
   padding: 5px 0;
 
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
 }
@@ -581,11 +599,12 @@ main,
 .menu-button span {
   width: 100%;
   height: 1.5px;
+
   background: #111111;
 
   transition:
-    width 0.35s ease,
-    transform 0.35s ease;
+    width .35s ease,
+    transform .35s ease;
 }
 
 .menu-button span:nth-child(2) {
@@ -605,34 +624,33 @@ main,
 ========================================== */
 
 .hero {
+  position: relative;
+
   min-height: 690px;
-  height: max(690px, calc(100svh - 105px));
+  height: max(690px,calc(100svh - 105px));
   max-height: 900px;
 
   display: grid;
   grid-template-columns: 45% 55%;
 
-  position: relative;
   padding: 30px 7% 85px;
 }
 
 .hero-left {
+  position: relative;
+  z-index: 2;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-
-  position: relative;
-  z-index: 2;
 }
+
+/* Frankie name */
 
 .name-container {
   margin-bottom: 27px;
 }
-
-/* ==========================================
-   FRANKIE NAME
-========================================== */
 
 .eyebrow,
 .section-number {
@@ -643,13 +661,12 @@ main,
 
 .name-intro {
   opacity: 0;
-  animation: fadeUp 0.9s ease 0.15s forwards;
+  animation: fadeUp .9s ease .15s forwards;
 }
 
 .hero-name {
   font-family: var(--serif);
-
-  font-size: clamp(76px, 10vw, 160px);
+  font-size: clamp(76px,10vw,160px);
   line-height: 1;
   letter-spacing: -5px;
   font-weight: 400;
@@ -657,8 +674,8 @@ main,
   opacity: 0;
 
   animation:
-    fadeUp 1.3s cubic-bezier(.2, .8, .2, 1)
-    0.3s forwards;
+    fadeUp 1.3s cubic-bezier(.2,.8,.2,1)
+    .3s forwards;
 }
 
 .name-dot,
@@ -667,14 +684,14 @@ main,
 }
 
 .name-subtitle {
+  margin-top: 12px;
+
   font-size: 12px;
   letter-spacing: 3px;
   color: #666666;
 
-  margin-top: 12px;
-
   opacity: 0;
-  animation: fadeUp 1s ease 0.8s forwards;
+  animation: fadeUp 1s ease .8s forwards;
 }
 
 /* ==========================================
@@ -682,25 +699,25 @@ main,
 ========================================== */
 
 .portrait-frame {
-  width: min(100%, 370px);
   position: relative;
+  width: min(100%,370px);
 }
 
 .portrait-image {
   display: block;
   width: 100%;
-  height: clamp(320px, 42vh, 470px);
+  height: clamp(320px,42vh,470px);
 
   object-fit: cover;
 
-  /* Keep Frankie's hair and face visible */
+  /* Always prioritise hair and face */
   object-position: center top;
 
   filter: grayscale(100%);
 
   transition:
-    filter 0.7s ease,
-    transform 0.7s ease;
+    filter .7s ease,
+    transform .7s ease;
 }
 
 .portrait-frame:hover .portrait-image {
@@ -737,11 +754,12 @@ main,
   cursor: zoom-in;
   overflow: hidden;
 
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.07);
 
   transition:
-    box-shadow 0.5s ease,
-    scale 0.5s ease;
+    box-shadow .5s ease,
+    scale .5s ease;
 }
 
 .featured-photo img {
@@ -752,15 +770,16 @@ main,
   filter: grayscale(100%);
 
   transition:
-    transform 0.7s ease,
-    filter 0.7s ease;
+    transform .7s ease,
+    filter .7s ease;
 }
 
 .featured-photo:hover {
   scale: 1.07;
   z-index: 5;
 
-  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 22px 50px rgba(0,0,0,.16);
 }
 
 .featured-photo:hover img {
@@ -768,11 +787,10 @@ main,
   filter: grayscale(35%);
 }
 
-/* Positions remain curved */
-
 .featured-one {
   width: 195px;
   height: 235px;
+
   top: 2%;
   left: 14%;
 
@@ -782,6 +800,7 @@ main,
 .featured-two {
   width: 230px;
   height: 280px;
+
   top: 31%;
   right: 1%;
 
@@ -791,6 +810,7 @@ main,
 .featured-three {
   width: 190px;
   height: 230px;
+
   bottom: 0;
   left: 16%;
 
@@ -810,7 +830,7 @@ main,
 }
 
 /* ==========================================
-   MISSING IMAGE PLACEHOLDERS
+   IMAGE PLACEHOLDERS
 ========================================== */
 
 .photo-fallback {
@@ -823,9 +843,9 @@ main,
 
   padding: 15px;
 
-  color: #777777;
   font-size: 10px;
   letter-spacing: 2px;
+  color: #777777;
   text-align: center;
 
   pointer-events: none;
@@ -868,16 +888,17 @@ main,
 .scroll-line {
   height: 30px;
   width: 1px;
-  background: #111111;
 
+  background: #111111;
   transform-origin: top;
+
   animation: scrollPulse 2s ease-in-out infinite;
 }
 
 @keyframes scrollPulse {
   50% {
-    transform: scaleY(0.35);
-    opacity: 0.3;
+    transform: scaleY(.35);
+    opacity: .3;
   }
 }
 
@@ -900,7 +921,8 @@ main,
 .content-inner h2 {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(55px, 8vw, 105px);
+
+  font-size: clamp(55px,8vw,105px);
   margin: 20px 0;
 }
 
@@ -910,9 +932,11 @@ main,
   letter-spacing: 1px;
 }
 
+/* Asymmetrical gallery */
+
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(12,1fr);
   gap: 65px 35px;
   align-items: start;
 }
@@ -926,8 +950,8 @@ main,
   border: none;
 
   background: #f3f3f3;
-
   overflow: hidden;
+
   cursor: zoom-in;
   text-align: left;
 }
@@ -964,8 +988,8 @@ main,
   filter: grayscale(100%);
 
   transition:
-    transform 0.8s ease,
-    filter 0.8s ease;
+    transform .8s ease,
+    filter .8s ease;
 }
 
 .gallery-item:hover img {
@@ -973,7 +997,7 @@ main,
   filter: grayscale(20%);
 }
 
-/* Gallery captions */
+/* Gallery hover captions */
 
 .gallery-overlay {
   position: absolute;
@@ -987,7 +1011,7 @@ main,
 
   background: linear-gradient(
     transparent,
-    rgba(0, 0, 0, 0.65)
+    rgba(0,0,0,.65)
   );
 
   color: #ffffff;
@@ -998,8 +1022,8 @@ main,
   transform: translateY(12px);
 
   transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+    opacity .35s ease,
+    transform .35s ease;
 }
 
 .gallery-item:hover .gallery-overlay {
@@ -1012,14 +1036,15 @@ main,
 }
 
 /* ==========================================
-   ABOUT / SKILLS / SOCIALS / CONTACT
+   OTHER SECTIONS
 ========================================== */
 
 .content-section {
   min-height: 420px;
   padding: 110px 8%;
 
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top:
+    1px solid rgba(0,0,0,.08);
 
   display: flex;
   align-items: center;
@@ -1032,7 +1057,7 @@ main,
 }
 
 .content-inner h2 {
-  font-size: clamp(48px, 6vw, 85px);
+  font-size: clamp(48px,6vw,85px);
 }
 
 .placeholder-text {
@@ -1047,7 +1072,7 @@ main,
 }
 
 /* ==========================================
-   PHOTOGRAPH LIGHTBOX
+   PHOTO LIGHTBOX
 ========================================== */
 
 .lightbox {
@@ -1061,15 +1086,15 @@ main,
 
   padding: 55px 20px;
 
-  background: rgba(10, 10, 10, 0.96);
+  background: rgba(10,10,10,.96);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 
   transition:
-    opacity 0.4s ease,
-    visibility 0.4s ease;
+    opacity .4s ease,
+    visibility .4s ease;
 }
 
 .lightbox.active {
@@ -1084,14 +1109,14 @@ main,
   right: 35px;
 
   color: #ffffff;
-  background: none;
+  background: transparent;
   border: none;
 
   font-size: 42px;
   cursor: pointer;
   z-index: 2;
 
-  transition: transform 0.3s ease;
+  transition: transform .3s ease;
 }
 
 .lightbox-close:hover {
@@ -1099,7 +1124,7 @@ main,
 }
 
 .lightbox-content {
-  width: min(100%, 1000px);
+  width: min(100%,1000px);
   max-height: 100%;
 
   display: flex;
@@ -1107,8 +1132,8 @@ main,
   align-items: center;
   gap: 22px;
 
-  transform: scale(0.94);
-  transition: transform 0.45s ease;
+  transform: scale(.94);
+  transition: transform .45s ease;
 }
 
 .lightbox.active .lightbox-content {
@@ -1151,7 +1176,9 @@ main,
   gap: 20px;
 
   padding: 30px 8%;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+  border-top:
+    1px solid rgba(0,0,0,.08);
 
   font-size: 10px;
   letter-spacing: 2px;
@@ -1163,7 +1190,7 @@ main,
 }
 
 /* ==========================================
-   PAGE ENTRANCE ANIMATIONS
+   ENTRANCE ANIMATIONS
 ========================================== */
 
 .photo-entrance {
@@ -1189,7 +1216,7 @@ main,
 
 .entrance-nav {
   opacity: 0;
-  animation: fadeUp 0.8s ease 2.7s forwards;
+  animation: fadeUp .8s ease 2.7s forwards;
 }
 
 @keyframes fadeUp {
@@ -1219,7 +1246,7 @@ main,
 }
 
 /* ==========================================
-   SCROLL REVEAL
+   SCROLL REVEAL ANIMATIONS
 ========================================== */
 
 .reveal {
@@ -1227,8 +1254,8 @@ main,
   transform: translateY(55px);
 
   transition:
-    opacity 0.9s ease,
-    transform 0.9s cubic-bezier(.2, .8, .2, 1);
+    opacity .9s ease,
+    transform .9s cubic-bezier(.2,.8,.2,1);
 }
 
 .reveal.visible {
@@ -1241,7 +1268,6 @@ main,
 ========================================== */
 
 @media (max-width: 1100px) {
-
   .top-header {
     padding-left: 3%;
     padding-right: 3%;
@@ -1257,7 +1283,6 @@ main,
 }
 
 @media (max-width: 1000px) {
-
   .hero {
     grid-template-columns: 48% 52%;
     padding-left: 5%;
@@ -1293,8 +1318,13 @@ main,
   .top-header {
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
-    row-gap: 22px;
-    padding: 22px 5%;
+    row-gap: 16px;
+
+    padding: 16px 5%;
+
+    /* Slightly stronger blur on mobile */
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
   }
 
   .menu-button {
@@ -1313,7 +1343,7 @@ main,
     flex-wrap: wrap;
 
     column-gap: 25px;
-    row-gap: 15px;
+    row-gap: 12px;
   }
 
   .nav-link {
@@ -1322,29 +1352,23 @@ main,
 }
 
 /* ==========================================
-   MOBILE LAYOUT
+   MOBILE HERO AND GALLERY
 ========================================== */
 
 @media (max-width: 700px) {
 
-  /* Background stays subtle */
+  /* Softer background on phones */
 
-  .glow-one,
-  .glow-two,
-  .glow-three {
-    opacity: 0.65;
+  .ambient-glow {
+    opacity: .65;
   }
 
   .wave-canvas {
-    opacity: 0.58;
+    opacity: .58;
   }
 
   .film-grain {
-    opacity: 0.025;
-  }
-
-  .floating-particle {
-    opacity: 0.5;
+    opacity: .025;
   }
 
   /* Hero */
@@ -1366,7 +1390,7 @@ main,
   }
 
   .hero-name {
-    font-size: clamp(70px, 16vw, 110px);
+    font-size: clamp(70px,16vw,110px);
   }
 
   /* Portrait */
@@ -1381,7 +1405,7 @@ main,
     object-position: center center;
   }
 
-  /* Featured photos */
+  /* Featured photographs */
 
   .hero-right {
     width: 100%;
@@ -1420,7 +1444,7 @@ main,
   }
 
   .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2,1fr);
     gap: 35px 15px;
   }
 
@@ -1471,11 +1495,16 @@ main,
 
   .top-navigation {
     column-gap: 17px;
-    row-gap: 13px;
+    row-gap: 10px;
   }
 
   .nav-link {
     font-size: 18px;
+  }
+
+  .top-header {
+    padding-left: 4%;
+    padding-right: 4%;
   }
 }
 
@@ -1493,9 +1522,9 @@ main,
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: .01ms !important;
     animation-delay: 0ms !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: .01ms !important;
     scroll-behavior: auto !important;
   }
 

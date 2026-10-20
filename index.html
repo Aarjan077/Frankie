@@ -1,44 +1,53 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
+
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
+
   <meta name="theme-color" content="#ffffff">
+
   <meta name="description"
-        content="Frankie — Photography Portfolio">
+        content="Frankie - Photography Portfolio">
 
   <title>Frankie | Photography Portfolio</title>
 
-  <!-- FONTS -->
+  <!-- GOOGLE FONTS -->
   <link rel="preconnect"
         href="https://fonts.googleapis.com">
+
   <link rel="preconnect"
         href="https://fonts.gstatic.com"
         crossorigin>
+
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
     rel="stylesheet">
 
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- =====================================
-       ANIMATED MONOCHROME BACKGROUND
-  ====================================== -->
+  <!-- ==================================
+       ANIMATED BACKGROUND
+  =================================== -->
 
   <div class="background-texture" aria-hidden="true">
 
-    <!-- Gentle drifting grey gradients -->
+    <!-- FLOATING GRADIENTS -->
     <div class="ambient-glow glow-one"></div>
     <div class="ambient-glow glow-two"></div>
     <div class="ambient-glow glow-three"></div>
 
-    <!-- Animated flowing contour lines -->
+    <!-- ANIMATED WAVE LINES -->
     <svg
       id="contour-waves"
       class="wave-canvas"
@@ -51,36 +60,41 @@
           id="wave-gradient"
           x1="0%" y1="0%"
           x2="100%" y2="0%">
+
           <stop offset="0%"
                 stop-color="#999999"
                 stop-opacity="0"/>
+
           <stop offset="20%"
                 stop-color="#999999"
                 stop-opacity=".42"/>
+
           <stop offset="55%"
                 stop-color="#777777"
                 stop-opacity=".62"/>
+
           <stop offset="85%"
                 stop-color="#999999"
                 stop-opacity=".36"/>
+
           <stop offset="100%"
                 stop-color="#999999"
                 stop-opacity="0"/>
+
         </linearGradient>
       </defs>
 
-      <!-- JavaScript creates and animates the lines -->
       <g id="wave-group-one"></g>
       <g id="wave-group-two"></g>
 
     </svg>
 
-    <!-- Large subtle decorative rings -->
+    <!-- DECORATIVE OUTLINE CIRCLES -->
     <div class="outline-circle outline-one"></div>
     <div class="outline-circle outline-two"></div>
     <div class="outline-circle outline-three"></div>
 
-    <!-- Floating translucent particles -->
+    <!-- FLOATING PARTICLES -->
     <span class="floating-particle particle-one"></span>
     <span class="floating-particle particle-two"></span>
     <span class="floating-particle particle-three"></span>
@@ -88,11 +102,10 @@
     <span class="floating-particle particle-five"></span>
     <span class="floating-particle particle-six"></span>
 
-    <!-- Subtle photographic film grain -->
-    <svg
-      class="film-grain"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true">
+    <!-- FILM GRAIN -->
+    <svg class="film-grain"
+         xmlns="http://www.w3.org/2000/svg">
+
       <filter id="grain-filter">
         <feTurbulence
           type="fractalNoise"
@@ -101,17 +114,19 @@
           stitchTiles="stitch"
           seed="4"/>
       </filter>
+
       <rect
         width="100%"
         height="100%"
         filter="url(#grain-filter)"/>
+
     </svg>
 
   </div>
 
-  <!-- =====================================
+  <!-- ==================================
        BACKGROUND MUSIC
-  ====================================== -->
+  =================================== -->
 
   <audio
     id="background-music"
@@ -120,28 +135,37 @@
     loop>
   </audio>
 
-  <!-- =====================================
-       TOP NAVIGATION
-  ====================================== -->
+  <!-- ==================================
+       STICKY FROSTED NAVIGATION
+  =================================== -->
 
-  <header class="top-header">
+  <header class="top-header" id="site-header">
 
-    <nav class="top-navigation entrance-nav"
-         aria-label="Main navigation">
+    <nav
+      class="top-navigation entrance-nav"
+      aria-label="Main navigation">
 
-      <a href="#about" class="nav-link">About</a>
+      <a href="#about" class="nav-link">
+        About
+      </a>
 
-      <a href="#gallery" class="nav-link">Gallery</a>
+      <a href="#gallery" class="nav-link">
+        Gallery
+      </a>
 
       <a href="#skills" class="nav-link">
         Skills &amp; Qualification
       </a>
 
-      <a href="#socials" class="nav-link">Socials</a>
+      <a href="#socials" class="nav-link">
+        Socials
+      </a>
 
-      <a href="#contact" class="nav-link">Contact</a>
+      <a href="#contact" class="nav-link">
+        Contact
+      </a>
 
-      <!-- MUSIC BUTTON -->
+      <!-- MUSIC PLAY / PAUSE -->
       <button
         id="music-toggle"
         class="music-button"
@@ -168,8 +192,7 @@
 
           <path
             class="music-muted-line"
-            d="M3 3L21 21">
-          </path>
+            d="M3 3L21 21"/>
 
         </svg>
 
@@ -181,24 +204,26 @@
 
     </nav>
 
-    <!-- HAMBURGER PLACEHOLDER -->
+    <!-- HAMBURGER - FUTURE FEATURE -->
     <button
       class="menu-button entrance-nav"
       type="button"
       aria-label="Menu coming soon"
       title="Menu coming soon">
+
       <span></span>
       <span></span>
       <span></span>
+
     </button>
 
   </header>
 
   <main>
 
-    <!-- =====================================
-         HOME / HERO SECTION
-    ====================================== -->
+    <!-- ==================================
+         HOME / HERO
+    =================================== -->
 
     <section class="hero" id="home">
 
@@ -225,8 +250,8 @@
 
           <img
             src="frankie-portrait.jpg"
-            class="portrait-image"
-            alt="Portrait of Frankie">
+            alt="Portrait of Frankie"
+            class="portrait-image">
 
           <span class="portrait-caption">
             THE PERSON BEHIND THE LENS
@@ -236,9 +261,10 @@
 
       </div>
 
-      <!-- THREE CURVED FEATURED PHOTOGRAPHS -->
+      <!-- CURVED FEATURED IMAGES -->
       <div class="hero-right">
 
+        <!-- FEATURED 1 -->
         <button
           class="featured-photo featured-one photo-entrance"
           type="button"
@@ -256,6 +282,7 @@
 
         </button>
 
+        <!-- FEATURED 2 -->
         <button
           class="featured-photo featured-two photo-entrance"
           type="button"
@@ -273,6 +300,7 @@
 
         </button>
 
+        <!-- FEATURED 3 -->
         <button
           class="featured-photo featured-three photo-entrance"
           type="button"
@@ -296,16 +324,19 @@
 
       </div>
 
+      <!-- SCROLL PROMPT -->
       <div class="scroll-indicator">
+
         <span>SCROLL TO EXPLORE</span>
         <span class="scroll-line"></span>
+
       </div>
 
     </section>
 
-    <!-- =====================================
-         GALLERY SECTION
-    ====================================== -->
+    <!-- ==================================
+         GALLERY
+    =================================== -->
 
     <section class="gallery-section" id="gallery">
 
@@ -327,7 +358,7 @@
 
       <div class="gallery-grid">
 
-        <!-- PHOTO 1 -->
+        <!-- GALLERY IMAGE 1 -->
         <button
           class="gallery-item reveal"
           type="button"
@@ -350,7 +381,7 @@
 
         </button>
 
-        <!-- PHOTO 2 -->
+        <!-- GALLERY IMAGE 2 -->
         <button
           class="gallery-item reveal"
           type="button"
@@ -373,7 +404,7 @@
 
         </button>
 
-        <!-- PHOTO 3 -->
+        <!-- GALLERY IMAGE 3 -->
         <button
           class="gallery-item reveal"
           type="button"
@@ -396,7 +427,7 @@
 
         </button>
 
-        <!-- PHOTO 4 -->
+        <!-- GALLERY IMAGE 4 -->
         <button
           class="gallery-item reveal"
           type="button"
@@ -419,7 +450,7 @@
 
         </button>
 
-        <!-- PHOTO 5 -->
+        <!-- GALLERY IMAGE 5 -->
         <button
           class="gallery-item reveal"
           type="button"
@@ -446,9 +477,9 @@
 
     </section>
 
-    <!-- =====================================
+    <!-- ==================================
          ABOUT
-    ====================================== -->
+    =================================== -->
 
     <section class="content-section" id="about">
 
@@ -470,9 +501,9 @@
 
     </section>
 
-    <!-- =====================================
-         SKILLS AND QUALIFICATION
-    ====================================== -->
+    <!-- ==================================
+         SKILLS
+    =================================== -->
 
     <section class="content-section" id="skills">
 
@@ -495,9 +526,9 @@
 
     </section>
 
-    <!-- =====================================
+    <!-- ==================================
          SOCIALS
-    ====================================== -->
+    =================================== -->
 
     <section class="content-section" id="socials">
 
@@ -519,9 +550,9 @@
 
     </section>
 
-    <!-- =====================================
+    <!-- ==================================
          CONTACT
-    ====================================== -->
+    =================================== -->
 
     <section
       class="content-section contact-section"
@@ -547,9 +578,9 @@
 
   </main>
 
-  <!-- =====================================
-       PHOTO POPUP
-  ====================================== -->
+  <!-- ==================================
+       PHOTO LIGHTBOX
+  =================================== -->
 
   <div
     class="lightbox"
@@ -574,8 +605,6 @@
 
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
-
-        <!-- Descriptions can be added later -->
         <p id="lightbox-description"></p>
       </div>
 

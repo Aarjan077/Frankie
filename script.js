@@ -1,16 +1,89 @@
 
 /* ==========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   ANIMATED MONOCHROME EDITION
+   STICKY HEADER + ALL INTERACTIONS
 ========================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ========================================
-     1. ANIMATED FLOWING CONTOUR WAVES
+     1. STICKY NAVIGATION HEADER
   ======================================== */
 
-  const svgNamespace = "http://www.w3.org/2000/svg";
+  const header = document.getElementById("site-header");
+
+  /*
+    Navigation stays at the top using CSS.
+
+    This JavaScript adds the frosted glass
+    effect when the visitor starts scrolling.
+  */
+
+  function updateHeader() {
+
+    const isScrolled = window.scrollY > 20;
+
+    header.classList.toggle(
+      "is-scrolled",
+      isScrolled
+    );
+  }
+
+  // Update the header appearance on scroll.
+  window.addEventListener(
+    "scroll",
+    updateHeader,
+    { passive: true }
+  );
+
+  // Apply correct styling on initial load.
+  updateHeader();
+
+  /*
+    Measure the header's actual height.
+
+    This prevents Gallery, About, Skills and
+    other section headings from being hidden
+    beneath the sticky navigation.
+
+    It also works if the navigation wraps
+    onto two rows on mobile devices.
+  */
+
+  function updateHeaderHeight() {
+
+    const height = header.getBoundingClientRect().height;
+
+    document.documentElement.style.setProperty(
+      "--header-height",
+      `${Math.ceil(height)}px`
+    );
+  }
+
+  updateHeaderHeight();
+
+  if ("ResizeObserver" in window) {
+
+    const headerObserver = new ResizeObserver(() => {
+      updateHeaderHeight();
+    });
+
+    headerObserver.observe(header);
+
+  } else {
+
+    window.addEventListener(
+      "resize",
+      updateHeaderHeight
+    );
+  }
+
+  /* ========================================
+     2. ANIMATED BACKGROUND WAVES
+  ======================================== */
+
+  const svgNamespace =
+    "http://www.w3.org/2000/svg";
 
   const waveGroupOne =
     document.getElementById("wave-group-one");
@@ -27,14 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let waveAnimationFrame = null;
   let lastWaveFrame = 0;
 
-  /*
-    Each wave is a real SVG path.
-
-    JavaScript changes the path coordinates
-    smoothly over time to create the effect
-    of constantly flowing contour lines.
-  */
-
   function createWaveGroup(group, count, field) {
 
     if (!group) return;
@@ -46,7 +111,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "path"
       );
 
-      path.setAttribute("class", "wave-line");
+      path.setAttribute(
+        "class",
+        "wave-line"
+      );
 
       group.appendChild(path);
 
@@ -59,10 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Main flowing wave ribbon
+  // Create two flowing line ribbons.
   createWaveGroup(waveGroupOne, 18, 0);
-
-  // Secondary softer wave ribbon
   createWaveGroup(waveGroupTwo, 12, 1);
 
   function drawWaves(time) {
@@ -81,31 +147,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const relativeIndex =
         index - (total - 1) / 2;
 
-      // Different heights for the two ribbons
-      const baseHeight = field === 0
-        ? 635
-        : 325;
+      const baseHeight =
+        field === 0 ? 635 : 325;
 
-      const lineSpacing = field === 0
-        ? 9
-        : 11;
+      const lineSpacing =
+        field === 0 ? 9 : 11;
 
-      const amplitude = field === 0
-        ? 68
-        : 58;
+      const amplitude =
+        field === 0 ? 68 : 58;
 
       const baseY =
         baseHeight + relativeIndex * lineSpacing;
 
       let pathData = "";
 
-      // Draw across the full SVG width.
       for (let x = -100; x <= 1540; x += 36) {
-
-        /*
-          Layered sine waves produce organic
-          movement rather than rigid motion.
-        */
 
         const primaryWave = Math.sin(
           x / 205
@@ -142,12 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /*
-    Limit the animation to approximately
-    30 frames per second on desktop, and
-    slightly fewer frames on small screens.
-  */
-
   function animateWaves(time) {
 
     const frameInterval =
@@ -168,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (waveAnimationFrame !== null) {
 
       cancelAnimationFrame(waveAnimationFrame);
-
       waveAnimationFrame = null;
     }
   }
@@ -189,13 +238,13 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(animateWaves);
   }
 
-  // Draw the first frame immediately.
+  // Draw an initial frame.
   drawWaves(0);
 
-  // Start continuous movement.
+  // Start animated waves.
   startWaveAnimation();
 
-  // Pause animations when the tab is hidden.
+  // Stop background animation when tab is hidden.
   document.addEventListener(
     "visibilitychange",
     () => {
@@ -209,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  // Respect accessibility motion preferences.
+  // Respect reduced-motion preferences.
   function handleMotionPreference() {
 
     if (reducedMotion.matches) {
@@ -238,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ========================================
-     2. BACKGROUND MUSIC PLAYER
+     3. BACKGROUND MUSIC PLAYER
   ======================================== */
 
   const music =
@@ -250,13 +299,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const musicTooltip =
     document.querySelector(".music-tooltip");
 
-  const MUSIC_VOLUME = 0.35;
-  const MUSIC_FADE_DURATION = 600;
+  const MAX_VOLUME = 0.35;
+  const FADE_DURATION = 600;
 
   let wantsMusic = false;
-  let musicFadeFrame = null;
+  let fadeFrame = null;
 
-  // Website always opens with the music off.
+  // The website starts with music OFF.
   music.pause();
   music.volume = 0;
 
@@ -292,15 +341,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function cancelMusicFade() {
 
-    if (musicFadeFrame !== null) {
+    if (fadeFrame !== null) {
 
-      cancelAnimationFrame(musicFadeFrame);
-
-      musicFadeFrame = null;
+      cancelAnimationFrame(fadeFrame);
+      fadeFrame = null;
     }
   }
 
-  function fadeMusic(targetVolume, onComplete) {
+  // Fade music volume smoothly.
+  function fadeVolume(targetVolume, onComplete) {
 
     cancelMusicFade();
 
@@ -317,11 +366,10 @@ document.addEventListener("DOMContentLoaded", () => {
         currentTime - startTime;
 
       const progress = Math.min(
-        elapsed / MUSIC_FADE_DURATION,
+        elapsed / FADE_DURATION,
         1
       );
 
-      // Smooth ease-in-out transition.
       const eased = progress < 0.5
         ? 2 * progress * progress
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
@@ -336,13 +384,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (progress < 1) {
 
-        musicFadeFrame = requestAnimationFrame(
-          animateVolume
-        );
+        fadeFrame =
+          requestAnimationFrame(animateVolume);
 
       } else {
 
-        musicFadeFrame = null;
+        fadeFrame = null;
 
         if (typeof onComplete === "function") {
           onComplete();
@@ -350,11 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    musicFadeFrame =
+    fadeFrame =
       requestAnimationFrame(animateVolume);
   }
 
-  // Turn the music on.
+  // Start or resume the music.
   async function playMusic() {
 
     cancelMusicFade();
@@ -365,27 +412,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         music.volume = 0;
 
-        // Called directly from the click action.
         await music.play();
       }
 
-      // Handle clicks made during loading.
+      // The visitor may have clicked off
+      // while the audio was loading.
       if (!wantsMusic) {
 
-        fadeMusic(0, () => {
-          if (!wantsMusic) music.pause();
-        });
-
+        music.pause();
+        music.volume = 0;
+        updateMusicButton(false);
         return;
       }
 
       updateMusicButton(true);
-      fadeMusic(MUSIC_VOLUME);
+
+      fadeVolume(MAX_VOLUME);
 
     } catch (error) {
 
       console.error(
-        "Unable to play the music:",
+        "Could not play background music:",
         error
       );
 
@@ -394,18 +441,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Turn the music off.
+  // Fade out and pause the music.
   function pauseMusic() {
 
     updateMusicButton(false);
 
     if (music.paused) {
+
       cancelMusicFade();
       music.volume = 0;
       return;
     }
 
-    fadeMusic(0, () => {
+    fadeVolume(0, () => {
 
       if (!wantsMusic) {
         music.pause();
@@ -441,25 +489,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateMusicButton(false);
 
-    musicTooltip.textContent = "AUDIO NOT FOUND";
+    musicTooltip.textContent =
+      "AUDIO NOT FOUND";
 
     console.error(
-      "Check that background-music.mp3 " +
-      "exists in the GitHub repository."
+      "Could not load background-music.mp3"
     );
   });
 
   /* ========================================
-     3. SCROLL REVEAL ANIMATIONS
+     4. SCROLL REVEAL ANIMATIONS
   ======================================== */
 
   const revealElements =
     document.querySelectorAll(".reveal");
 
-  if (
-    "IntersectionObserver" in window &&
-    !reducedMotion.matches
-  ) {
+  if ("IntersectionObserver" in window) {
 
     const revealObserver = new IntersectionObserver(
       (entries, observer) => {
@@ -492,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ========================================
-     4. PHOTO LOADING AND PLACEHOLDERS
+     5. PHOTO LOADING
   ======================================== */
 
   const photoButtons =
@@ -509,7 +554,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function markMissing() {
 
       button.classList.add("image-missing");
-
       button.disabled = true;
 
       button.setAttribute(
@@ -521,7 +565,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function markLoaded() {
 
       button.classList.remove("image-missing");
-
       button.disabled = false;
     }
 
@@ -539,7 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ========================================
-     5. PHOTOGRAPH LIGHTBOX
+     6. PHOTO LIGHTBOX
   ======================================== */
 
   const lightbox =
@@ -558,8 +601,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".lightbox-close");
 
   let previousFocus = null;
+  let lightboxCloseTimer = null;
 
-  // Descriptions intentionally left blank.
+  // Blank descriptions to fill in later.
   const photoDescriptions = {
     "featured-1.jpg": "",
     "featured-2.jpg": "",
@@ -578,6 +622,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ) {
       return;
     }
+
+    clearTimeout(lightboxCloseTimer);
 
     const imagePath = photo.dataset.image;
 
@@ -627,7 +673,7 @@ document.addEventListener("DOMContentLoaded", () => {
       previousFocus.focus();
     }
 
-    setTimeout(() => {
+    lightboxCloseTimer = setTimeout(() => {
 
       if (!lightbox.classList.contains("active")) {
         lightboxImage.removeAttribute("src");
@@ -648,7 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeLightbox
   );
 
-  // Close by clicking the dark background.
+  // Close when clicking outside the photo.
   lightbox.addEventListener("click", (event) => {
 
     if (event.target === lightbox) {
@@ -656,7 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Close with Escape.
+  // Keyboard support.
   document.addEventListener("keydown", (event) => {
 
     if (!lightbox.classList.contains("active")) {
@@ -675,7 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ========================================
-     6. SMOOTH NAVIGATION
+     7. SMOOTH NAVIGATION
   ======================================== */
 
   const navigationLinks =
@@ -685,11 +731,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     link.addEventListener("click", (event) => {
 
-      const targetId =
-        link.getAttribute("href");
+      const targetId = link.getAttribute("href");
 
-      const target =
-        document.querySelector(targetId);
+      const target = document.querySelector(targetId);
 
       if (!target) return;
 
@@ -705,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ========================================
-     7. GALLERY HOVER
+     8. GALLERY HOVER
   ======================================== */
 
   const galleryItems =
@@ -723,7 +767,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ========================================
-     8. PORTRAIT IMAGE FALLBACK
+     9. PORTRAIT FALLBACK
   ======================================== */
 
   const portrait =
@@ -732,21 +776,19 @@ document.addEventListener("DOMContentLoaded", () => {
   if (portrait) {
 
     portrait.addEventListener("error", () => {
-
       portrait.style.background = "#eeeeee";
     });
   }
 
   /* ========================================
-     9. HAMBURGER PLACEHOLDER
+     10. HAMBURGER PLACEHOLDER
   ======================================== */
 
-  // The hamburger icon remains available
-  // for you to add functionality later.
+  // The hamburger menu is intentionally
+  // left without functionality for now.
 
   console.log(
-    "Frankie Photography Portfolio " +
-    "with animated background loaded."
+    "Frankie Photography Portfolio loaded."
   );
 
 });
