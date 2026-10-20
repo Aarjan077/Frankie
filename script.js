@@ -1,26 +1,28 @@
 
-/* =========================================
+/* ========================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
-   JAVASCRIPT INTERACTIONS
-========================================= */
+   JAVASCRIPT
+======================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // =====================================
   // 1. SCROLL REVEAL
+  // =====================================
 
   const revealElements =
     document.querySelectorAll(".reveal");
 
   if ("IntersectionObserver" in window) {
 
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
+    const observer = new IntersectionObserver(
+      (entries, observerInstance) => {
 
         entries.forEach((entry) => {
 
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
+            observerInstance.unobserve(entry.target);
           }
 
         });
@@ -33,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     revealElements.forEach((element) => {
-      revealObserver.observe(element);
+      observer.observe(element);
     });
 
   } else {
@@ -44,7 +46,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  // 2. IMAGE POPUP
+  // =====================================
+  // 2. IMAGE LOADING AND PLACEHOLDERS
+  // =====================================
+
+  const photoButtons =
+    document.querySelectorAll(
+      ".featured-photo, .gallery-item"
+    );
+
+  photoButtons.forEach((button) => {
+
+    const image = button.querySelector("img");
+
+    if (!image) return;
+
+    function markMissing() {
+      button.classList.add("image-missing");
+      button.disabled = true;
+      button.setAttribute("aria-label", "Photo not yet uploaded");
+    }
+
+    if (image.complete && image.naturalWidth === 0) {
+      markMissing();
+    }
+
+    image.addEventListener("error", markMissing);
+
+    image.addEventListener("load", () => {
+      button.classList.remove("image-missing");
+      button.disabled = false;
+    });
+
+  });
+
+  // =====================================
+  // 3. IMAGE POPUP / LIGHTBOX
+  // =====================================
 
   const lightbox =
     document.getElementById("lightbox");
@@ -61,14 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeButton =
     document.querySelector(".lightbox-close");
 
-  const clickablePhotos =
-    document.querySelectorAll(
-      ".featured-photo, .gallery-item"
-    );
-
   let previousFocus = null;
 
-  // Photo descriptions - currently blank
+  // Add descriptions here in the future.
+  // They are intentionally blank for now.
 
   const photoDescriptions = {
     "featured-1.jpg": "",
@@ -83,7 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openLightbox(photo) {
 
+    if (photo.classList.contains("image-missing")) {
+      return;
+    }
+
     const imagePath = photo.dataset.image;
+
     const imageTitle =
       photo.dataset.title || "Photograph";
 
@@ -139,7 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 400);
   }
 
-  clickablePhotos.forEach((photo) => {
+  // OPEN ON CLICK
+
+  photoButtons.forEach((photo) => {
 
     photo.addEventListener("click", () => {
       openLightbox(photo);
@@ -147,12 +188,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
+  // CLOSE BUTTON
+
   closeButton.addEventListener(
     "click",
     closeLightbox
   );
 
-  // Close by clicking outside the photo
+  // CLOSE WHEN CLICKING BACKGROUND
 
   lightbox.addEventListener("click", (event) => {
 
@@ -162,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // Escape key and keyboard focus
+  // CLOSE USING ESCAPE KEY
 
   document.addEventListener("keydown", (event) => {
 
@@ -181,7 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // 3. SMOOTH NAVIGATION
+  // =====================================
+  // 4. SMOOTH TOP NAVIGATION
+  // =====================================
 
   const navigationLinks =
     document.querySelectorAll('a[href^="#"]');
@@ -190,33 +235,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     link.addEventListener("click", (event) => {
 
-      const targetId =
-        link.getAttribute("href");
+      const targetId = link.getAttribute("href");
 
-      const target =
-        document.querySelector(targetId);
+      const target = document.querySelector(targetId);
 
-      if (target) {
+      if (!target) return;
 
-        event.preventDefault();
+      event.preventDefault();
 
-        const reducedMotion =
-          window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-          ).matches;
+      const reducedMotion =
+        window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
 
-        target.scrollIntoView({
-          behavior: reducedMotion ? "instant" : "smooth",
-          block: "start"
-        });
-
-      }
+      target.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start"
+      });
 
     });
 
   });
 
-  // 4. GALLERY HOVER EFFECT
+  // =====================================
+  // 5. GALLERY HOVER
+  // =====================================
 
   const galleryItems =
     document.querySelectorAll(".gallery-item");
@@ -233,27 +276,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // 5. IMAGE ERROR FALLBACK
+  // =====================================
+  // 6. MAIN PORTRAIT FALLBACK
+  // =====================================
 
-  const allImages =
-    document.querySelectorAll("img");
+  const portrait =
+    document.querySelector(".portrait-image");
 
-  allImages.forEach((image) => {
+  if (portrait) {
 
-    image.addEventListener("error", () => {
-
-      if (image.id === "lightbox-image") {
-        return;
-      }
-
-      image.style.background = "#eeeeee";
-      image.style.minHeight = "150px";
-
+    portrait.addEventListener("error", () => {
+      portrait.style.background = "#eeeeee";
     });
 
-  });
+  }
 
-  // 6. MUSIC PLACEHOLDER
+  // =====================================
+  // 7. MUSIC PLACEHOLDER
+  // =====================================
 
   const musicButton =
     document.querySelector(".music-button");
@@ -261,12 +301,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (musicButton) {
 
     musicButton.addEventListener("click", () => {
-      // Music functionality will be added later.
+      // Future music functionality.
     });
 
   }
 
-  // 7. HAMBURGER PLACEHOLDER
+  // =====================================
+  // 8. HAMBURGER PLACEHOLDER
+  // =====================================
 
   const menuButton =
     document.querySelector(".menu-button");
@@ -274,11 +316,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (menuButton) {
 
     menuButton.addEventListener("click", () => {
-      // Navigation menu will be added later.
+      // Future menu functionality.
     });
 
   }
 
-  console.log("Frankie Photography Portfolio loaded.");
+  console.log(
+    "Frankie Photography Portfolio loaded successfully."
+  );
 
 });
