@@ -5,14 +5,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ffffff">
-
-  <meta name="description"
-        content="Frankie - Photography Portfolio">
 
   <title>Frankie | Photography Portfolio</title>
 
-  <!-- GOOGLE FONTS -->
+  <meta name="description"
+        content="Frankie Photography Portfolio">
+
   <link rel="preconnect"
         href="https://fonts.googleapis.com">
 
@@ -22,31 +20,25 @@
 
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
-    rel="stylesheet"
-  >
+    rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- SUBTLE ANIMATED BACKGROUND -->
+  <!-- BACKGROUND -->
   <div class="background-texture" aria-hidden="true">
     <div class="texture-circle circle-one"></div>
     <div class="texture-circle circle-two"></div>
   </div>
 
-  <!-- ===================================
-       TOP NAVIGATION BAR
-  ==================================== -->
-
+  <!-- HEADER -->
   <header class="top-header">
 
-    <!-- TOP LEFT NAVIGATION -->
+    <!-- CENTRED NAVIGATION -->
     <nav class="top-navigation entrance-nav"
          aria-label="Main navigation">
 
@@ -70,60 +62,56 @@
         Contact
       </a>
 
-      <!-- MUSIC ICON - FUTURE FEATURE -->
+      <!-- MUSIC BUTTON -->
       <button
         class="music-button"
         type="button"
         aria-label="Music coming soon"
-        title="Music coming soon"
-      >
+        title="Music coming soon">
 
         <svg
           viewBox="0 0 24 24"
-          width="21"
-          height="21"
+          width="23"
+          height="23"
           fill="none"
           stroke="currentColor"
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
-          aria-hidden="true"
-        >
+          aria-hidden="true">
+
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
-        </svg>
 
+        </svg>
       </button>
 
     </nav>
 
-    <!-- TOP RIGHT HAMBURGER ICON -->
+    <!-- RIGHT HAMBURGER -->
     <button
       class="menu-button entrance-nav"
       type="button"
       aria-label="Menu coming soon"
-      title="Menu coming soon"
-    >
+      title="Menu coming soon">
+
       <span></span>
       <span></span>
       <span></span>
+
     </button>
 
   </header>
 
   <main>
 
-    <!-- ===================================
-         HERO SECTION
-    ==================================== -->
-
+    <!-- HERO SECTION -->
     <section class="hero" id="home">
 
-      <!-- LEFT SIDE -->
       <div class="hero-left">
 
-        <!-- FRANKIE NAME -->
+        <!-- NAME -->
         <div class="name-container">
 
           <p class="eyebrow name-intro">
@@ -140,14 +128,13 @@
 
         </div>
 
-        <!-- MAIN PORTRAIT -->
+        <!-- PORTRAIT -->
         <div class="portrait-frame photo-entrance">
 
           <img
             src="frankie-portrait.jpg"
             alt="Portrait of Frankie"
-            class="portrait-image"
-          >
+            class="portrait-image">
 
           <span class="portrait-caption">
             THE PERSON BEHIND THE LENS
@@ -157,58 +144,55 @@
 
       </div>
 
-      <!-- RIGHT SIDE - CURVED PICTURES -->
+      <!-- CURVED PHOTOGRAPHS -->
       <div class="hero-right">
 
-        <!-- FEATURED PHOTO ONE -->
         <button
           class="featured-photo featured-one photo-entrance"
           type="button"
           data-image="featured-1.jpg"
-          data-title="01 / Featured"
-          aria-label="View featured photo one"
-        >
+          data-title="01 / Featured">
+
           <img
             src="featured-1.jpg"
-            alt="Featured photograph one"
-          >
-          <span class="photo-fallback" aria-hidden="true">
+            alt="Featured photograph one">
+
+          <span class="photo-fallback">
             FEATURED / 01
           </span>
+
         </button>
 
-        <!-- FEATURED PHOTO TWO -->
         <button
           class="featured-photo featured-two photo-entrance"
           type="button"
           data-image="featured-2.jpg"
-          data-title="02 / Featured"
-          aria-label="View featured photo two"
-        >
+          data-title="02 / Featured">
+
           <img
             src="featured-2.jpg"
-            alt="Featured photograph two"
-          >
-          <span class="photo-fallback" aria-hidden="true">
+            alt="Featured photograph two">
+
+          <span class="photo-fallback">
             FEATURED / 02
           </span>
+
         </button>
 
-        <!-- FEATURED PHOTO THREE -->
         <button
           class="featured-photo featured-three photo-entrance"
           type="button"
           data-image="featured-3.jpg"
-          data-title="03 / Featured"
-          aria-label="View featured photo three"
-        >
+          data-title="03 / Featured">
+
           <img
             src="featured-3.jpg"
-            alt="Featured photograph three"
-          >
-          <span class="photo-fallback" aria-hidden="true">
+            alt="Featured photograph three">
+
+          <span class="photo-fallback">
             FEATURED / 03
           </span>
+
         </button>
 
         <span class="hero-side-text">
@@ -217,7 +201,6 @@
 
       </div>
 
-      <!-- SCROLL INDICATOR -->
       <div class="scroll-indicator">
         <span>SCROLL TO EXPLORE</span>
         <span class="scroll-line"></span>
@@ -225,10 +208,7 @@
 
     </section>
 
-    <!-- ===================================
-         GALLERY SECTION
-    ==================================== -->
-
+    <!-- GALLERY -->
     <section class="gallery-section" id="gallery">
 
       <div class="section-heading reveal">
@@ -249,119 +229,111 @@
 
       <div class="gallery-grid">
 
-        <!-- GALLERY PHOTO 1 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-1.jpg"
-          data-title="01 / Untitled"
-        >
+          data-title="01 / Untitled">
+
           <img
             src="gallery-1.jpg"
             alt="Gallery photograph one"
-            loading="lazy"
-          >
-          <span class="photo-fallback" aria-hidden="true">
-            PHOTOGRAPH / 01
-          </span>
+            loading="lazy">
+
+          <span class="photo-fallback">PHOTOGRAPH / 01</span>
+
           <span class="gallery-overlay">
             <span>01 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <!-- GALLERY PHOTO 2 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-2.jpg"
-          data-title="02 / Untitled"
-        >
+          data-title="02 / Untitled">
+
           <img
             src="gallery-2.jpg"
             alt="Gallery photograph two"
-            loading="lazy"
-          >
-          <span class="photo-fallback" aria-hidden="true">
-            PHOTOGRAPH / 02
-          </span>
+            loading="lazy">
+
+          <span class="photo-fallback">PHOTOGRAPH / 02</span>
+
           <span class="gallery-overlay">
             <span>02 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <!-- GALLERY PHOTO 3 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-3.jpg"
-          data-title="03 / Untitled"
-        >
+          data-title="03 / Untitled">
+
           <img
             src="gallery-3.jpg"
             alt="Gallery photograph three"
-            loading="lazy"
-          >
-          <span class="photo-fallback" aria-hidden="true">
-            PHOTOGRAPH / 03
-          </span>
+            loading="lazy">
+
+          <span class="photo-fallback">PHOTOGRAPH / 03</span>
+
           <span class="gallery-overlay">
             <span>03 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <!-- GALLERY PHOTO 4 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-4.jpg"
-          data-title="04 / Untitled"
-        >
+          data-title="04 / Untitled">
+
           <img
             src="gallery-4.jpg"
             alt="Gallery photograph four"
-            loading="lazy"
-          >
-          <span class="photo-fallback" aria-hidden="true">
-            PHOTOGRAPH / 04
-          </span>
+            loading="lazy">
+
+          <span class="photo-fallback">PHOTOGRAPH / 04</span>
+
           <span class="gallery-overlay">
             <span>04 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
-        <!-- GALLERY PHOTO 5 -->
         <button
           class="gallery-item reveal"
           type="button"
           data-image="gallery-5.jpg"
-          data-title="05 / Untitled"
-        >
+          data-title="05 / Untitled">
+
           <img
             src="gallery-5.jpg"
             alt="Gallery photograph five"
-            loading="lazy"
-          >
-          <span class="photo-fallback" aria-hidden="true">
-            PHOTOGRAPH / 05
-          </span>
+            loading="lazy">
+
+          <span class="photo-fallback">PHOTOGRAPH / 05</span>
+
           <span class="gallery-overlay">
             <span>05 / UNTITLED</span>
             <span>VIEW IMAGE ↗</span>
           </span>
+
         </button>
 
       </div>
 
     </section>
 
-    <!-- ===================================
-         ABOUT SECTION
-    ==================================== -->
-
+    <!-- ABOUT -->
     <section class="content-section" id="about">
 
       <div class="content-inner reveal">
@@ -382,10 +354,7 @@
 
     </section>
 
-    <!-- ===================================
-         SKILLS SECTION
-    ==================================== -->
-
+    <!-- SKILLS -->
     <section class="content-section" id="skills">
 
       <div class="content-inner reveal">
@@ -407,10 +376,7 @@
 
     </section>
 
-    <!-- ===================================
-         SOCIALS SECTION
-    ==================================== -->
-
+    <!-- SOCIALS -->
     <section class="content-section" id="socials">
 
       <div class="content-inner reveal">
@@ -431,14 +397,9 @@
 
     </section>
 
-    <!-- ===================================
-         CONTACT SECTION
-    ==================================== -->
-
-    <section
-      class="content-section contact-section"
-      id="contact"
-    >
+    <!-- CONTACT -->
+    <section class="content-section contact-section"
+             id="contact">
 
       <div class="content-inner reveal">
 
@@ -460,24 +421,19 @@
 
   </main>
 
-  <!-- ===================================
-       PHOTO POPUP / LIGHTBOX
-  ==================================== -->
-
+  <!-- IMAGE POPUP -->
   <div
     class="lightbox"
     id="lightbox"
     role="dialog"
     aria-modal="true"
     aria-label="Photograph preview"
-    aria-hidden="true"
-  >
+    aria-hidden="true">
 
     <button
       class="lightbox-close"
       type="button"
-      aria-label="Close photograph"
-    >
+      aria-label="Close photograph">
       &times;
     </button>
 
@@ -485,13 +441,10 @@
 
       <img
         id="lightbox-image"
-        alt="Expanded photograph"
-      >
+        alt="Expanded photograph">
 
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
-
-        <!-- DESCRIPTION LEFT BLANK -->
         <p id="lightbox-description"></p>
       </div>
 

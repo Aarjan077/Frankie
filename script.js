@@ -1,14 +1,12 @@
 
-/* ========================================
+/* =====================================
    FRANKIE PHOTOGRAPHY PORTFOLIO
    JAVASCRIPT
-======================================== */
+===================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =====================================
-  // 1. SCROLL REVEAL
-  // =====================================
+  // SCROLL REVEAL ANIMATIONS
 
   const revealElements =
     document.querySelectorAll(".reveal");
@@ -46,9 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  // =====================================
-  // 2. IMAGE LOADING AND PLACEHOLDERS
-  // =====================================
+  // PHOTO LOADING CHECK
 
   const photoButtons =
     document.querySelectorAll(
@@ -64,7 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function markMissing() {
       button.classList.add("image-missing");
       button.disabled = true;
-      button.setAttribute("aria-label", "Photo not yet uploaded");
+      button.setAttribute(
+        "aria-label",
+        "Photo not yet uploaded"
+      );
     }
 
     if (image.complete && image.naturalWidth === 0) {
@@ -80,9 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =====================================
-  // 3. IMAGE POPUP / LIGHTBOX
-  // =====================================
+  // IMAGE POPUP
 
   const lightbox =
     document.getElementById("lightbox");
@@ -101,8 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let previousFocus = null;
 
-  // Add descriptions here in the future.
-  // They are intentionally blank for now.
+  // DESCRIPTIONS LEFT BLANK
 
   const photoDescriptions = {
     "featured-1.jpg": "",
@@ -178,8 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 400);
   }
 
-  // OPEN ON CLICK
-
   photoButtons.forEach((photo) => {
 
     photo.addEventListener("click", () => {
@@ -188,14 +182,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // CLOSE BUTTON
-
   closeButton.addEventListener(
     "click",
     closeLightbox
   );
-
-  // CLOSE WHEN CLICKING BACKGROUND
 
   lightbox.addEventListener("click", (event) => {
 
@@ -205,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // CLOSE USING ESCAPE KEY
+  // KEYBOARD SUPPORT
 
   document.addEventListener("keydown", (event) => {
 
@@ -224,9 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =====================================
-  // 4. SMOOTH TOP NAVIGATION
-  // =====================================
+  // SMOOTH NAVIGATION
 
   const navigationLinks =
     document.querySelectorAll('a[href^="#"]');
@@ -235,9 +223,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     link.addEventListener("click", (event) => {
 
-      const targetId = link.getAttribute("href");
+      const targetId =
+        link.getAttribute("href");
 
-      const target = document.querySelector(targetId);
+      const target =
+        document.querySelector(targetId);
 
       if (!target) return;
 
@@ -257,9 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =====================================
-  // 5. GALLERY HOVER
-  // =====================================
+  // GALLERY HOVER
 
   const galleryItems =
     document.querySelectorAll(".gallery-item");
@@ -276,9 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  // =====================================
-  // 6. MAIN PORTRAIT FALLBACK
-  // =====================================
+  // PORTRAIT IMAGE FALLBACK
 
   const portrait =
     document.querySelector(".portrait-image");
@@ -291,9 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  // =====================================
-  // 7. MUSIC PLACEHOLDER
-  // =====================================
+  // FUTURE MUSIC FUNCTIONALITY
 
   const musicButton =
     document.querySelector(".music-button");
@@ -301,14 +285,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (musicButton) {
 
     musicButton.addEventListener("click", () => {
-      // Future music functionality.
+      // Music feature will be added later.
     });
 
   }
 
-  // =====================================
-  // 8. HAMBURGER PLACEHOLDER
-  // =====================================
+  // FUTURE MENU FUNCTIONALITY
 
   const menuButton =
     document.querySelector(".menu-button");
@@ -316,13 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (menuButton) {
 
     menuButton.addEventListener("click", () => {
-      // Future menu functionality.
+      // Hamburger menu feature coming later.
     });
 
   }
 
-  console.log(
-    "Frankie Photography Portfolio loaded successfully."
-  );
+  console.log("Frankie Portfolio loaded successfully.");
 
 });
