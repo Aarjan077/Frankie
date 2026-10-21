@@ -1,100 +1,54 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
-
-  <meta name="description"
-        content="Frankie - Photography Portfolio">
-
+  <meta name="description" content="Frankie — Photography Portfolio">
   <title>Frankie | Photography Portfolio</title>
 
-  <!-- GOOGLE FONTS -->
-  <link rel="preconnect"
-        href="https://fonts.googleapis.com">
-
-  <link rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap"
-    rel="stylesheet">
-
-  <!-- CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
-  <!-- JAVASCRIPT -->
   <script src="script.js" defer></script>
 </head>
 
 <body>
 
-  <!-- ==================================
-       ANIMATED BACKGROUND
-  =================================== -->
-
+  <!-- ANIMATED MONOCHROME BACKGROUND -->
   <div class="background-texture" aria-hidden="true">
 
-    <!-- FLOATING GRADIENTS -->
     <div class="ambient-glow glow-one"></div>
     <div class="ambient-glow glow-two"></div>
     <div class="ambient-glow glow-three"></div>
 
-    <!-- ANIMATED WAVE LINES -->
-    <svg
-      id="contour-waves"
-      class="wave-canvas"
-      viewBox="0 0 1440 900"
-      preserveAspectRatio="xMidYMid slice"
-      xmlns="http://www.w3.org/2000/svg">
+    <svg class="wave-canvas"
+         viewBox="0 0 1440 900"
+         preserveAspectRatio="xMidYMid slice"
+         xmlns="http://www.w3.org/2000/svg">
 
       <defs>
-        <linearGradient
-          id="wave-gradient"
-          x1="0%" y1="0%"
-          x2="100%" y2="0%">
-
-          <stop offset="0%"
-                stop-color="#999999"
-                stop-opacity="0"/>
-
-          <stop offset="20%"
-                stop-color="#999999"
-                stop-opacity=".42"/>
-
-          <stop offset="55%"
-                stop-color="#777777"
-                stop-opacity=".62"/>
-
-          <stop offset="85%"
-                stop-color="#999999"
-                stop-opacity=".36"/>
-
-          <stop offset="100%"
-                stop-color="#999999"
-                stop-opacity="0"/>
-
+        <linearGradient id="wave-gradient"
+                        x1="0%" y1="0%"
+                        x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#999" stop-opacity="0"/>
+          <stop offset="20%" stop-color="#999" stop-opacity=".42"/>
+          <stop offset="55%" stop-color="#777" stop-opacity=".62"/>
+          <stop offset="85%" stop-color="#999" stop-opacity=".36"/>
+          <stop offset="100%" stop-color="#999" stop-opacity="0"/>
         </linearGradient>
       </defs>
 
       <g id="wave-group-one"></g>
       <g id="wave-group-two"></g>
-
     </svg>
 
-    <!-- DECORATIVE OUTLINE CIRCLES -->
     <div class="outline-circle outline-one"></div>
     <div class="outline-circle outline-two"></div>
     <div class="outline-circle outline-three"></div>
 
-    <!-- FLOATING PARTICLES -->
     <span class="floating-particle particle-one"></span>
     <span class="floating-particle particle-two"></span>
     <span class="floating-particle particle-three"></span>
@@ -102,10 +56,8 @@
     <span class="floating-particle particle-five"></span>
     <span class="floating-particle particle-six"></span>
 
-    <!-- FILM GRAIN -->
     <svg class="film-grain"
          xmlns="http://www.w3.org/2000/svg">
-
       <filter id="grain-filter">
         <feTurbulence
           type="fractalNoise"
@@ -114,86 +66,56 @@
           stitchTiles="stitch"
           seed="4"/>
       </filter>
-
-      <rect
-        width="100%"
-        height="100%"
-        filter="url(#grain-filter)"/>
-
+      <rect width="100%"
+            height="100%"
+            filter="url(#grain-filter)"/>
     </svg>
 
   </div>
 
-  <!-- ==================================
-       BACKGROUND MUSIC
-  =================================== -->
+  <!-- MUSIC IS OFF UNTIL THE VISITOR CLICKS -->
+  <audio id="background-music"
+         src="background-music.mp3"
+         preload="none"
+         loop></audio>
 
-  <audio
-    id="background-music"
-    src="background-music.mp3"
-    preload="none"
-    loop>
-  </audio>
-
-  <!-- ==================================
-       STICKY FROSTED NAVIGATION
-  =================================== -->
-
+  <!-- STICKY TOP NAVIGATION -->
   <header class="top-header" id="site-header">
 
-    <nav
-      class="top-navigation entrance-nav"
-      aria-label="Main navigation">
+    <nav class="top-navigation entrance-nav"
+         aria-label="Main navigation">
 
-      <a href="#about" class="nav-link">
-        About
-      </a>
-
-      <a href="#gallery" class="nav-link">
-        Gallery
-      </a>
-
-      <a href="#skills" class="nav-link">
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#gallery">Gallery</a>
+      <a class="nav-link" href="#skills">
         Skills &amp; Qualification
       </a>
+      <a class="nav-link" href="#socials">Socials</a>
+      <a class="nav-link" href="#contact">Contact</a>
 
-      <a href="#socials" class="nav-link">
-        Socials
-      </a>
+      <button id="music-toggle"
+              class="music-button"
+              type="button"
+              aria-label="Play background music"
+              aria-pressed="false"
+              title="Play background music">
 
-      <a href="#contact" class="nav-link">
-        Contact
-      </a>
-
-      <!-- MUSIC PLAY / PAUSE -->
-      <button
-        id="music-toggle"
-        class="music-button"
-        type="button"
-        aria-label="Play background music"
-        aria-pressed="false"
-        title="Play background music">
-
-        <svg
-          class="music-icon"
-          viewBox="0 0 24 24"
-          width="23"
-          height="23"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true">
+        <svg class="music-icon"
+             viewBox="0 0 24 24"
+             width="23"
+             height="23"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.5"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
 
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
-
-          <path
-            class="music-muted-line"
-            d="M3 3L21 21"/>
-
+          <path class="music-muted-line"
+                d="M3 3L21 21"></path>
         </svg>
 
         <span class="music-tooltip" aria-hidden="true">
@@ -204,33 +126,26 @@
 
     </nav>
 
-    <!-- HAMBURGER - FUTURE FEATURE -->
-    <button
-      class="menu-button entrance-nav"
-      type="button"
-      aria-label="Menu coming soon"
-      title="Menu coming soon">
-
+    <!-- HAMBURGER PLACEHOLDER -->
+    <button class="menu-button entrance-nav"
+            type="button"
+            aria-label="Menu coming soon"
+            title="Menu coming soon">
       <span></span>
       <span></span>
       <span></span>
-
     </button>
 
   </header>
 
   <main>
 
-    <!-- ==================================
-         HOME / HERO
-    =================================== -->
-
+    <!-- HOME / HERO -->
     <section class="hero" id="home">
 
       <div class="hero-left">
 
         <div class="name-container">
-
           <p class="eyebrow name-intro">
             PHOTOGRAPHY PORTFOLIO
           </p>
@@ -242,80 +157,63 @@
           <p class="name-subtitle">
             A collection of moments.
           </p>
-
         </div>
 
-        <!-- MAIN PORTRAIT -->
         <div class="portrait-frame photo-entrance">
-
-          <img
-            src="frankie-portrait.jpg"
-            alt="Portrait of Frankie"
-            class="portrait-image">
+          <img src="frankie-portrait.jpg"
+               alt="Portrait of Frankie"
+               class="portrait-image">
 
           <span class="portrait-caption">
             THE PERSON BEHIND THE LENS
           </span>
-
         </div>
 
       </div>
 
-      <!-- CURVED FEATURED IMAGES -->
+      <!-- ORIGINAL THREE CURVED FEATURED PHOTOS -->
       <div class="hero-right">
 
-        <!-- FEATURED 1 -->
-        <button
-          class="featured-photo featured-one photo-entrance"
-          type="button"
-          data-image="featured-1.jpg"
-          data-title="01 / Featured"
-          aria-label="View featured photograph one">
+        <button class="featured-photo featured-one photo-entrance"
+                type="button"
+                data-image="featured-1.jpg"
+                data-title="01 / Featured"
+                aria-label="View featured photograph one">
 
-          <img
-            src="featured-1.jpg"
-            alt="Featured photograph one">
+          <img src="featured-1.jpg"
+               alt="Featured photograph one">
 
           <span class="photo-fallback">
             FEATURED / 01
           </span>
-
         </button>
 
-        <!-- FEATURED 2 -->
-        <button
-          class="featured-photo featured-two photo-entrance"
-          type="button"
-          data-image="featured-2.jpg"
-          data-title="02 / Featured"
-          aria-label="View featured photograph two">
+        <button class="featured-photo featured-two photo-entrance"
+                type="button"
+                data-image="featured-2.jpg"
+                data-title="02 / Featured"
+                aria-label="View featured photograph two">
 
-          <img
-            src="featured-2.jpg"
-            alt="Featured photograph two">
+          <img src="featured-2.jpg"
+               alt="Featured photograph two">
 
           <span class="photo-fallback">
             FEATURED / 02
           </span>
-
         </button>
 
-        <!-- FEATURED 3 -->
-        <button
-          class="featured-photo featured-three photo-entrance"
-          type="button"
-          data-image="featured-3.jpg"
-          data-title="03 / Featured"
-          aria-label="View featured photograph three">
+        <button class="featured-photo featured-three photo-entrance"
+                type="button"
+                data-image="featured-3.jpg"
+                data-title="03 / Featured"
+                aria-label="View featured photograph three">
 
-          <img
-            src="featured-3.jpg"
-            alt="Featured photograph three">
+          <img src="featured-3.jpg"
+               alt="Featured photograph three">
 
           <span class="photo-fallback">
             FEATURED / 03
           </span>
-
         </button>
 
         <span class="hero-side-text">
@@ -324,21 +222,16 @@
 
       </div>
 
-      <!-- SCROLL PROMPT -->
       <div class="scroll-indicator">
-
         <span>SCROLL TO EXPLORE</span>
         <span class="scroll-line"></span>
-
       </div>
 
     </section>
 
-    <!-- ==================================
-         GALLERY
-    =================================== -->
-
-    <section class="gallery-section" id="gallery">
+    <!-- NEW GALLERY ENTRANCE -->
+    <section class="gallery-section gallery-invitation"
+             aria-labelledby="gallery-heading">
 
       <div class="section-heading reveal">
 
@@ -346,143 +239,27 @@
           01 / SELECTED WORK
         </p>
 
-        <h2>
+        <h2 id="gallery-heading">
           The Gallery<span class="heading-dot">.</span>
         </h2>
 
         <p class="section-description">
-          Moments captured. Stories preserved.
+          A collection to move through, one moment at a time.
         </p>
 
-      </div>
-
-      <div class="gallery-grid">
-
-        <!-- GALLERY IMAGE 1 -->
-        <button
-          class="gallery-item reveal"
-          type="button"
-          data-image="gallery-1.jpg"
-          data-title="01 / Untitled">
-
-          <img
-            src="gallery-1.jpg"
-            alt="Gallery photograph one"
-            loading="lazy">
-
-          <span class="photo-fallback">
-            PHOTOGRAPH / 01
-          </span>
-
-          <span class="gallery-overlay">
-            <span>01 / UNTITLED</span>
-            <span>VIEW IMAGE ↗</span>
-          </span>
-
-        </button>
-
-        <!-- GALLERY IMAGE 2 -->
-        <button
-          class="gallery-item reveal"
-          type="button"
-          data-image="gallery-2.jpg"
-          data-title="02 / Untitled">
-
-          <img
-            src="gallery-2.jpg"
-            alt="Gallery photograph two"
-            loading="lazy">
-
-          <span class="photo-fallback">
-            PHOTOGRAPH / 02
-          </span>
-
-          <span class="gallery-overlay">
-            <span>02 / UNTITLED</span>
-            <span>VIEW IMAGE ↗</span>
-          </span>
-
-        </button>
-
-        <!-- GALLERY IMAGE 3 -->
-        <button
-          class="gallery-item reveal"
-          type="button"
-          data-image="gallery-3.jpg"
-          data-title="03 / Untitled">
-
-          <img
-            src="gallery-3.jpg"
-            alt="Gallery photograph three"
-            loading="lazy">
-
-          <span class="photo-fallback">
-            PHOTOGRAPH / 03
-          </span>
-
-          <span class="gallery-overlay">
-            <span>03 / UNTITLED</span>
-            <span>VIEW IMAGE ↗</span>
-          </span>
-
-        </button>
-
-        <!-- GALLERY IMAGE 4 -->
-        <button
-          class="gallery-item reveal"
-          type="button"
-          data-image="gallery-4.jpg"
-          data-title="04 / Untitled">
-
-          <img
-            src="gallery-4.jpg"
-            alt="Gallery photograph four"
-            loading="lazy">
-
-          <span class="photo-fallback">
-            PHOTOGRAPH / 04
-          </span>
-
-          <span class="gallery-overlay">
-            <span>04 / UNTITLED</span>
-            <span>VIEW IMAGE ↗</span>
-          </span>
-
-        </button>
-
-        <!-- GALLERY IMAGE 5 -->
-        <button
-          class="gallery-item reveal"
-          type="button"
-          data-image="gallery-5.jpg"
-          data-title="05 / Untitled">
-
-          <img
-            src="gallery-5.jpg"
-            alt="Gallery photograph five"
-            loading="lazy">
-
-          <span class="photo-fallback">
-            PHOTOGRAPH / 05
-          </span>
-
-          <span class="gallery-overlay">
-            <span>05 / UNTITLED</span>
-            <span>VIEW IMAGE ↗</span>
-          </span>
-
+        <button class="gallery-enter"
+                type="button"
+                data-open-gallery>
+          EXPLORE THE GALLERY
+          <span aria-hidden="true">↗</span>
         </button>
 
       </div>
 
     </section>
 
-    <!-- ==================================
-         ABOUT
-    =================================== -->
-
+    <!-- ABOUT -->
     <section class="content-section" id="about">
-
       <div class="content-inner reveal">
 
         <p class="section-number">
@@ -498,15 +275,10 @@
         </p>
 
       </div>
-
     </section>
 
-    <!-- ==================================
-         SKILLS
-    =================================== -->
-
+    <!-- SKILLS -->
     <section class="content-section" id="skills">
-
       <div class="content-inner reveal">
 
         <p class="section-number">
@@ -523,15 +295,10 @@
         </p>
 
       </div>
-
     </section>
 
-    <!-- ==================================
-         SOCIALS
-    =================================== -->
-
+    <!-- SOCIALS -->
     <section class="content-section" id="socials">
-
       <div class="content-inner reveal">
 
         <p class="section-number">
@@ -547,17 +314,10 @@
         </p>
 
       </div>
-
     </section>
 
-    <!-- ==================================
-         CONTACT
-    =================================== -->
-
-    <section
-      class="content-section contact-section"
-      id="contact">
-
+    <!-- CONTACT -->
+    <section class="content-section contact-section" id="contact">
       <div class="content-inner reveal">
 
         <p class="section-number">
@@ -573,35 +333,105 @@
         </p>
 
       </div>
-
     </section>
 
   </main>
 
-  <!-- ==================================
-       PHOTO LIGHTBOX
-  =================================== -->
+  <!-- IMMERSIVE, FULL-SCREEN GALLERY -->
+  <section class="gallery-view"
+           id="gallery"
+           role="dialog"
+           aria-modal="true"
+           aria-labelledby="gallery-view-title"
+           aria-hidden="true"
+           inert>
 
-  <div
-    class="lightbox"
-    id="lightbox"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Photograph preview"
-    aria-hidden="true">
+    <header class="gallery-view-header">
 
-    <button
-      class="lightbox-close"
-      type="button"
-      aria-label="Close photograph">
+      <div>
+        <p class="gallery-view-kicker">
+          FRANKIE / SELECTED WORK
+        </p>
+
+        <h2 id="gallery-view-title">
+          The Gallery<span class="heading-dot">.</span>
+        </h2>
+      </div>
+
+      <button class="gallery-exit"
+              type="button"
+              aria-label="Close gallery">
+        CLOSE <span aria-hidden="true">×</span>
+      </button>
+
+    </header>
+
+    <div class="gallery-stage">
+
+      <div class="gallery-scroll"
+           id="gallery-scroll"
+           tabindex="0"
+           aria-label="Photograph gallery: scroll up and down to browse">
+
+        <!-- JavaScript creates all 10 photographs here -->
+        <div class="gallery-stack" id="gallery-stack"></div>
+
+      </div>
+
+      <p class="gallery-stage-caption" aria-hidden="true">
+        SCROLL TO EXPLORE ↓
+      </p>
+
+      <div class="gallery-pagination"
+           aria-live="polite"
+           aria-atomic="true">
+
+        <span id="gallery-current">01</span>
+        <span class="gallery-pagination-rule"></span>
+        <span>10</span>
+
+      </div>
+
+      <div class="gallery-vertical-controls"
+           aria-label="Gallery controls">
+
+        <button type="button"
+                id="gallery-prev"
+                aria-label="Previous photograph">↑</button>
+
+        <button type="button"
+                id="gallery-next"
+                aria-label="Next photograph">↓</button>
+
+      </div>
+
+    </div>
+
+    <p class="gallery-bottom-hint">
+      CLICK A PHOTOGRAPH TO VIEW FULL SIZE
+    </p>
+
+  </section>
+
+  <!-- LARGE PHOTOGRAPH POP-UP -->
+  <div class="lightbox"
+       id="lightbox"
+       role="dialog"
+       aria-modal="true"
+       aria-label="Photograph preview"
+       aria-hidden="true"
+       inert>
+
+    <button class="lightbox-close"
+            type="button"
+            aria-label="Close photograph">
       &times;
     </button>
 
     <div class="lightbox-content">
 
-      <img
-        id="lightbox-image"
-        alt="Expanded photograph">
+      <img id="lightbox-image"
+           alt="Expanded photograph">
 
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
@@ -614,11 +444,8 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-
     <span>© 2026 FRANKIE</span>
-
     <a href="#home">BACK TO TOP ↑</a>
-
   </footer>
 
 </body>
