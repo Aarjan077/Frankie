@@ -205,11 +205,89 @@
         <p class="placeholder-text">Social media links will be added here.</p>
       </div>
     </section>
-    <section class="content-section contact-section" id="contact">
-      <div class="content-inner reveal">
-        <p class="section-number">05 / GET IN TOUCH</p>
-        <h2>Let's Create<span class="heading-dot">.</span></h2>
-        <p class="placeholder-text">Contact information will be added here.</p>
+    <!-- LET'S CREATE — REAL CONTACT FORM -->
+    <section class="content-section contact-section" id="contact" aria-labelledby="contact-heading">
+      <div class="contact-inner">
+
+        <!-- Editorial introduction -->
+        <div class="contact-intro reveal">
+          <p class="section-number">05 / GET IN TOUCH</p>
+          <h2 id="contact-heading">Let's<br>Create<span class="heading-dot">.</span></h2>
+          <span class="contact-rule" aria-hidden="true"></span>
+          <p class="contact-lead">Every meaningful photograph starts with <em>a conversation.</em></p>
+          <p class="contact-description">Have something in mind? A project, a collaboration, or just a conversation about photography? Tell me your story. I'd love to hear from you.</p>
+          <span class="contact-signature">FRANKIE <span aria-hidden="true">↗</span> OPEN TO NEW IDEAS</span>
+        </div>
+
+        <!-- FormSubmit emails submissions to the designated Outlook inbox.
+             The owner must confirm the activation email after the first test. -->
+        <div class="contact-form-panel reveal">
+          <div class="contact-form-top">
+            <span>YOUR ENQUIRY / 01</span>
+            <span class="contact-form-decoration" aria-hidden="true">↗</span>
+          </div>
+
+          <form id="contact-form"
+                action="https://formsubmit.co/horrocks984@outlook.com"
+                method="POST"
+                novalidate>
+            <input type="hidden" name="_subject" value="New enquiry — Frankie Photography">
+            <input type="hidden" name="_template" value="table">
+            <input type="text" name="_honey" class="contact-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <div class="contact-fields-grid">
+              <div class="contact-field" data-field="name">
+                <label for="contact-name">01 <span>YOUR NAME</span> <b>*</b></label>
+                <input id="contact-name" class="contact-input" name="name" type="text"
+                       placeholder="What should I call you?" autocomplete="name"
+                       minlength="2" maxlength="90" required
+                       aria-describedby="contact-name-error">
+                <span class="contact-field-error" id="contact-name-error" aria-live="polite"></span>
+              </div>
+
+              <div class="contact-field" data-field="phone">
+                <label for="contact-phone">02 <span>PHONE NUMBER</span> <b>*</b></label>
+                <input id="contact-phone" class="contact-input" name="phone" type="tel"
+                       placeholder="Your contact number" autocomplete="tel"
+                       inputmode="tel" maxlength="30" required
+                       aria-describedby="contact-phone-error">
+                <span class="contact-field-error" id="contact-phone-error" aria-live="polite"></span>
+              </div>
+
+              <div class="contact-field contact-field-full" data-field="email">
+                <label for="contact-email">03 <span>EMAIL ADDRESS</span> <b>*</b></label>
+                <input id="contact-email" class="contact-input" name="email" type="email"
+                       placeholder="you@example.com" autocomplete="email"
+                       maxlength="254" required
+                       aria-describedby="contact-email-error">
+                <span class="contact-field-error" id="contact-email-error" aria-live="polite"></span>
+              </div>
+
+              <div class="contact-field contact-field-full contact-message-field" data-field="message">
+                <div class="contact-message-label-row">
+                  <label for="contact-message">04 <span>TELL ME ABOUT IT</span> <b>*</b></label>
+                  <span class="contact-counter" id="contact-counter">0 / 1500</span>
+                </div>
+                <textarea id="contact-message" class="contact-input contact-textarea"
+                          name="message" rows="5" minlength="15" maxlength="1500"
+                          placeholder="What would you like to create or talk about?"
+                          required aria-describedby="contact-message-error"></textarea>
+                <span class="contact-field-error" id="contact-message-error" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="contact-form-bottom">
+              <button class="contact-submit" id="contact-submit" type="submit">
+                <span class="contact-submit-label">SEND MESSAGE</span>
+                <span class="contact-submit-arrow" aria-hidden="true">↗</span>
+                <span class="contact-submit-spinner" aria-hidden="true"></span>
+              </button>
+              <p class="contact-form-note">* Required fields. Your enquiry is processed by FormSubmit to send it to my inbox.</p>
+            </div>
+
+            <p class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
       </div>
     </section>
   </main>
