@@ -393,6 +393,155 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // LET'S CREATE: accessible validation + FormSubmit AJAX delivery.
+  // GitHub Pages is static; the form service must be activated via Outlook once.
+  const contactForm = document.getElementById("contact-form");
+  if (contactForm) {
+    const contactFields = {
+      name: document.getElementById("contact-name"),
+      phone: document.getElementById("contact-phone"),
+      email: document.getElementById("contact-email"),
+      message: document.getElementById("contact-message")
+    };
+    const contactStatus = document.getElementById("contact-status");
+    const contactSubmit = document.getElementById("contact-submit");
+    const contactSubmitLabel = contactSubmit.querySelector(".contact-submit-label");
+    const characterCounter = document.getElementById("contact-counter");
+    let isSubmittingContact = false;
+
+    function phoneIsValid(value) {
+      // Accept international prefixes, spaces, dashes and brackets.
+      // Require between 7 and 15 actual digits.
+      if (!/^[+\d\s().-]+$/.test(value)) return false;
+      const digits = value.replace(/\D/g, "");
+      return digits.length >= 7 && digits.length <= 15;
+    }
+
+    function fieldMessage(key, value) {
+      if (!value) return {
+        name: "Please enter your name.",
+        phone: "Please enter your phone number.",
+        email: "Please enter your email address.",
+        message: "Please tell me a little about your enquiry."
+      }[key];
+      if (key === "name" && value.length < 2)
+        return "Your name should have at least 2 characters.";
+      if (key === "phone" && !phoneIsValid(value))
+        return "Enter a valid phone number (7–15 digits).";
+      if (key === "email" && !contactFields.email.validity.valid)
+        return "Please enter a valid email address.";
+      if (key === "message" && value.length < 15)
+        return "Please write at least 15 characters.";
+      return "";
+    }
+
+    function validateContactField(key, showError = true) {
+      const input = contactFields[key];
+      const wrapper = input.closest(".contact-field");
+      const errorElement = document.getElementById(`contact-${key}-error`);
+      const message = fieldMessage(key, input.value.trim());
+      if (showError) {
+        wrapper.classList.toggle("has-error", Boolean(message));
+        input.setAttribute("aria-invalid", String(Boolean(message)));
+        errorElement.textContent = message;
+      }
+      return !message;
+    }
+
+    function showContactStatus(message, type) {
+      contactStatus.textContent = message;
+      contactStatus.classList.remove("is-success", "is-error", "is-visible");
+      if (message) {
+        contactStatus.classList.add("is-visible", `is-${type}`);
+      }
+    }
+
+    Object.entries(contactFields).forEach(([key, field]) => {
+      field.addEventListener("blur", () => validateContactField(key));
+      field.addEventListener("input", () => {
+        if (key === "message") {
+          characterCounter.textContent = `${field.value.length} / 1500`;
+        }
+        if (field.closest(".contact-field").classList.contains("has-error")) {
+          validateContactField(key);
+        }
+        if (contactStatus.classList.contains("is-visible")) {
+          showContactStatus("", "");
+        }
+      });
+    });
+
+    contactForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (isSubmittingContact) return;
+
+      let allValid = true;
+      for (const key of Object.keys(contactFields)) {
+        if (!validateContactField(key)) allValid = false;
+      }
+      if (!allValid) {
+        const firstInvalid = contactForm.querySelector('.contact-input[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+        showContactStatus("Please check the highlighted fields before sending.", "error");
+        return;
+      }
+
+      // No API token is needed. The email recipient confirms the first activation email.
+      const payload = {
+        name: contactFields.name.value.trim(),
+        phone: contactFields.phone.value.trim(),
+        email: contactFields.email.value.trim(),
+        message: contactFields.message.value.trim(),
+        _replyto: contactFields.email.value.trim(),
+        _subject: "New enquiry — Frankie Photography",
+        _template: "table",
+        _honey: contactForm.elements.namedItem("_honey").value
+      };
+
+      isSubmittingContact = true;
+      contactSubmit.disabled = true;
+      contactSubmit.classList.add("is-sending");
+      contactSubmitLabel.textContent = "SENDING...";
+      showContactStatus("", "");
+
+      try {
+        const response = await fetch(
+          "https://formsubmit.co/ajax/horrocks984@outlook.com",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        if (result.success === false || result.success === "false") {
+          throw new Error(result.message || "Form submission was not accepted");
+        }
+
+        contactForm.reset();
+        characterCounter.textContent = "0 / 1500";
+        Object.values(contactFields).forEach((field) => {
+          field.setAttribute("aria-invalid", "false");
+          field.closest(".contact-field").classList.remove("has-error");
+          document.getElementById(`${field.id}-error`).textContent = "";
+        });
+        showContactStatus("Message submitted. Thank you for getting in touch — I'll respond as soon as I can.", "success");
+      } catch (error) {
+        console.error("Contact form submission failed:", error);
+        showContactStatus("Your message could not be submitted just now. Please try again in a moment.", "error");
+      } finally {
+        isSubmittingContact = false;
+        contactSubmit.disabled = false;
+        contactSubmit.classList.remove("is-sending");
+        contactSubmitLabel.textContent = "SEND MESSAGE";
+      }
+    });
+  }
+
   // Hamburger intentionally remains a placeholder for later.
   console.log("Frankie Portfolio and immersive gallery loaded.");
 });
