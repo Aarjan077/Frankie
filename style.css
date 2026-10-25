@@ -457,3 +457,252 @@ html[data-theme="dark"] .gallery-card-number {
     transition: none !important;
   }
 }
+
+/* ==========================================================
+   ABOUT FRANKIE — FIRST-PERSON THREE-PHOTO STORY
+   Nothing outside the About section is changed.
+========================================================== */
+.about-section {
+  padding: clamp(85px, 9vw, 135px) 7% clamp(100px, 10vw, 145px);
+  display: block;
+  overflow: hidden;
+}
+
+.about-inner {
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+.about-heading {
+  text-align: center;
+}
+
+.about-heading h2 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(62px, 9vw, 126px);
+  line-height: 1.07;
+  margin: 15px 0 0;
+}
+
+.about-heading-rule {
+  display: block;
+  height: 1px;
+  width: 56px;
+  background: currentColor;
+  opacity: .4;
+  margin: 25px auto 0;
+}
+
+/* Three tall portraits: taller centre image, balanced side frames. */
+.about-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 18px);
+  width: min(100%, 760px);
+  margin: clamp(38px, 5vw, 68px) auto 0;
+}
+
+.about-photo {
+  margin: 0;
+  min-width: 0;
+}
+
+.about-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 4.5; /* Both side photos are tall, portrait-oriented. */
+  overflow: hidden;
+  background: #f2f2f0;
+  border: 1px solid rgba(0,0,0,.05);
+  box-shadow: 0 12px 30px rgba(0,0,0,.065);
+  transition: box-shadow .5s ease, transform .5s ease;
+}
+
+/* The middle portrait is intentionally taller than both side photos. */
+.about-photo-center .about-photo-frame {
+  aspect-ratio: 2 / 5.15;
+}
+
+.about-photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Entire original photo remains visible. */
+  object-position: center;
+  filter: none; /* Preserve original uploaded colours. */
+  transition: transform .8s cubic-bezier(.2,.8,.2,1);
+}
+
+.about-photo:hover .about-photo-frame {
+  box-shadow: 0 20px 42px rgba(0,0,0,.11);
+  transform: translateY(-4px);
+}
+
+.about-photo:hover img {
+  transform: scale(1.025);
+}
+
+.about-photo figcaption {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 9px;
+  letter-spacing: 1.25px;
+  color: #777;
+}
+
+.about-photo-placeholder {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.8vw, 26px);
+  color: #999;
+  letter-spacing: 1px;
+}
+
+.about-photo-frame.is-missing img { display: none; }
+.about-photo-frame.is-missing .about-photo-placeholder { display: flex; }
+
+/* The same staggered entrance animation: left, up, right. */
+.about-photo-left.reveal {
+  opacity: 0;
+  transform: translate3d(-55px, 12px, 0);
+  transition: opacity 1s ease .05s, transform 1.05s cubic-bezier(.2,.8,.2,1) .05s;
+}
+
+.about-photo-center.reveal {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0);
+  transition: opacity 1s ease .2s, transform 1.05s cubic-bezier(.2,.8,.2,1) .2s;
+}
+
+.about-photo-right.reveal {
+  opacity: 0;
+  transform: translate3d(55px, 12px, 0);
+  transition: opacity 1s ease .35s, transform 1.05s cubic-bezier(.2,.8,.2,1) .35s;
+}
+
+.about-photo.reveal.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Second: editorial first-person text below the photographs. */
+.about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  align-items: end;
+  column-gap: clamp(36px, 8vw, 130px);
+  padding: clamp(65px, 7vw, 100px) 2% 0;
+}
+
+.about-lead {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4.4vw, 65px);
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+
+.about-lead em,
+.about-closing em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.about-small-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 2.7px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+.about-intro-side p {
+  font-size: clamp(13px, 1.3vw, 15px);
+  line-height: 1.95;
+  color: #666;
+  max-width: 420px;
+}
+
+.about-closing {
+  max-width: 810px;
+  text-align: center;
+  margin: clamp(75px, 8vw, 115px) auto 0;
+}
+
+.about-closing p {
+  font-family: var(--serif);
+  font-size: clamp(29px, 3.8vw, 51px);
+  line-height: 1.26;
+}
+
+.about-signature {
+  display: block;
+  margin-top: 30px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #888;
+}
+
+/* Dark mode for About only. */
+html[data-theme="dark"] .about-photo-frame {
+  background: #252629;
+  border-color: rgba(255,255,255,.09);
+  box-shadow: 0 12px 30px rgba(0,0,0,.3);
+}
+
+html[data-theme="dark"] .about-intro-side p,
+html[data-theme="dark"] .about-photo figcaption,
+html[data-theme="dark"] .about-signature,
+html[data-theme="dark"] .about-photo-placeholder {
+  color: #aaaeb3;
+}
+
+@media (max-width: 850px) {
+  .about-intro {
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+  }
+  .about-intro-side { max-width: 600px; }
+}
+
+@media (max-width: 600px) {
+  .about-section { padding: 80px 5% 100px; }
+  .about-heading h2 { font-size: clamp(54px, 12vw, 78px); }
+  .about-photo-grid { gap: 9px; margin-top: 36px; }
+  .about-photo figcaption {
+    font-size: 7px;
+    letter-spacing: .45px;
+    line-height: 1.5;
+  }
+  .about-photo-frame { aspect-ratio: 2 / 4.5; }
+  .about-photo-center .about-photo-frame { aspect-ratio: 2 / 5.15; }
+  .about-intro { padding: 62px 0 0; }
+  .about-photo-left.reveal { transform: translate3d(-24px, 8px, 0); }
+  .about-photo-right.reveal { transform: translate3d(24px, 8px, 0); }
+  .about-closing { margin-top: 75px; }
+}
+
+@media (max-width: 380px) {
+  .about-photo-grid { gap: 7px; }
+  .about-photo figcaption { font-size: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-photo.reveal,
+  .about-photo.reveal.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .about-photo:hover .about-photo-frame,
+  .about-photo:hover img { transform: none; }
+}

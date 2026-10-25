@@ -145,6 +145,17 @@ document.addEventListener("DOMContentLoaded", () => {
   music.addEventListener("error", () => { wantsMusic = false; musicUI(false); musicTooltip.textContent = "AUDIO NOT FOUND"; });
   musicUI(false);
 
+  // ABOUT FRANKIE: show elegant placeholders until these three photos are uploaded.
+  document.querySelectorAll(".about-photo-frame").forEach(frame => {
+    const image = frame.querySelector("img");
+    if (!image) return;
+    const markMissing = () => frame.classList.add("is-missing");
+    const markLoaded = () => frame.classList.remove("is-missing");
+    image.addEventListener("error", markMissing);
+    image.addEventListener("load", markLoaded);
+    if (image.complete) image.naturalWidth ? markLoaded() : markMissing();
+  });
+
   // EXISTING REVEAL-ON-SCROLL ANIMATION
   const reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && !reducedMotion.matches) {
