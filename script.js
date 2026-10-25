@@ -381,11 +381,206 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetId = link.getAttribute("href");
       const target = document.querySelector(targetId);
       if (!target) return;
+      if (link.closest(".site-menu")) return; // The overlay handles its own links after closing.
       event.preventDefault();
       if (targetId === "#gallery") { openGallery(); return; }
       target.scrollIntoView({ behavior:reducedMotion.matches ? "auto" : "smooth", block:"start" });
     });
   });
+
+  // ========================================================
+  //  FULL-SCREEN HAMBURGER MENU — animated from top navigation
+  //  All controls inside the menu operate the existing ones.
+  // ========================================================
+  const menuButton = document.getElementById("menu-button");
+  const siteMenu = document.getElementById("site-menu");
+  const menuClose = document.getElementById("site-menu-close");
+  const menuLinks = [...siteMenu.querySelectorAll(".site-menu-link")];
+  const menuMotionItems = [...siteMenu.querySelectorAll(".site-menu-motion")];
+  const menuMusicToggle = document.getElementById("menu-music-toggle");
+  const menuThemeToggle = document.getElementById("menu-theme-toggle");
+  const menuMusicStatus = document.getElementById("menu-music-status");
+  const menuThemeStatus = document.getElementById("menu-theme-status");
+  let menuIsOpen = false;
+  let menuIsAnimating = false;
+  let menuFinishTimer = null;
+  const menuDuration = 720;
+
+  function syncMenuSwitches() {
+    const playing = musicToggle.getAttribute("aria-pressed") === "true";
+    const dark = themeToggle.getAttribute("aria-checked") === "true";
+    menuMusicToggle.setAttribute("aria-pressed", String(playing));
+    menuThemeToggle.setAttribute("aria-checked", String(dark));
+    menuThemeToggle.setAttribute("aria-label", dark ? "Light mode" : "Dark mode");
+    menuMusicStatus.textContent = playing ? "ON" : "OFF";
+    menuThemeStatus.textContent = dark ? "DARK" : "LIGHT";
+  }
+  const switchObserver = new MutationObserver(syncMenuSwitches);
+  switchObserver.observe(musicToggle, { attributes: true, attributeFilter: ["aria-pressed"] });
+  switchObserver.observe(themeToggle, { attributes: true, attributeFilter: ["aria-checked"] });
+  syncMenuSwitches();
+
+  // The controls in the slide-out are proxies for the original music/theme buttons.
+  menuMusicToggle.addEventListener("click", () => musicToggle.click());
+  menuThemeToggle.addEventListener("click", () => themeToggle.click());
+
+  function measureMenuFlights() {
+    const burger = menuButton.getBoundingClientRect();
+    const originX = burger.left + burger.width / 2;
+    const originY = burger.top + burger.height / 2;
+    siteMenu.classList.add("is-measuring");
+    menuMotionItems.forEach((item, i) => {
+      const rect = item.getBoundingClientRect();
+      item.style.setProperty("--menu-from-x", `${originX - rect.right}px`);
+      item.style.setProperty("--menu-from-y", `${originY - (rect.top + rect.height / 2)}px`);
+      item.style.setProperty("--enter-delay", `${195 + i * 65}ms`);
+    });
+    siteMenu.classList.remove("is-measuring");
+  }
+
+  // Duplicate labels travel from the centred navigation into the hamburger.
+  // The originals remain in the document; they aren't moved or replaced.
+  function animateNavFlight(reverse = false) {
+    if (reducedMotion.matches || typeof Element.prototype.animate !== "function") return;
+    const burger = menuButton.getBoundingClientRect();
+    const targetX = burger.left + burger.width / 2;
+    const targetY = burger.top + burger.height / 2;
+    const sources = [...document.querySelector(".top-navigation").children];
+    sources.forEach((source, index) => {
+      const rect = source.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      const computed = getComputedStyle(source);
+      const clone = source.cloneNode(true);
+      clone.removeAttribute("id");
+      clone.querySelectorAll("[id]").forEach(el => el.removeAttribute("id"));
+      clone.setAttribute("aria-hidden", "true");
+      clone.tabIndex = -1;
+      clone.classList.add("menu-flight");
+      Object.assign(clone.style, {
+        position: "fixed",
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+        fontFamily: computed.fontFamily,
+        fontSize: computed.fontSize,
+        color: computed.color,
+        zIndex: "950"
+      });
+      document.body.appendChild(clone);
+      const shiftX = targetX - (rect.left + rect.width / 2);
+      const shiftY = targetY - (rect.top + rect.height / 2);
+      const frames = reverse ? [
+        { transform: `translate(${shiftX}px,${shiftY}px) scale(.25)`, opacity: 0 },
+        { transform: "translate(0,0) scale(1)", opacity: 1 }
+      ] : [
+        { transform: "translate(0,0) scale(1)", opacity: 1 },
+        { transform: `translate(${shiftX}px,${shiftY}px) scale(.25)`, opacity: 0 }
+      ];
+      const animation = clone.animate(frames, {
+        duration: reverse ? 420 : 470,
+        delay: reverse ? (sources.length - 1 - index) * 28 : index * 35,
+        easing: "cubic-bezier(.22,.75,.24,1)",
+        fill: "both"
+      });
+      animation.finished.catch(() => {}).finally(() => clone.remove());
+    });
+  }
+
+  function openMenu() {
+    if (menuIsOpen || menuIsAnimating || galleryOpen() || lightbox.classList.contains("active")) return;
+    menuIsOpen = true;
+    menuIsAnimating = true;
+    clearTimeout(menuFinishTimer);
+    syncMenuSwitches();
+    measureMenuFlights();
+    animateNavFlight(false);
+    document.body.classList.add("menu-visible", "menu-morphing");
+    menuButton.setAttribute("aria-expanded", "true");
+    menuButton.setAttribute("aria-label", "Navigation menu open");
+    siteMenu.inert = false;
+    siteMenu.setAttribute("aria-hidden", "false");
+    siteMenu.classList.remove("is-closing");
+    // Defer by a frame so CSS can animate from the off-screen position.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        siteMenu.classList.add("is-open");
+        menuClose.focus({ preventScroll: true });
+      });
+    });
+    menuFinishTimer = setTimeout(() => { menuIsAnimating = false; }, reducedMotion.matches ? 0 : menuDuration + 170);
+  }
+
+  function closeMenu(thenNavigate = null) {
+    if (!menuIsOpen) return;
+    menuIsOpen = false;
+    menuIsAnimating = true;
+    clearTimeout(menuFinishTimer);
+    siteMenu.classList.add("is-closing");
+    siteMenu.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Open navigation menu");
+    if (!reducedMotion.matches) {
+      setTimeout(() => animateNavFlight(true), 150);
+    }
+    const duration = reducedMotion.matches ? 15 : menuDuration;
+    menuFinishTimer = setTimeout(() => {
+      siteMenu.classList.remove("is-closing");
+      siteMenu.setAttribute("aria-hidden", "true");
+      siteMenu.inert = true;
+      document.body.classList.remove("menu-visible", "menu-morphing");
+      menuIsAnimating = false;
+      menuButton.focus({ preventScroll: true });
+      if (typeof thenNavigate === "function") thenNavigate();
+    }, duration);
+  }
+
+  menuButton.addEventListener("click", openMenu);
+  menuClose.addEventListener("click", () => closeMenu());
+
+  menuLinks.forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      const hash = link.getAttribute("href");
+      closeMenu(() => {
+        if (hash === "#gallery") {
+          openGallery();
+        } else {
+          const target = document.querySelector(hash);
+          if (target) {
+            target.scrollIntoView({
+              behavior: reducedMotion.matches ? "auto" : "smooth",
+              block: "start"
+            });
+          }
+        }
+      });
+    });
+  });
+
+  // Trap keyboard focus inside the menu and close with Escape.
+  document.addEventListener("keydown", event => {
+    if (!menuIsOpen) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closeMenu();
+    } else if (event.key === "Tab") {
+      const controls = [menuClose, ...menuLinks, menuMusicToggle, menuThemeToggle];
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (!controls.includes(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  }, true);
 
   // Escape, arrow/page keys and keyboard focus in the gallery.
   document.addEventListener("keydown", event => {
@@ -557,6 +752,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Hamburger intentionally remains a placeholder for later.
-  console.log("Frankie Portfolio and immersive gallery loaded.");
+  console.log("Frankie Portfolio, gallery, contact form and animated hamburger menu loaded.");
 });

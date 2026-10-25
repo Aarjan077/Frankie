@@ -90,10 +90,70 @@
         </span>
       </button>
     </nav>
-    <button class="menu-button entrance-nav" type="button" aria-label="Menu coming soon" title="Menu coming soon">
+    <button class="menu-button entrance-nav" id="menu-button" type="button" aria-label="Open navigation menu" aria-controls="site-menu" aria-expanded="false" aria-haspopup="dialog" title="Open navigation menu">
       <span></span><span></span><span></span>
     </button>
   </header>
+
+  <!-- IMMERSIVE NAVIGATION: only the hamburger feature is new. -->
+  <aside class="site-menu" id="site-menu" role="dialog" aria-modal="true"
+         aria-label="Frankie navigation" aria-hidden="true" inert>
+    <div class="site-menu-topline">
+      <span class="site-menu-masthead">FRANKIE <span>/</span> NAVIGATION</span>
+      <button class="site-menu-close" id="site-menu-close" type="button" aria-label="Close navigation menu">
+        <span class="site-menu-close-label">CLOSE</span>
+        <span class="site-menu-close-cross" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+
+    <div class="site-menu-layout">
+      <div class="site-menu-editorial" aria-hidden="true">
+        <span class="site-menu-edition">PHOTOGRAPHY PORTFOLIO — 2026</span>
+        <span class="site-menu-brand">FRANKIE<span>.</span></span>
+        <p>Moments captured.<br>Stories preserved.</p>
+        <span class="site-menu-side-note">AN EYE FOR THE UNEXPECTED ↗</span>
+      </div>
+
+      <div class="site-menu-right">
+        <p class="site-menu-overline">EXPLORE / 01 — 05</p>
+        <nav class="site-menu-links" aria-label="Full-screen navigation">
+          <a class="site-menu-link site-menu-motion" href="#about">
+            <span class="site-menu-index">01</span><span class="site-menu-link-label">About</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="site-menu-link site-menu-motion" href="#gallery">
+            <span class="site-menu-index">02</span><span class="site-menu-link-label">Gallery</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="site-menu-link site-menu-motion" href="#skills">
+            <span class="site-menu-index">03</span><span class="site-menu-link-label">Skills &amp; Qualification</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="site-menu-link site-menu-motion" href="#socials">
+            <span class="site-menu-index">04</span><span class="site-menu-link-label">Socials</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="site-menu-link site-menu-motion" href="#contact">
+            <span class="site-menu-index">05</span><span class="site-menu-link-label">Contact</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
+          </a>
+        </nav>
+        <div class="site-menu-preferences">
+          <p class="site-menu-overline">SET THE ATMOSPHERE</p>
+          <div class="site-menu-preference-row site-menu-motion">
+            <button id="menu-music-toggle" class="site-menu-setting" type="button" aria-pressed="false">
+              <span class="site-menu-setting-label">Music <span class="site-menu-setting-description">Background soundtrack</span></span>
+              <span class="site-menu-setting-right"><span id="menu-music-status">OFF</span><span class="site-menu-setting-indicator" aria-hidden="true"></span></span>
+            </button>
+          </div>
+          <div class="site-menu-preference-row site-menu-motion">
+            <button id="menu-theme-toggle" class="site-menu-setting" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+              <span class="site-menu-setting-label">Appearance <span class="site-menu-setting-description">Light / Dark</span></span>
+              <span class="site-menu-setting-right"><span id="menu-theme-status">LIGHT</span><span class="site-menu-theme-track" aria-hidden="true"><span class="site-menu-theme-thumb"></span></span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="site-menu-bottomline" aria-hidden="true">
+      <span>BEHIND THE FRAME</span><span>© FRANKIE 2026</span>
+    </div>
+  </aside>
 
   <main>
     <!-- Existing hero and 3 curved photos: unchanged -->
