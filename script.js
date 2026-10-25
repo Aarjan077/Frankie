@@ -167,19 +167,34 @@ document.addEventListener("DOMContentLoaded", () => {
     reveals.forEach(el => observer.observe(el));
   } else reveals.forEach(el => el.classList.add("visible"));
 
-  // GALLERY IMAGE SLOTS: the ONLY new photos needed are gallery-1.jpg to gallery-10.jpg
+  // GALLERY PHOTOGRAPH TITLES: matching gallery-1.jpg through gallery-10.jpg.
+  // Titles appear beneath the enlarged photograph in the lightbox.
+  const galleryTitles = [
+    "Greyhound Portrait",
+    "Blue in Motion",
+    "Elephant's Gaze",
+    "Still Waters",
+    "Coastal Wanderers",
+    "Shoreline Treasures",
+    "Fox Family",
+    "Midair Catch",
+    "Looking Beyond",
+    "Between Shadows"
+  ];
+
   const galleryStack = document.getElementById("gallery-stack");
   for (let i = 1; i <= 10; i++) {
     const n = String(i).padStart(2, "0");
+    const title = galleryTitles[i - 1];
     const card = document.createElement("button");
     card.type = "button";
     card.className = "gallery-stack-card";
     card.dataset.image = `gallery-${i}.jpg`;
-    card.dataset.title = `${n} / Untitled`;
-    card.setAttribute("aria-label", `Enlarge photograph ${i}`);
+    card.dataset.title = `${n} / ${title}`;
+    card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}`);
     const img = document.createElement("img");
     img.src = `gallery-${i}.jpg`;
-    img.alt = `Gallery photograph ${i}`;
+    img.alt = title;
     img.loading = i <= 2 ? "eager" : "lazy";
     img.decoding = "async";
     const fallback = document.createElement("span");
