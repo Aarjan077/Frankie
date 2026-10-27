@@ -203,7 +203,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = document.createElement("span");
     count.className = "gallery-card-number";
     count.textContent = `${n} / 10`;
-    card.append(img, fallback, count);
+    // All ten photographs carry the same clear, informational prices.
+    // No payment or copyright-transfer functionality is enabled yet.
+    const priceTag = document.createElement("span");
+    priceTag.className = "gallery-card-pricing";
+    priceTag.setAttribute("aria-hidden", "true");
+    priceTag.innerHTML = '<span><small>ONE COPY</small><strong>£2.50</strong></span><span><small>COPYRIGHT</small><strong>£300</strong></span>';
+    card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}. One copy £2.50, copyright £300. All future proceeds to charity.`);
+    card.append(img, fallback, count, priceTag);
     galleryStack.appendChild(card);
   }
 
@@ -225,6 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const lightboxImg = document.getElementById("lightbox-image");
   const lightboxTitle = document.getElementById("lightbox-title");
   const lightboxDescription = document.getElementById("lightbox-description");
+  const lightboxPricing = document.getElementById("lightbox-pricing");
+  const lightboxCharityFootnote = document.getElementById("lightbox-charity-footnote");
   const lightboxClose = document.querySelector(".lightbox-close");
   let focusBeforePhoto = null;
   let lightboxTimer = null;
@@ -241,6 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxImg.alt = button.dataset.title || "Photograph";
     lightboxTitle.textContent = button.dataset.title || "Photograph";
     lightboxDescription.textContent = photoDescriptions[filename] || "";
+    const isGalleryPhoto = /^gallery-(?:[1-9]|10)\.jpg$/.test(filename);
+    lightbox.classList.toggle("is-gallery-photo", isGalleryPhoto);
+    lightboxPricing.hidden = !isGalleryPhoto;
+    lightboxCharityFootnote.hidden = !isGalleryPhoto;
     lightbox.inert = false;
     lightbox.classList.add("active");
     lightbox.setAttribute("aria-hidden", "false");
@@ -749,6 +762,99 @@ document.addEventListener("DOMContentLoaded", () => {
         contactSubmit.classList.remove("is-sending");
         contactSubmitLabel.textContent = "SEND MESSAGE";
       }
+    });
+  }
+
+  // Donation form preview: validates locally, but does not collect money or send data.
+  const donorForm = document.getElementById("donation-interest-form");
+  if (donorForm) {
+    const donorFields = {
+      name: document.getElementById("donor-name"),
+      email: document.getElementById("donor-email"),
+      amount: document.getElementById("donor-amount")
+    };
+    const presetButtons = Array.from(donorForm.querySelectorAll(".donation-amount-choice"));
+    const previewStatus = document.getElementById("donation-preview-status");
+    const currencyFormatter = new Intl.NumberFormat("en-GB", {
+      style: "currency", currency: "GBP", minimumFractionDigits: 2
+    });
+
+    function donorError(key) {
+      const value = donorFields[key].value.trim();
+      if (key === "name") {
+        if (!value) return "Please enter your name.";
+        if (value.length < 2) return "Please enter at least 2 characters.";
+      }
+      if (key === "email") {
+        if (!value) return "Please enter your email address.";
+        if (!donorFields.email.validity.valid) return "Please enter a valid email address.";
+      }
+      if (key === "amount") {
+        if (!value) return "Please enter or select an amount.";
+        const amount = Number(value);
+        if (!Number.isFinite(amount) || amount < 0.01 || amount > 1000000 ||
+            !/^\d+(?:\.\d{1,2})?$/.test(value)) {
+          return "Enter an amount between £0.01 and £1,000,000 (up to 2 decimals).";
+        }
+      }
+      return "";
+    }
+
+    function validateDonorField(key) {
+      const field = donorFields[key];
+      const error = donorError(key);
+      field.closest(".contact-field").classList.toggle("has-error", Boolean(error));
+      field.setAttribute("aria-invalid", error ? "true" : "false");
+      document.getElementById(`donor-${key}-error`).textContent = error;
+      return !error;
+    }
+
+    function clearDonorPreview() {
+      previewStatus.textContent = "";
+      previewStatus.className = "contact-status donation-preview-status";
+    }
+
+    function syncPreset() {
+      const current = Number(donorFields.amount.value);
+      presetButtons.forEach(button => {
+        const selected = donorFields.amount.value.trim() !== "" &&
+          Number(button.dataset.amount) === current;
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+
+    presetButtons.forEach(button => button.addEventListener("click", () => {
+      donorFields.amount.value = button.dataset.amount;
+      syncPreset();
+      validateDonorField("amount");
+      clearDonorPreview();
+    }));
+
+    Object.entries(donorFields).forEach(([key, field]) => {
+      field.addEventListener("input", () => {
+        if (key === "amount") syncPreset();
+        if (field.closest(".contact-field").classList.contains("has-error")) {
+          validateDonorField(key);
+        }
+        clearDonorPreview();
+      });
+      field.addEventListener("blur", () => {
+        if (field.value.trim()) validateDonorField(key);
+      });
+    });
+
+    donorForm.addEventListener("submit", event => {
+      event.preventDefault(); // Deliberately never transmit or charge anything.
+      const valid = Object.keys(donorFields).map(validateDonorField).every(Boolean);
+      if (!valid) {
+        const firstInvalid = donorForm.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) firstInvalid.focus();
+        clearDonorPreview();
+        return;
+      }
+      const formattedAmount = currencyFormatter.format(Number(donorFields.amount.value));
+      previewStatus.textContent = `Preview: ${formattedAmount} — your donation is not submitted or charged. Payment links are coming soon.`;
+      previewStatus.className = "contact-status donation-preview-status is-visible is-success";
     });
   }
 

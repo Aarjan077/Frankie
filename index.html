@@ -449,6 +449,145 @@
         </div>
       </div>
     </section>
+
+    <!-- Support & charity: coming soon, no payment collection enabled -->
+    <section class="donation-section" id="support" aria-labelledby="donation-heading">
+      <div class="donation-inner">
+        <div class="donation-top reveal">
+          <span class="donation-eyebrow">07 / GIVING BACK</span>
+          <span class="donation-availability"><span class="donation-status-dot" aria-hidden="true"></span> COMING SOON</span>
+        </div>
+
+        <div class="donation-introduction reveal">
+          <h2 id="donation-heading">A little support.<br><em>A bigger purpose.</em></h2>
+          <p>Photography has given me a way to see the world differently. In time, I'd love to use that journey to give something back. A space to support my work is coming soon.</p>
+        </div>
+
+        <div class="donation-bottom-grid">
+          <div class="donation-support-card reveal">
+            <span class="donation-card-index">01 / SUPPORT MY WORK</span>
+            <div class="donation-card-content">
+              <h3>Support the journey.</h3>
+              <p>A way to support future projects, new ideas and the stories still waiting to be told.</p>
+            </div>
+            <div class="donation-coming-soon" aria-label="Donations not yet available">
+              <span>DONATIONS COMING SOON</span>
+              <span aria-hidden="true">↗</span>
+            </div>
+            <span class="donation-card-footnote">No payments are being accepted at this time.</span>
+          </div>
+
+          <div class="donation-charity-card reveal">
+            <span class="donation-card-index">02 / MY CHARITY GOAL</span>
+            <h3>Giving back,<br><em>one step at a time.</em></h3>
+            <p>My personal goal is to donate £30,000 to charity. Here's where that journey begins.</p>
+            <h4 class="donation-goal-heading">GOAL: £30,000</h4>
+            <div class="donation-progress-visual">
+              <div class="donation-progress-marker" aria-hidden="true">£8,000</div>
+              <div class="donation-progress-track" role="progressbar"
+                   aria-valuemin="0" aria-valuemax="30000" aria-valuenow="8000"
+                   aria-valuetext="£8,000 of £30,000; prototype contribution"
+                   aria-label="Charity contribution progress (prototype value)">
+                <span class="donation-progress-fill"></span>
+              </div>
+            </div>
+            <div class="donation-progress-labels">
+              <span>CURRENT CONTRIBUTION · PROTOTYPE</span>
+              <span>26.7% OF GOAL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Donation interest form — prototype only; no payment links or sending enabled. -->
+        <div class="donation-form-area" aria-labelledby="donation-form-heading">
+          <div class="donation-form-intro reveal">
+            <span class="donation-eyebrow">03 / YOUR SUPPORT</span>
+            <h3 id="donation-form-heading">Make a little<br><em>difference.</em></h3>
+            <span class="donation-form-intro-rule" aria-hidden="true"></span>
+            <p>Every contribution has the potential to become something meaningful. Choose an amount below and explore how donating will work when the page launches.</p>
+            <span class="donation-form-coming"><span class="donation-status-dot" aria-hidden="true"></span> PAYMENTS COMING SOON</span>
+          </div>
+
+          <div class="contact-form-panel donation-form-panel reveal">
+            <div class="contact-form-top">
+              <span>YOUR CONTRIBUTION / PREVIEW</span>
+              <span class="contact-form-decoration" aria-hidden="true">♡</span>
+            </div>
+            <form id="donation-interest-form" novalidate>
+              <div class="contact-fields-grid donation-form-fields">
+                <div class="contact-field" data-donor-field="name">
+                  <label for="donor-name">01 <span>YOUR NAME</span> <b>*</b></label>
+                  <input class="contact-input" id="donor-name" name="donorName" type="text"
+                         placeholder="What should I call you?" autocomplete="name"
+                         minlength="2" maxlength="90" required
+                         aria-describedby="donor-name-error">
+                  <span class="contact-field-error" id="donor-name-error" aria-live="polite"></span>
+                </div>
+                <div class="contact-field" data-donor-field="email">
+                  <label for="donor-email">02 <span>EMAIL ADDRESS</span> <b>*</b></label>
+                  <input class="contact-input" id="donor-email" name="donorEmail" type="email"
+                         placeholder="you@example.com" autocomplete="email"
+                         maxlength="254" required
+                         aria-describedby="donor-email-error">
+                  <span class="contact-field-error" id="donor-email-error" aria-live="polite"></span>
+                </div>
+                <div class="contact-field contact-field-full donation-amount-field" data-donor-field="amount">
+                  <label for="donor-amount">03 <span>HOW MUCH WOULD YOU LIKE TO DONATE?</span> <b>*</b></label>
+                  <div class="donation-amount-presets" role="group" aria-label="Suggested donation amounts">
+                    <button class="donation-amount-choice" type="button" data-amount="5" aria-pressed="false">£5</button>
+                    <button class="donation-amount-choice" type="button" data-amount="10" aria-pressed="false">£10</button>
+                    <button class="donation-amount-choice" type="button" data-amount="25" aria-pressed="false">£25</button>
+                    <button class="donation-amount-choice" type="button" data-amount="50" aria-pressed="false">£50</button>
+                  </div>
+                  <div class="donation-amount-input-wrap">
+                    <span class="donation-currency-sign" aria-hidden="true">£</span>
+                    <input class="contact-input donation-amount-input" id="donor-amount"
+                           name="donationAmount" type="number" inputmode="decimal"
+                           min="0.01" max="1000000" step="0.01" required
+                           placeholder="Other amount" aria-label="Donation amount in pounds"
+                           aria-describedby="donor-amount-error">
+                    <span class="donation-currency-code" aria-hidden="true">GBP</span>
+                  </div>
+                  <span class="contact-field-error" id="donor-amount-error" aria-live="polite"></span>
+                </div>
+              </div>
+
+              <div class="donation-payment-placeholder" aria-labelledby="donation-payment-heading">
+                <div class="donation-payment-heading">
+                  <span id="donation-payment-heading">04 / PAYMENT METHOD</span>
+                  <span>COMING SOON</span>
+                </div>
+                <div class="donation-payment-options" aria-label="Payment methods unavailable until launch">
+                  <div class="donation-payment-option" aria-disabled="true">
+                    <span class="donation-payment-icon" aria-hidden="true">↗</span>
+                    <span>PAYPAL</span>
+                    <span class="donation-payment-badge">SOON</span>
+                  </div>
+                  <div class="donation-payment-option" aria-disabled="true">
+                    <span class="donation-payment-icon" aria-hidden="true">◇</span>
+                    <span>CARD / STRIPE</span>
+                    <span class="donation-payment-badge">SOON</span>
+                  </div>
+                </div>
+                <p>Secure payment links will appear here when donations open. No payment details are requested.</p>
+              </div>
+
+              <div class="contact-form-bottom donation-form-bottom">
+                <button class="contact-submit donation-preview-button" type="submit">
+                  <span>PREVIEW DONATION</span>
+                  <span class="contact-submit-arrow" aria-hidden="true">↗</span>
+                </button>
+                <p class="contact-form-note">* Required fields. This is a prototype only — nothing is charged, submitted or saved.</p>
+              </div>
+              <p class="contact-status donation-preview-status" id="donation-preview-status" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+
+        <p class="donation-endnote reveal">A work in progress. Thank you for being here.</p>
+      </div>
+    </section>
+
   </main>
 
   <!-- Full-screen gallery. JS creates ten photographs: gallery-1.jpg ... gallery-10.jpg -->
@@ -468,6 +607,11 @@
       <div class="gallery-pagination" aria-live="polite" aria-atomic="true">
         <span id="gallery-current">01</span><span class="gallery-pagination-rule"></span><span>10</span>
       </div>
+      <aside class="gallery-charity-note" aria-label="Charity information">
+        <span class="gallery-charity-note-index">A GOOD CAUSE / 100%</span>
+        <p>Every sale.<br><em>Every pound.</em><br>To charity.</p>
+        <span class="gallery-charity-note-detail">ALL PROCEEDS FROM FUTURE PHOTOGRAPH SALES WILL GO TO CHARITY.</span>
+      </aside>
       <div class="gallery-vertical-controls" aria-label="Gallery controls">
         <button type="button" id="gallery-prev" aria-label="Previous photograph">↑</button>
         <button type="button" id="gallery-next" aria-label="Next photograph">↓</button>
@@ -484,6 +628,12 @@
       <div class="lightbox-info">
         <p id="lightbox-title"></p>
         <p id="lightbox-description"></p>
+        <div class="lightbox-pricing" id="lightbox-pricing" hidden aria-label="Photography prices">
+          <div class="lightbox-price"><span>ONE COPY</span><strong>£2.50</strong></div>
+          <span class="lightbox-price-divider" aria-hidden="true"></span>
+          <div class="lightbox-price"><span>COPYRIGHT</span><strong>£300</strong></div>
+        </div>
+        <p class="lightbox-charity-footnote" id="lightbox-charity-footnote" hidden>100% of future photo-sale proceeds will go to charity · Purchasing coming soon</p>
       </div>
     </div>
   </div>
