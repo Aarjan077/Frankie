@@ -1881,7 +1881,7 @@ html[data-theme="dark"] .donation-progress-fill {
 }
 
 /* =========================================================
-   CHARITY CARD ONLY: £30,000 goal with £8,000 demo pointer
+   STUDIO FUND CARD ONLY: £30,000 goal with £8,347 demo pointer
    ========================================================= */
 .donation-charity-card .donation-goal-heading {
   margin: 26px 0 0;
@@ -1898,7 +1898,7 @@ html[data-theme="dark"] .donation-progress-fill {
 .donation-charity-card .donation-progress-marker {
   position: absolute;
   top: 0;
-  left: 26.666667%;
+  left: 27.823333%;
   transform: translateX(-50%);
   padding: 7px 12px;
   color: #fff;
@@ -1924,7 +1924,7 @@ html[data-theme="dark"] .donation-progress-fill {
   background: rgba(17,17,17,.19);
 }
 .donation-charity-card .donation-progress-fill {
-  width: 26.666667%;
+  width: 27.823333%;
   background: #111;
 }
 html[data-theme="dark"] .donation-charity-card .donation-progress-marker {
