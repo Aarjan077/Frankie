@@ -210,7 +210,10 @@ document.addEventListener("DOMContentLoaded", () => {
     priceTag.setAttribute("aria-hidden", "true");
     priceTag.innerHTML = '<span><small>ONE COPY</small><strong>£2.50</strong></span><span><small>COPYRIGHT</small><strong>£300</strong></span>';
     card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}. One copy £2.50, copyright £300. Planned proceeds in aid of Cancer Research UK.`);
-    card.append(img, fallback, count, priceTag);
+    const smallTitle = document.createElement("span");
+    smallTitle.className = "gallery-card-small-title";
+    smallTitle.textContent = title;
+    card.append(img, fallback, count, smallTitle, priceTag);
     galleryStack.appendChild(card);
   }
 
@@ -290,6 +293,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let scrollFrame = null;
   let travelFrame = null;
   let resizeFrame = null;
+  // Large is the default on every fresh page load; the user's selection
+  // stays active only until this page is refreshed or closed.
+  let galleryMode = "large";
+  const largeViewButton = document.getElementById("gallery-view-large");
+  const smallViewButton = document.getElementById("gallery-view-small");
+  const galleryStageCaption = document.querySelector(".gallery-stage-caption");
+  const galleryBottomHint = document.querySelector(".gallery-bottom-hint");
   const galleryOpen = () => gallery.classList.contains("is-open");
   function cancelTravel() {
     if (travelFrame !== null) cancelAnimationFrame(travelFrame);
@@ -297,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
     galleryScroll.classList.remove("is-animating");
   }
   function measureGallery() {
+    if (galleryMode !== "large" || !cards.length) return;
     viewportHeight = galleryScroll.clientHeight;
     const pad = Math.max(0, (viewportHeight - cards[0].offsetHeight) / 2);
     galleryStack.style.paddingTop = `${pad}px`;
@@ -304,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
     centers = cards.map(card => card.offsetTop + card.offsetHeight / 2);
   }
   function updateGalleryDepth() {
-    if (!galleryOpen() || !centers.length) return;
+    if (galleryMode !== "large" || !galleryOpen() || !centers.length) return;
     const middle = galleryScroll.scrollTop + viewportHeight / 2;
     const stride = centers.length > 1 ? centers[1] - centers[0] : 1;
     let nearest = 0, minimum = Infinity;
@@ -323,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
     next.disabled = current === cards.length - 1;
   }
   function goToPhoto(index, smooth = true) {
-    if (!galleryOpen()) return;
+    if (!galleryOpen() || galleryMode !== "large" || !cards.length) return;
     index = Math.max(0, Math.min(index, cards.length - 1));
     cancelTravel();
     const target = Math.max(0, centers[index] - viewportHeight / 2);
@@ -346,6 +357,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     travelFrame = requestAnimationFrame(tick);
   }
+  function setGalleryMode(mode) {
+    if (mode !== "large" && mode !== "small") return;
+    const previousMode = galleryMode;
+    if (previousMode === mode) return;
+    cancelTravel();
+    if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
+    scrollFrame = null;
+    galleryMode = mode;
+    const isSmall = mode === "small";
+    gallery.classList.toggle("is-small", isSmall);
+    largeViewButton.classList.toggle("is-selected", !isSmall);
+    smallViewButton.classList.toggle("is-selected", isSmall);
+    largeViewButton.setAttribute("aria-pressed", String(!isSmall));
+    smallViewButton.setAttribute("aria-pressed", String(isSmall));
+    galleryStageCaption.textContent = isSmall ? "BROWSE THE COLLECTION" : "SCROLL TO EXPLORE ↓";
+    galleryBottomHint.textContent = isSmall
+      ? "SELECT A PHOTOGRAPH TO VIEW FULL SIZE"
+      : "CLICK A PHOTOGRAPH TO VIEW FULL SIZE";
+    galleryScroll.setAttribute("aria-label", isSmall
+      ? "Photography grid: browse thumbnails and open a photograph"
+      : "Photograph gallery: scroll up and down to browse");
+
+    if (isSmall) {
+      // Clear 3D / centre-focus styling so every thumbnail stays visible.
+      galleryStack.style.removeProperty("padding-top");
+      galleryStack.style.removeProperty("padding-bottom");
+      centers = [];
+      cards.forEach((card, index) => {
+        card.classList.remove("is-near", "is-active");
+        card.style.removeProperty("--depth");
+        // Load the first thumbnails promptly when the complete grid opens.
+        // Later uploads remain lazy so very large galleries stay efficient.
+        const image = card.querySelector("img");
+        if (image && index < 20) image.loading = "eager";
+      });
+      galleryCurrent.textContent = "ALL";
+      prev.disabled = true;
+      next.disabled = true;
+      galleryScroll.scrollTop = 0;
+    } else if (galleryOpen()) {
+      // Restore the old centre-focused gallery position when switching back.
+      requestAnimationFrame(() => {
+        if (!galleryOpen() || galleryMode !== "large") return;
+        measureGallery();
+        goToPhoto(current, false);
+        updateGalleryDepth();
+      });
+    }
+  }
+  largeViewButton.addEventListener("click", () => setGalleryMode("large"));
+  smallViewButton.addEventListener("click", () => setGalleryMode("small"));
+
   function openGallery() {
     if (galleryOpen()) return;
     focusBeforeGallery = document.activeElement;
@@ -355,7 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("gallery-open");
     stopWaves();
     exit.focus({ preventScroll:true });
-    requestAnimationFrame(() => { measureGallery(); goToPhoto(0, false); updateGalleryDepth(); });
+    requestAnimationFrame(() => {
+      if (galleryMode === "small") {
+        galleryScroll.scrollTop = 0;
+        galleryCurrent.textContent = "ALL";
+      } else {
+        measureGallery(); goToPhoto(0, false); updateGalleryDepth();
+      }
+    });
   }
   function closeGallery() {
     if (!galleryOpen()) return;
@@ -379,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollFrame = requestAnimationFrame(() => { scrollFrame = null; updateGalleryDepth(); });
   }, { passive:true });
   window.addEventListener("resize", () => {
-    if (!galleryOpen() || resizeFrame !== null) return;
+    if (!galleryOpen() || galleryMode === "small" || resizeFrame !== null) return;
     resizeFrame = requestAnimationFrame(() => {
       resizeFrame = null;
       cancelTravel();
@@ -421,7 +491,10 @@ document.addEventListener("DOMContentLoaded", () => {
       priceTag.className = "gallery-card-pricing";
       priceTag.setAttribute("aria-hidden", "true");
       priceTag.innerHTML = '<span><small>ONE COPY</small><strong>£2.50</strong></span><span><small>COPYRIGHT</small><strong>£300</strong></span>';
-      card.append(img, fallback, count, priceTag);
+      const smallTitle = document.createElement("span");
+      smallTitle.className = "gallery-card-small-title";
+      smallTitle.textContent = photo.title;
+      card.append(img, fallback, count, smallTitle, priceTag);
       img.addEventListener("error", () => { card.classList.add("image-missing"); card.disabled = true; });
       card.addEventListener("click", () => openPhoto(card));
       galleryStack.appendChild(card);
@@ -432,7 +505,8 @@ document.addEventListener("DOMContentLoaded", () => {
     galleryStack.querySelectorAll(".gallery-card-number").forEach((element, index) => {
       element.textContent = `${String(index + 1).padStart(2,"0")} / ${String(cards.length).padStart(2,"0")}`;
     });
-    if (galleryOpen()) requestAnimationFrame(() => { measureGallery(); updateGalleryDepth(); });
+    if (galleryOpen() && galleryMode === "large")
+      requestAnimationFrame(() => { measureGallery(); updateGalleryDepth(); });
   }
   loadPublishedPhotos();
 
@@ -652,10 +726,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (!galleryOpen()) return;
     if (event.key === "Escape") { event.preventDefault(); closeGallery(); }
-    else if (event.key === "ArrowDown" || event.key === "PageDown") { event.preventDefault(); goToPhoto(current + 1); }
-    else if (event.key === "ArrowUp" || event.key === "PageUp") { event.preventDefault(); goToPhoto(current - 1); }
-    else if (event.key === "Home") { event.preventDefault(); goToPhoto(0); }
-    else if (event.key === "End") { event.preventDefault(); goToPhoto(cards.length - 1); }
+    else if (galleryMode === "large" && (event.key === "ArrowDown" || event.key === "PageDown")) { event.preventDefault(); goToPhoto(current + 1); }
+    else if (galleryMode === "large" && (event.key === "ArrowUp" || event.key === "PageUp")) { event.preventDefault(); goToPhoto(current - 1); }
+    else if (galleryMode === "large" && event.key === "Home") { event.preventDefault(); goToPhoto(0); }
+    else if (galleryMode === "large" && event.key === "End") { event.preventDefault(); goToPhoto(cards.length - 1); }
     else if (event.key === "Tab") {
       const focusable = [...gallery.querySelectorAll('button:not(:disabled), [tabindex="0"]')];
       const first = focusable[0], last = focusable[focusable.length - 1];
