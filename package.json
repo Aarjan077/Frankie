@@ -1,0 +1,12 @@
+{
+  "name": "frankie-photography-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Frankie Photography full-stack site with a self-hosted secure gallery dashboard",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "node --env-file-if-exists=.env server.js",
+    "test": "node --check server.js && node --check script.js && node --check admin.js"
+  }
+}

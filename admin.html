@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9f9f7">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Frankie | Studio Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+  <script src="admin.js" defer></script>
+</head>
+<body>
+  <div class="admin-ambient" aria-hidden="true"><div class="ambient-circle"></div><div class="ambient-line"></div></div>
+  <header class="admin-header">
+    <a href="index.html" class="admin-logo" aria-label="Back to Frankie website">FRANKIE<span>.</span></a>
+    <div class="admin-head-actions">
+      <span class="admin-header-tag">THE STUDIO / ADMIN</span>
+      <button class="admin-theme" id="admin-theme" aria-label="Toggle admin page dark mode" type="button">◐ <span>THEME</span></button>
+      <a class="view-site" href="index.html">VIEW WEBSITE <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section id="login-section" class="login-section" aria-labelledby="login-heading">
+      <div class="login-intro">
+        <span class="eyebrow">PRIVATE ACCESS / 01</span>
+        <h1 id="login-heading">Behind<br>the <em>lens.</em></h1>
+        <p>A private space to curate your portfolio and share the stories captured along the way.</p>
+        <div class="login-line"><span></span>FRANKIE / STUDIO ARCHIVE</div>
+      </div>
+      <div class="login-panel">
+        <div class="panel-top"><span>WELCOME BACK</span><span class="tiny-spark" aria-hidden="true">✳</span></div>
+        <h2>Admin sign in</h2>
+        <p class="panel-intro">Enter your credentials to manage the gallery.</p>
+        <form id="login-form" novalidate>
+          <label for="login-username">01 / USERNAME</label>
+          <input id="login-username" name="username" autocomplete="username" placeholder="Username" required minlength="1" maxlength="128">
+          <label for="login-password">02 / PASSWORD</label>
+          <div class="password-row"><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Password" required maxlength="512"><button id="show-password" class="show-password" type="button" aria-label="Show password">SHOW</button></div>
+          <button class="button-primary" id="login-submit" type="submit"><span>SIGN IN</span><span aria-hidden="true">↗</span></button>
+          <p id="login-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+        <p class="login-footnote">For Frankie only. Public visitors cannot access the upload system.</p>
+      </div>
+    </section>
+
+    <section id="dashboard-section" class="dashboard-section" hidden aria-labelledby="dashboard-heading">
+      <div class="dashboard-heading-row">
+        <div><span class="eyebrow">PRIVATE DASHBOARD / 01</span><h1 id="dashboard-heading">Your <em>gallery.</em></h1><p>Upload new work. It will appear after the original 10 images in the public gallery.</p></div>
+        <button class="logout" id="logout-button" type="button">SIGN OUT <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="dashboard-grid">
+        <section class="upload-panel" aria-labelledby="upload-heading">
+          <div class="panel-top"><span>01 / PUBLISH NEW WORK</span><span aria-hidden="true">+</span></div>
+          <h2 id="upload-heading">A new <em>perspective.</em></h2>
+          <p class="panel-intro">Add a photograph and give it a short title. It will join the existing portfolio automatically.</p>
+          <form id="upload-form" novalidate>
+            <label for="photo-title">PHOTOGRAPH TITLE</label>
+            <input id="photo-title" name="photoTitle" type="text" placeholder="e.g. Morning Stillness" minlength="2" maxlength="80" required>
+            <label for="photo-file">PHOTOGRAPH FILE</label>
+            <label class="upload-dropzone" id="upload-dropzone" for="photo-file">
+              <span class="upload-symbol" aria-hidden="true">↥</span>
+              <span class="upload-dropzone-title" id="dropzone-name">Choose or drop a photograph</span>
+              <small>JPG, PNG or WebP · maximum 10 MB</small>
+              <input id="photo-file" name="photoFile" type="file" accept="image/jpeg,image/png,image/webp" required>
+            </label>
+            <div class="file-preview" id="file-preview" hidden><img id="preview-image" alt="Selected photograph preview"><span id="preview-name"></span></div>
+            <button class="button-primary" id="upload-submit" type="submit"><span>PUBLISH PHOTOGRAPH</span><span aria-hidden="true">↗</span></button>
+            <p id="upload-status" class="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+        <section class="library-panel" aria-labelledby="library-heading">
+          <div class="panel-top"><span>02 / YOUR PUBLISHED COLLECTION</span><span id="published-count">0 UPLOADS</span></div>
+          <h2 id="library-heading">Published <em>work.</em></h2>
+          <p class="panel-intro">Your original 10 photographs remain safely in the website. Manage your new uploads here.</p>
+          <div class="published-list" id="published-list"><p class="library-empty">New photographs will appear here after you publish them.</p></div>
+          <p id="library-status" class="form-status" role="status" aria-live="polite"></p>
+        </section>
+      </div>
+      <div class="dashboard-footnote"><span>FRANKIE / STUDIO ADMINISTRATION</span><span>ONLY YOU CAN PUBLISH OR REMOVE UPLOADED PHOTOGRAPHS</span></div>
+    </section>
+  </main>
+  <footer class="admin-footer"><span>© 2026 FRANKIE</span><span>MADE FOR THE MOMENTS THAT MATTER.</span></footer>
+</body>
+</html>

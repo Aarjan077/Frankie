@@ -2247,3 +2247,42 @@ html[data-theme="dark"] .donation-payment-option {
 @media (prefers-reduced-motion: reduce) {
   .donation-amount-choice { transition: none; }
 }
+
+
+/* =====================================================
+   ADMIN ENTRY + CHARITY PURPOSE / 2026
+   Original photography and gallery presentation unchanged
+   ===================================================== */
+.admin-entry {
+  position: absolute; right: calc(5% + 76px); top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 500; letter-spacing: .12em;
+  color: inherit; text-decoration: none; padding: 11px 14px;
+  border: 1px solid rgba(100,100,100,.28); border-radius: 100px;
+  white-space: nowrap; z-index: 2;
+  transition: background .3s, border-color .3s, transform .3s;
+}
+.admin-entry:hover { transform: translateY(calc(-50% - 2px)); background: rgba(120,120,120,.07); border-color: currentColor; }
+html[data-theme="dark"] .admin-entry { border-color: rgba(255,255,255,.24); }
+.site-menu-admin-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  border-top: 1px solid var(--menu-border); border-bottom: 1px solid var(--menu-border);
+  padding: 17px 0; margin-top: 24px; color: inherit; text-decoration: none;
+  font: 500 10px/1.5 'DM Sans', sans-serif; letter-spacing: .13em;
+}
+.site-menu-admin-link:hover { opacity: .65; }
+.cruk-section { padding: clamp(45px,7vw,110px) 7% clamp(90px,12vw,175px); position: relative; color: inherit; }
+.cruk-inner { max-width: 1340px; margin: 0 auto; }
+.cruk-rule { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid currentColor; padding-top: 20px; opacity: .55; font: 400 10px/1.5 'DM Sans', sans-serif; letter-spacing: .12em; }
+.cruk-layout { display: grid; grid-template-columns: 1.2fr .8fr; gap: clamp(40px, 8vw, 140px); margin-top: clamp(50px,7vw,100px); align-items: center; }
+.cruk-eyebrow { font: 500 10px/1.5 'DM Sans', sans-serif; letter-spacing: .17em; opacity: .6; }
+.cruk-lead h2 { margin-top: 20px; font: 400 clamp(52px,6.5vw,98px)/1.04 'Italiana', Georgia, serif; letter-spacing: -.02em; }
+.cruk-lead h2 em { font-weight: 400; }
+.cruk-story p { font: 400 14px/1.95 'DM Sans', sans-serif; margin: 0 0 20px; opacity: .78; }
+.cruk-story p strong { font-weight: 600; }
+.cruk-read-more { display: inline-flex; gap: 18px; align-items: center; color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; padding: 14px 0; margin-top: 8px; font: 500 10px/1.4 'DM Sans', sans-serif; letter-spacing: .1em; transition: gap .3s; }
+.cruk-read-more:hover { gap: 26px; }
+.cruk-story small { display: block; font: 400 10px/1.7 'DM Sans', sans-serif; opacity: .5; max-width: 440px; margin-top: 27px; }
+@media(max-width: 1000px) { .admin-entry { right: calc(3% + 69px); } }
+@media(max-width: 800px) { .admin-entry { top: 28px; right: calc(5% + 72px); transform: none; } .admin-entry:hover { transform: translateY(-2px); } .cruk-layout { grid-template-columns: 1fr; gap: 32px; } }
+@media(max-width: 480px) { .admin-entry { right: calc(5% + 58px); top: 22px; padding: 9px 10px; font-size: 8px; gap: 5px; } .admin-entry svg { width: 13px; height: 13px; } .cruk-rule { font-size: 8px; } .cruk-section { padding-left: 7%; padding-right:7%; } .cruk-lead h2 { font-size: clamp(48px,10vw,64px); } }

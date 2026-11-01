@@ -90,6 +90,7 @@
         </span>
       </button>
     </nav>
+    <a class="admin-entry entrance-nav" href="admin.html" aria-label="Frankie admin login" title="Manage gallery photographs"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span>ADMIN LOGIN</span></a>
     <button class="menu-button entrance-nav" id="menu-button" type="button" aria-label="Open navigation menu" aria-controls="site-menu" aria-expanded="false" aria-haspopup="dialog" title="Open navigation menu">
       <span></span><span></span><span></span>
     </button>
@@ -133,6 +134,7 @@
             <span class="site-menu-index">05</span><span class="site-menu-link-label">Contact</span><span class="site-menu-arrow" aria-hidden="true">↗</span>
           </a>
         </nav>
+        <a class="site-menu-admin-link site-menu-motion" href="admin.html"><span>ADMIN / MANAGE PHOTOS</span><span aria-hidden="true">↗</span></a>
         <div class="site-menu-preferences">
           <p class="site-menu-overline">SET THE ATMOSPHERE</p>
           <div class="site-menu-preference-row site-menu-motion">
@@ -193,6 +195,25 @@
         <button class="gallery-enter" type="button" data-open-gallery>
           EXPLORE THE GALLERY <span aria-hidden="true">↗</span>
         </button>
+      </div>
+    </section>
+
+    <!-- Photography sales are a separate cause from the studio-funding goal. -->
+    <section class="cruk-section" aria-labelledby="cruk-heading">
+      <div class="cruk-inner">
+        <div class="cruk-rule reveal"><span>THE PURPOSE BEHIND THE PRINTS</span><span>IN AID OF CANCER RESEARCH UK</span></div>
+        <div class="cruk-layout">
+          <div class="cruk-lead reveal">
+            <span class="cruk-eyebrow">PHOTOGRAPHY WITH PURPOSE / 100%</span>
+            <h2 id="cruk-heading">Every image.<br><em>A meaningful impact.</em></h2>
+          </div>
+          <div class="cruk-story reveal">
+            <p>I want my photography to make a difference beyond the frame. When print and copyright sales launch, my intention is to donate 100% of the sale proceeds in aid of <strong>Cancer Research UK.</strong></p>
+            <p>Cancer Research UK helps fund scientists, doctors and nurses working to improve our understanding of cancer, develop treatments and share trusted cancer information.</p>
+            <a class="cruk-read-more" href="https://www.cancerresearchuk.org/about-us" target="_blank" rel="noopener noreferrer">LEARN ABOUT CANCER RESEARCH UK <span aria-hidden="true">↗</span></a>
+            <small>This is an independently proposed fundraiser, not an official Cancer Research UK partnership. Sales are not active; fundraising arrangements are subject to confirmation. The separate studio fund supports opportunities for emerging photographers.</small>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -480,7 +501,7 @@
           <div class="donation-charity-card reveal">
             <span class="donation-card-index">02 / MY STUDIO GOAL</span>
             <h3>Making space<br><em>for new talent.</em></h3>
-            <p>My goal is to open a photography studio that offers work opportunities to aspiring photographers. This studio fund is separate from the charity supported by photograph sales.</p>
+            <p>My goal is to open a photography studio where aspiring photographers can develop their skills and find work opportunities. This personal studio fund is completely separate from the photograph-sales fundraiser in aid of Cancer Research UK.</p>
             <h4 class="donation-goal-heading">GOAL: £30,000</h4>
             <div class="donation-progress-visual">
               <div class="donation-progress-marker" aria-hidden="true">£8,347</div>
@@ -605,12 +626,12 @@
       </div>
       <p class="gallery-stage-caption" aria-hidden="true">SCROLL TO EXPLORE ↓</p>
       <div class="gallery-pagination" aria-live="polite" aria-atomic="true">
-        <span id="gallery-current">01</span><span class="gallery-pagination-rule"></span><span>10</span>
+        <span id="gallery-current">01</span><span class="gallery-pagination-rule"></span><span id="gallery-total">10</span>
       </div>
       <aside class="gallery-charity-note" aria-label="Charity information">
         <span class="gallery-charity-note-index">A GOOD CAUSE / 100%</span>
-        <p>Every sale.<br><em>Every pound.</em><br>To charity.</p>
-        <span class="gallery-charity-note-detail">ALL PROCEEDS FROM FUTURE PHOTOGRAPH SALES WILL GO TO CHARITY.</span>
+        <p>Every sale.<br><em>Every pound.</em><br>For research.</p>
+        <span class="gallery-charity-note-detail">PLANNED: 100% OF PHOTOGRAPH SALE PROCEEDS IN AID OF CANCER RESEARCH UK. SALES COMING SOON.</span>
       </aside>
       <div class="gallery-vertical-controls" aria-label="Gallery controls">
         <button type="button" id="gallery-prev" aria-label="Previous photograph">↑</button>
@@ -633,7 +654,7 @@
           <span class="lightbox-price-divider" aria-hidden="true"></span>
           <div class="lightbox-price"><span>COPYRIGHT</span><strong>£300</strong></div>
         </div>
-        <p class="lightbox-charity-footnote" id="lightbox-charity-footnote" hidden>100% of future photo-sale proceeds will go to charity · Purchasing coming soon</p>
+        <p class="lightbox-charity-footnote" id="lightbox-charity-footnote" hidden>Planned: 100% of photo-sale proceeds in aid of Cancer Research UK · Sales coming soon</p>
       </div>
     </div>
   </div>

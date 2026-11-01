@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     priceTag.className = "gallery-card-pricing";
     priceTag.setAttribute("aria-hidden", "true");
     priceTag.innerHTML = '<span><small>ONE COPY</small><strong>£2.50</strong></span><span><small>COPYRIGHT</small><strong>£300</strong></span>';
-    card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}. One copy £2.50, copyright £300. All future proceeds to charity.`);
+    card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}. One copy £2.50, copyright £300. Planned proceeds in aid of Cancer Research UK.`);
     card.append(img, fallback, count, priceTag);
     galleryStack.appendChild(card);
   }
@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxImg.alt = button.dataset.title || "Photograph";
     lightboxTitle.textContent = button.dataset.title || "Photograph";
     lightboxDescription.textContent = photoDescriptions[filename] || "";
-    const isGalleryPhoto = /^gallery-(?:[1-9]|10)\.jpg$/.test(filename);
+    const isGalleryPhoto = button.classList.contains("gallery-stack-card");
     lightbox.classList.toggle("is-gallery-photo", isGalleryPhoto);
     lightboxPricing.hidden = !isGalleryPhoto;
     lightboxCharityFootnote.hidden = !isGalleryPhoto;
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // IMMERSIVE VERTICAL GALLERY (from the supplied reference)
   const gallery = document.getElementById("gallery");
   const galleryScroll = document.getElementById("gallery-scroll");
-  const cards = [...galleryStack.querySelectorAll(".gallery-stack-card")];
+  let cards = [...galleryStack.querySelectorAll(".gallery-stack-card")];
   const galleryCurrent = document.getElementById("gallery-current");
   const prev = document.getElementById("gallery-prev");
   const next = document.getElementById("gallery-next");
@@ -387,6 +387,54 @@ document.addEventListener("DOMContentLoaded", () => {
       goToPhoto(current, false);
     });
   });
+
+  // Additional photographs published by Frankie via the private backend.
+  // On GitHub Pages this endpoint is unavailable; the original 10 still work.
+  async function loadPublishedPhotos() {
+    let response;
+    try { response = await fetch("api/photos", { cache:"no-store" }); }
+    catch { return; }
+    if (!response.ok) return;
+    let uploaded;
+    try { uploaded = await response.json(); }
+    catch { return; }
+    if (!Array.isArray(uploaded)) return;
+    for (const photo of uploaded) {
+      if (!photo || typeof photo.url !== "string" || !photo.url.startsWith("/uploads/") || typeof photo.title !== "string") continue;
+      if (galleryStack.querySelector(`[data-photo-id="${CSS.escape(String(photo.id || ""))}"]`)) continue;
+      const number = galleryStack.children.length + 1;
+      const n = String(number).padStart(2, "0");
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "gallery-stack-card";
+      card.dataset.photoId = String(photo.id || "");
+      card.dataset.image = photo.url;
+      card.dataset.title = `${n} / ${photo.title}`;
+      card.setAttribute("aria-label", `Enlarge photograph ${number}: ${photo.title}. One copy £2.50, copyright £300.`);
+      const img = document.createElement("img");
+      img.src = photo.url; img.alt = photo.title; img.loading = "lazy"; img.decoding = "async";
+      const fallback = document.createElement("span");
+      fallback.className = "photo-fallback"; fallback.textContent = `PHOTOGRAPH / ${n}`;
+      const count = document.createElement("span"); count.className = "gallery-card-number";
+      count.textContent = `${n} / ${10 + uploaded.length}`;
+      const priceTag = document.createElement("span");
+      priceTag.className = "gallery-card-pricing";
+      priceTag.setAttribute("aria-hidden", "true");
+      priceTag.innerHTML = '<span><small>ONE COPY</small><strong>£2.50</strong></span><span><small>COPYRIGHT</small><strong>£300</strong></span>';
+      card.append(img, fallback, count, priceTag);
+      img.addEventListener("error", () => { card.classList.add("image-missing"); card.disabled = true; });
+      card.addEventListener("click", () => openPhoto(card));
+      galleryStack.appendChild(card);
+    }
+    cards = [...galleryStack.querySelectorAll(".gallery-stack-card")];
+    const total = document.getElementById("gallery-total");
+    if (total) total.textContent = String(cards.length).padStart(2, "0");
+    galleryStack.querySelectorAll(".gallery-card-number").forEach((element, index) => {
+      element.textContent = `${String(index + 1).padStart(2,"0")} / ${String(cards.length).padStart(2,"0")}`;
+    });
+    if (galleryOpen()) requestAnimationFrame(() => { measureGallery(); updateGalleryDepth(); });
+  }
+  loadPublishedPhotos();
 
   // Navigation: Gallery opens the pop-up, other links scroll normally.
   document.querySelectorAll('a[href^="#"]').forEach(link => {
