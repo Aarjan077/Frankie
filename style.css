@@ -2516,3 +2516,58 @@ html[data-theme="dark"] .gallery-view.is-small .gallery-card-pricing {
     white-space: pre;
   }
 }
+
+
+/* =======================================================
+   STRIPE CHECKOUT SANDBOX — gallery + studio support
+   Uses existing editorial type, minimal lines, both modes.
+   ======================================================= */
+.gallery-card-buy-hint {
+  position:absolute; top:13px; right:13px; z-index:2;
+  padding:8px 10px; background:rgba(255,255,255,.92); color:#171717;
+  font:500 8px/1 var(--sans); letter-spacing:1.1px;
+  border:1px solid rgba(0,0,0,.08); transition:transform .28s ease,background .28s ease;
+}
+.gallery-stack-card:hover .gallery-card-buy-hint { transform:translateY(-3px); background:#fff; }
+.gallery-view.is-small .gallery-card-buy-hint { right:7px; top:7px; padding:6px 7px; font-size:7px; letter-spacing:.55px; }
+.gallery-view.is-small .gallery-card-pricing { margin-bottom:24px; }
+.lightbox-buy-area { width:100%; margin:14px auto 0; max-width:640px; }
+.lightbox-buy-area[hidden] { display:none; }
+.checkout-demo-label { font:500 9px/1.4 var(--sans); letter-spacing:1.6px; color:#c4c4c4; margin:0 0 11px; }
+.lightbox-buy-buttons { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stripe-buy-button {
+  display:flex; align-items:center; justify-content:space-between; gap:9px;
+  width:100%; background:#f0f0ee; color:#161718; border:1px solid #e6e6e4;
+  padding:15px 16px; cursor:pointer; transition:background .25s ease,transform .25s ease;
+  font:500 10px/1.2 var(--sans); letter-spacing:1.1px;
+}
+.stripe-buy-button strong { font:400 21px/1 var(--serif); letter-spacing:0; }
+.stripe-buy-button:hover:not(:disabled), .stripe-buy-button:focus-visible:not(:disabled) { background:#fff; transform:translateY(-2px); }
+.stripe-buy-button:disabled { opacity:.55; cursor:not-allowed; }
+.stripe-lightbox-status { min-height:19px; margin:9px 0 0; color:#ededeb; font:400 11px/1.5 var(--sans); }
+.stripe-terms-note { max-width:600px; margin:4px auto 0; color:#bababa; font:400 10px/1.65 var(--sans); letter-spacing:.1px; }
+.studio-stripe-tile { display:flex; align-items:center; gap:13px; padding:17px 20px; border:1px solid currentColor; }
+.studio-stripe-tile > div { display:flex; flex-direction:column; gap:6px; flex:1; }
+.studio-stripe-tile strong { font:500 11px/1.1 var(--sans); letter-spacing:1px; }
+.studio-stripe-tile small { font:400 11px/1.4 var(--sans); opacity:.58; }
+.studio-stripe-tile-arrow { font-size:20px; }
+html[data-theme="dark"] .gallery-view.is-small .gallery-card-buy-hint { background:#efefed; color:#151515; }
+@media (max-width:700px) {
+  .lightbox { padding:45px 13px 22px; }
+  .lightbox.is-gallery-photo #lightbox-image { max-height:39vh; }
+  .lightbox.is-gallery-photo .lightbox-content { gap:6px; }
+  .lightbox.is-gallery-photo #lightbox-title { font-size:22px; }
+  .lightbox.is-gallery-photo .lightbox-pricing { margin:4px auto; }
+  .lightbox-buy-area { margin-top:3px; }
+  .stripe-buy-button { padding:12px 10px; flex-wrap:wrap; }
+  .stripe-buy-button strong { font-size:20px; }
+  .stripe-buy-button span:first-child { font-size:9px; }
+  .stripe-terms-note { font-size:9px; line-height:1.45; }
+  .lightbox.is-gallery-photo .lightbox-charity-footnote { font-size:9px; margin:3px auto 0; }
+}
+@media (max-width:370px) { .stripe-buy-button { padding:10px 8px; } .stripe-buy-button strong {font-size:17px;} }
+@media (prefers-reduced-motion:reduce) { .stripe-buy-button,.gallery-card-buy-hint { transition:none; } }
+
+/* Keep purchase options reachable even on small phone screens. */
+.lightbox.is-gallery-photo { overflow-y:auto; align-items:flex-start; }
+.lightbox.is-gallery-photo .lightbox-content { margin:auto; max-height:none; padding:18px 0; }

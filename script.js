@@ -190,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.type = "button";
     card.className = "gallery-stack-card";
     card.dataset.image = `gallery-${i}.jpg`;
+    card.dataset.photoId = `original-${i}`;
     card.dataset.title = `${n} / ${title}`;
     card.setAttribute("aria-label", `Enlarge photograph ${i}: ${title}`);
     const img = document.createElement("img");
@@ -203,8 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const count = document.createElement("span");
     count.className = "gallery-card-number";
     count.textContent = `${n} / 10`;
-    // All ten photographs carry the same clear, informational prices.
-    // No payment or copyright-transfer functionality is enabled yet.
+    // Informational prices; checkout buttons appear in each photograph preview.
     const priceTag = document.createElement("span");
     priceTag.className = "gallery-card-pricing";
     priceTag.setAttribute("aria-hidden", "true");
@@ -213,7 +213,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const smallTitle = document.createElement("span");
     smallTitle.className = "gallery-card-small-title";
     smallTitle.textContent = title;
-    card.append(img, fallback, count, smallTitle, priceTag);
+    const cta = document.createElement("span");
+    cta.className = "gallery-card-buy-hint";
+    cta.textContent = "VIEW & BUY ↗";
+    card.append(img, fallback, count, smallTitle, priceTag, cta);
     galleryStack.appendChild(card);
   }
 
@@ -238,6 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const lightboxPricing = document.getElementById("lightbox-pricing");
   const lightboxCharityFootnote = document.getElementById("lightbox-charity-footnote");
   const lightboxClose = document.querySelector(".lightbox-close");
+  const lightboxBuyArea = document.getElementById("lightbox-buy-area");
+  const photoStripeStatus = document.getElementById("stripe-photo-status");
+  const stripeBuyButtons = [...document.querySelectorAll(".stripe-buy-button")];
+  let activeGalleryPhotoId = null;
+  let stripeSandboxEnabled = false;
   let focusBeforePhoto = null;
   let lightboxTimer = null;
   const photoDescriptions = Object.fromEntries(
@@ -254,6 +262,10 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxTitle.textContent = button.dataset.title || "Photograph";
     lightboxDescription.textContent = photoDescriptions[filename] || "";
     const isGalleryPhoto = button.classList.contains("gallery-stack-card");
+    activeGalleryPhotoId = isGalleryPhoto ? button.dataset.photoId : null;
+    lightboxBuyArea.hidden = !isGalleryPhoto;
+    photoStripeStatus.textContent = stripeSandboxEnabled ? "" : "TEST CHECKOUT NOT YET CONFIGURED ON RENDER.";
+    stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
     lightbox.classList.toggle("is-gallery-photo", isGalleryPhoto);
     lightboxPricing.hidden = !isGalleryPhoto;
     lightboxCharityFootnote.hidden = !isGalleryPhoto;
@@ -266,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closePhoto() {
     if (!lightbox.classList.contains("active")) return;
     lightbox.classList.remove("active");
+    activeGalleryPhotoId = null;
     lightbox.setAttribute("aria-hidden", "true");
     lightbox.inert = true;
     document.body.style.overflow = "";
@@ -494,7 +507,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const smallTitle = document.createElement("span");
       smallTitle.className = "gallery-card-small-title";
       smallTitle.textContent = photo.title;
-      card.append(img, fallback, count, smallTitle, priceTag);
+      const cta = document.createElement("span");
+      cta.className = "gallery-card-buy-hint";
+      cta.textContent = "VIEW & BUY ↗";
+      card.append(img, fallback, count, smallTitle, priceTag, cta);
       img.addEventListener("error", () => { card.classList.add("image-missing"); card.disabled = true; });
       card.addEventListener("click", () => openPhoto(card));
       galleryStack.appendChild(card);
@@ -887,7 +903,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Donation form preview: validates locally, but does not collect money or send data.
+  // Stripe Checkout — browser only selects an item; the backend fixes prices.
+  // No card details are read here. Stripe collects them on its hosted test page.
+  async function createStripeCheckout(details) {
+    const response = await fetch("/api/payments/checkout", {
+      method:"POST", credentials:"same-origin", cache:"no-store",
+      headers:{"Content-Type":"application/json"}, body:JSON.stringify(details)
+    });
+    let data;
+    try { data = await response.json(); } catch { throw new Error("Payment server unavailable."); }
+    if (!response.ok) throw new Error(data.error || "Unable to start checkout.");
+    if (typeof data.url !== "string" || !/^https:\/\/checkout\.stripe\.com\//.test(data.url))
+      throw new Error("Invalid secure payment link returned.");
+    window.location.assign(data.url);
+  }
+  async function checkStripeAvailability() {
+    try {
+      const response = await fetch("/api/payments/config", {cache:"no-store"});
+      const data = await response.json();
+      stripeSandboxEnabled = response.ok && data.enabled === true && data.mode === "test";
+      if (!stripeSandboxEnabled) {
+        const msg = "TEST CHECKOUT IS NOT CONFIGURED YET. Add the Stripe test key, webhook secret and site URL on Render.";
+        photoStripeStatus.textContent = msg;
+        const note = document.getElementById("donation-preview-status");
+        if (note) note.textContent = msg;
+      }
+    } catch { stripeSandboxEnabled = false; }
+    stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
+  }
+  checkStripeAvailability();
+  stripeBuyButtons.forEach(button => button.addEventListener("click", async () => {
+    if (!activeGalleryPhotoId || !stripeSandboxEnabled) return;
+    stripeBuyButtons.forEach(b => { b.disabled = true; });
+    photoStripeStatus.textContent = "Opening Stripe's secure sandbox checkout…";
+    try {
+      await createStripeCheckout({type:button.dataset.checkoutType, photoId:activeGalleryPhotoId});
+    } catch(error) {
+      photoStripeStatus.textContent = error.message;
+      stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
+    }
+  }));
+
+  // Studio contribution form — validate and redirect to Stripe test Checkout.
   const donorForm = document.getElementById("donation-interest-form");
   if (donorForm) {
     const donorFields = {
@@ -914,9 +971,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (key === "amount") {
         if (!value) return "Please enter or select an amount.";
         const amount = Number(value);
-        if (!Number.isFinite(amount) || amount < 0.01 || amount > 1000000 ||
+        if (!Number.isFinite(amount) || amount < 1 || amount > 5000 ||
             !/^\d+(?:\.\d{1,2})?$/.test(value)) {
-          return "Enter an amount between £0.01 and £1,000,000 (up to 2 decimals).";
+          return "Enter an amount between £1 and £5,000 (up to 2 decimals).";
         }
       }
       return "";
@@ -965,8 +1022,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    donorForm.addEventListener("submit", event => {
-      event.preventDefault(); // Deliberately never transmit or charge anything.
+    donorForm.addEventListener("submit", async event => {
+      event.preventDefault();
       const valid = Object.keys(donorFields).map(validateDonorField).every(Boolean);
       if (!valid) {
         const firstInvalid = donorForm.querySelector('[aria-invalid="true"]');
@@ -974,9 +1031,26 @@ document.addEventListener("DOMContentLoaded", () => {
         clearDonorPreview();
         return;
       }
+      if (!stripeSandboxEnabled) {
+        previewStatus.textContent = "Stripe test checkout is not configured on Render yet.";
+        previewStatus.className = "contact-status donation-preview-status is-visible is-error";
+        return;
+      }
+      const submitButton = donorForm.querySelector('[type="submit"]');
+      submitButton.disabled = true;
       const formattedAmount = currencyFormatter.format(Number(donorFields.amount.value));
-      previewStatus.textContent = `Preview: ${formattedAmount} — your donation is not submitted or charged. Payment links are coming soon.`;
-      previewStatus.className = "contact-status donation-preview-status is-visible is-success";
+      previewStatus.textContent = `Opening Stripe sandbox for ${formattedAmount} of studio support…`;
+      previewStatus.className = "contact-status donation-preview-status is-visible";
+      try {
+        await createStripeCheckout({
+          type:"studio_support", name:donorFields.name.value.trim(),
+          email:donorFields.email.value.trim(), amount:donorFields.amount.value.trim()
+        });
+      } catch(error) {
+        previewStatus.textContent = error.message;
+        previewStatus.className = "contact-status donation-preview-status is-visible is-error";
+        submitButton.disabled = false;
+      }
     });
   }
 

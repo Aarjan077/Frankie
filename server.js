@@ -23,6 +23,9 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const SESSION_LIFE = 8 * 60 * 60 * 1000;
 const sessions = new Map();
 const rateLimits = new Map();
+const paymentApi = require('./payment-api')({
+  DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos
+});
 
 if (IS_PROD && (!ADMIN_PASSWORD || ADMIN_PASSWORD.length < 12 || ADMIN_PASSWORD === '1234')) {
   console.error('PRODUCTION BLOCKED: Set a strong ADMIN_PASSWORD (minimum 12 characters).');
@@ -128,6 +131,8 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const name = url.pathname;
     if (name === '/api/health' && req.method === 'GET') return send(res, 200, { online:true, uploadLimitMB:10 });
+    if (await paymentApi.handle(req, res, name, url)) return;
+
     if (name === '/api/photos' && req.method === 'GET') {
       const photos = readPhotos().map(({ id, title, file, createdAt }) => ({ id, title, url:`/uploads/${file}`, createdAt }));
       return send(res, 200, photos);
@@ -220,6 +225,7 @@ const server = http.createServer(async (req, res) => {
     // configuration, databases, logs, README or anything in data/.
     const publicStatic = new Set([
       'index.html','style.css','script.js','admin.html','admin.css','admin.js',
+      'payment-result.html','payment-result.js',
       'frankie-portrait.jpg','background-music.mp3'
     ]);
     const isSitePhoto = /^(?:gallery-\d+|featured-\d+|about-\d+)\.(?:jpg|jpeg|png|webp)$/i.test(relative);

@@ -481,7 +481,7 @@
 
         <div class="donation-introduction reveal">
           <h2 id="donation-heading">A little support.<br><em>A bigger purpose.</em></h2>
-          <p>Photography has given me a way to see the world differently. In time, I'd love to use that journey to give something back. A space to support my work is coming soon.</p>
+          <p>Photography has given me a way to see the world differently. In time, I'd love to use that journey to give something back. A space to support a future studio for aspiring photographers is being developed.</p>
         </div>
 
         <div class="donation-bottom-grid">
@@ -492,10 +492,10 @@
               <p>A way to support future projects, new ideas and the stories still waiting to be told.</p>
             </div>
             <div class="donation-coming-soon" aria-label="Donations not yet available">
-              <span>DONATIONS COMING SOON</span>
+              <span>LIVE SUPPORT COMING SOON</span>
               <span aria-hidden="true">↗</span>
             </div>
-            <span class="donation-card-footnote">No payments are being accepted at this time.</span>
+            <span class="donation-card-footnote">Only test payments are available until the studio support arrangement is approved and launched.</span>
           </div>
 
           <div class="donation-charity-card reveal">
@@ -525,13 +525,13 @@
             <span class="donation-eyebrow">03 / YOUR SUPPORT</span>
             <h3 id="donation-form-heading">Make a little<br><em>difference.</em></h3>
             <span class="donation-form-intro-rule" aria-hidden="true"></span>
-            <p>Every contribution has the potential to become something meaningful. Choose an amount below and explore how donating will work when the page launches.</p>
-            <span class="donation-form-coming"><span class="donation-status-dot" aria-hidden="true"></span> PAYMENTS COMING SOON</span>
+            <p>Support my ambition to open a photography studio where emerging photographers can grow. This studio fund is separate from Cancer Research UK photograph sales. Test payments only; this is not a registered charity donation.</p>
+            <span class="donation-form-coming"><span class="donation-status-dot" aria-hidden="true"></span> STRIPE SANDBOX / TEST ONLY</span>
           </div>
 
           <div class="contact-form-panel donation-form-panel reveal">
             <div class="contact-form-top">
-              <span>YOUR CONTRIBUTION / PREVIEW</span>
+              <span>STUDIO SUPPORT / STRIPE SANDBOX</span>
               <span class="contact-form-decoration" aria-hidden="true">♡</span>
             </div>
             <form id="donation-interest-form" novalidate>
@@ -553,7 +553,7 @@
                   <span class="contact-field-error" id="donor-email-error" aria-live="polite"></span>
                 </div>
                 <div class="contact-field contact-field-full donation-amount-field" data-donor-field="amount">
-                  <label for="donor-amount">03 <span>HOW MUCH WOULD YOU LIKE TO DONATE?</span> <b>*</b></label>
+                  <label for="donor-amount">03 <span>YOUR STUDIO CONTRIBUTION</span> <b>*</b></label>
                   <div class="donation-amount-presets" role="group" aria-label="Suggested donation amounts">
                     <button class="donation-amount-choice" type="button" data-amount="5" aria-pressed="false">£5</button>
                     <button class="donation-amount-choice" type="button" data-amount="10" aria-pressed="false">£10</button>
@@ -564,7 +564,7 @@
                     <span class="donation-currency-sign" aria-hidden="true">£</span>
                     <input class="contact-input donation-amount-input" id="donor-amount"
                            name="donationAmount" type="number" inputmode="decimal"
-                           min="0.01" max="1000000" step="0.01" required
+                           min="1" max="5000" step="0.01" required
                            placeholder="Other amount" aria-label="Donation amount in pounds"
                            aria-describedby="donor-amount-error">
                     <span class="donation-currency-code" aria-hidden="true">GBP</span>
@@ -575,30 +575,23 @@
 
               <div class="donation-payment-placeholder" aria-labelledby="donation-payment-heading">
                 <div class="donation-payment-heading">
-                  <span id="donation-payment-heading">04 / PAYMENT METHOD</span>
-                  <span>COMING SOON</span>
+                  <span id="donation-payment-heading">04 / SECURE CHECKOUT</span>
+                  <span>TEST MODE</span>
                 </div>
-                <div class="donation-payment-options" aria-label="Payment methods unavailable until launch">
-                  <div class="donation-payment-option" aria-disabled="true">
-                    <span class="donation-payment-icon" aria-hidden="true">↗</span>
-                    <span>PAYPAL</span>
-                    <span class="donation-payment-badge">SOON</span>
-                  </div>
-                  <div class="donation-payment-option" aria-disabled="true">
-                    <span class="donation-payment-icon" aria-hidden="true">◇</span>
-                    <span>CARD / STRIPE</span>
-                    <span class="donation-payment-badge">SOON</span>
-                  </div>
+                <div class="studio-stripe-tile">
+                  <span class="donation-payment-icon" aria-hidden="true">◇</span>
+                  <div><strong>STRIPE CHECKOUT</strong><small>Test card payments · securely hosted by Stripe</small></div>
+                  <span class="studio-stripe-tile-arrow" aria-hidden="true">↗</span>
                 </div>
-                <p>Secure payment links will appear here when donations open. No payment details are requested.</p>
+                <p>This is a simulated checkout in Stripe's sandbox. Nothing is charged, no bank funds are transferred, and this is not a charitable Gift Aid donation. The studio project is separate from photograph-sale fundraising.</p>
               </div>
 
               <div class="contact-form-bottom donation-form-bottom">
                 <button class="contact-submit donation-preview-button" type="submit">
-                  <span>PREVIEW DONATION</span>
+                  <span>CONTINUE TO STRIPE TEST CHECKOUT</span>
                   <span class="contact-submit-arrow" aria-hidden="true">↗</span>
                 </button>
-                <p class="contact-form-note">* Required fields. This is a prototype only — nothing is charged, submitted or saved.</p>
+                <p class="contact-form-note">* Required fields. Sandbox only — no real payment is taken. Details are sent to Stripe only when you proceed.</p>
               </div>
               <p class="contact-status donation-preview-status" id="donation-preview-status" role="status" aria-live="polite"></p>
             </form>
@@ -644,14 +637,14 @@
       <aside class="gallery-charity-note" aria-label="Charity information">
         <span class="gallery-charity-note-index">A GOOD CAUSE / 100%</span>
         <p>Every sale.<br><em>Every pound.</em><br>For research.</p>
-        <span class="gallery-charity-note-detail">PLANNED: 100% OF PHOTOGRAPH SALE PROCEEDS IN AID OF CANCER RESEARCH UK. SALES COMING SOON.</span>
+        <span class="gallery-charity-note-detail">PLANNED: PHOTOGRAPH SALES IN AID OF CANCER RESEARCH UK. CHECKOUT IS IN TEST MODE ONLY; NO REAL DONATIONS OR SALES.</span>
       </aside>
       <div class="gallery-vertical-controls" aria-label="Gallery controls">
         <button type="button" id="gallery-prev" aria-label="Previous photograph">↑</button>
         <button type="button" id="gallery-next" aria-label="Next photograph">↓</button>
       </div>
     </div>
-    <p class="gallery-bottom-hint">CLICK A PHOTOGRAPH TO VIEW FULL SIZE</p>
+    <p class="gallery-bottom-hint">CLICK ANY PHOTOGRAPH TO VIEW OR BUY · STRIPE SANDBOX</p>
   </section>
 
   <!-- Image enlargement works for featured and gallery photographs -->
@@ -667,7 +660,20 @@
           <span class="lightbox-price-divider" aria-hidden="true"></span>
           <div class="lightbox-price"><span>COPYRIGHT</span><strong>£300</strong></div>
         </div>
-        <p class="lightbox-charity-footnote" id="lightbox-charity-footnote" hidden>Planned: 100% of photo-sale proceeds in aid of Cancer Research UK · Sales coming soon</p>
+        <div class="lightbox-buy-area" id="lightbox-buy-area" hidden>
+          <p class="checkout-demo-label">STRIPE SANDBOX / TEST PAYMENTS ONLY</p>
+          <div class="lightbox-buy-buttons" role="group" aria-label="Purchase photograph">
+            <button class="stripe-buy-button" type="button" data-checkout-type="photo_copy">
+              <span>BUY A COPY</span><strong>£2.50</strong><span aria-hidden="true">↗</span>
+            </button>
+            <button class="stripe-buy-button" type="button" data-checkout-type="photo_rights">
+              <span>BUY RIGHTS*</span><strong>£300</strong><span aria-hidden="true">↗</span>
+            </button>
+          </div>
+          <p class="stripe-lightbox-status" id="stripe-photo-status" role="status" aria-live="polite"></p>
+          <p class="stripe-terms-note">* Rights require a separate signed agreement. Test purchases do not transfer copyright or deliver images. Future photograph-sale proceeds are intended to support Cancer Research UK, subject to the charity's arrangements.</p>
+        </div>
+        <p class="lightbox-charity-footnote" id="lightbox-charity-footnote" hidden>In aid of Cancer Research UK · TEST MODE ONLY · No real money is collected</p>
       </div>
     </div>
   </div>
