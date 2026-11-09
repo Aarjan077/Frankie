@@ -32,12 +32,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if(status.purpose==="photo_copy"){
       if(status.downloadUrl){
         title.textContent=sandbox?"Test download ready.":"Your photograph is ready.";
-        message.textContent=sandbox?"Stripe verified your test purchase. Download the sample-delivery original below.":
-          "Your payment has been confirmed. Your private photo download is ready below.";
+        message.textContent=sandbox?"Stripe verified your test purchase. Download the same photograph displayed in the gallery below.":
+          "Your payment has been confirmed. Your photograph download is ready below.";
         link.href=status.downloadUrl;
         box.hidden=false;
       } else {
-        message.textContent="Your purchase is confirmed, but the private original is not available for download right now. Please contact Frankie and provide your Stripe receipt.";
+        message.textContent="Your purchase is confirmed, but the gallery file is not available for download right now. Please contact Frankie and provide your Stripe receipt.";
       }
     }else if(status.purpose==="studio_support"){
       message.textContent=sandbox?"Your studio support payment was simulated successfully.":

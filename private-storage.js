@@ -1,21 +1,22 @@
 /**
- * Private customer originals and durable gallery data.
- * Cloudflare R2 (private bucket), compatible with S3.
- * Local fallback exists ONLY for Stripe sandbox and developer testing.
+ * Gallery image delivery (exact bytes as displayed in the public gallery).
+ * Original gallery-1.jpg to gallery-10.jpg live in the application/GitHub repo.
+ * New admin uploads live in Cloudflare R2 (and in a local sandbox fallback).
+ * Stripe payment verification happens in payment-api.js, not in this storage module.
+ * IMPORTANT: public full-resolution images remain freely saveable by visitors.
  */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
-const { Readable } = require('node:stream');
 const VALID_ID = /^(?:original-(?:10|[1-9])|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
 
-module.exports = function createPrivateStorage(dataDir) {
+module.exports = function createPrivateStorage(dataDir, rootDir = __dirname, loadPhotos = () => []) {
   const accountId = (process.env.R2_ACCOUNT_ID || '').trim();
   const accessKeyId = (process.env.R2_ACCESS_KEY_ID || '').trim();
   const secretAccessKey = (process.env.R2_SECRET_ACCESS_KEY || '').trim();
   const bucket = (process.env.R2_BUCKET || '').trim();
   const configured = Boolean(accountId && accessKeyId && secretAccessKey && bucket);
-  const localFolder = path.join(dataDir, 'private-originals');
+  const uploadFolder = path.join(dataDir, 'uploads');
   let client, commands;
   if (configured) {
     commands = require('@aws-sdk/client-s3');
@@ -24,61 +25,97 @@ module.exports = function createPrivateStorage(dataDir) {
       credentials:{accessKeyId,secretAccessKey}, forcePathStyle:true,
       maxAttempts:2
     });
-  } else fs.mkdirSync(localFolder,{recursive:true});
+  } else fs.mkdirSync(uploadFolder,{recursive:true});
 
   function idOk(id) { return typeof id === 'string' && VALID_ID.test(id); }
   function ensureId(id) { if (!idOk(id)) throw Object.assign(new Error('Invalid photo ID.'),{status:400}); }
-  function objectKey(id) { ensureId(id); return `private-originals/${id}`; }
+
   function missing(error) { return error?.name === 'NotFound' || error?.name === 'NoSuchKey' || error?.$metadata?.httpStatusCode === 404; }
   async function putObject(Key, Body, ContentType='application/octet-stream') {
-    if (!configured) throw new Error('Private cloud storage is not configured.');
-    await client.send(new commands.PutObjectCommand({Bucket:bucket,Key,Body,ContentType}));
-  }
+  if (!configured) throw new Error('Cloud storage is not configured.');
+  await client.send(new commands.PutObjectCommand({Bucket:bucket,Key,Body,ContentType}));
+}
   async function getObject(Key) {
-    if (!configured) throw new Error('Private cloud storage is not configured.');
-    try { return await client.send(new commands.GetObjectCommand({Bucket:bucket,Key})); }
-    catch (error) { if(missing(error)) return null; throw error; }
-  }
+  if (!configured) throw new Error('Cloud storage is not configured.');
+  try { return await client.send(new commands.GetObjectCommand({Bucket:bucket,Key})); }
+  catch (error) { if(missing(error)) return null; throw error; }
+}
   async function deleteObject(Key) {
-    if (!configured) return;
-    await client.send(new commands.DeleteObjectCommand({Bucket:bucket,Key}));
-  }
+  if (!configured) return;
+  await client.send(new commands.DeleteObjectCommand({Bucket:bucket,Key}));
+}
   async function streamToBuffer(body,max=20*1024*1024) {
-    if (!body) return Buffer.alloc(0);
-    if (typeof body.transformToByteArray === 'function') {
-      const bytes=Buffer.from(await body.transformToByteArray());
-      if(bytes.length>max) throw new Error('Storage object is too large.');
-      return bytes;
-    }
-    const buffers=[]; let bytes=0;
-    for await(const chunk of body) { const b=Buffer.from(chunk);bytes+=b.length;if(bytes>max)throw new Error('Storage object is too large.');buffers.push(b); }
-    return Buffer.concat(buffers);
+  if (!body) return Buffer.alloc(0);
+  if (typeof body.transformToByteArray === 'function') {
+    const bytes=Buffer.from(await body.transformToByteArray());
+    if(bytes.length>max) throw new Error('Storage object is too large.');
+    return bytes;
   }
+  const buffers=[]; let bytes=0;
+  for await(const chunk of body) { const b=Buffer.from(chunk);bytes+=b.length;if(bytes>max)throw new Error('Storage object is too large.');buffers.push(b); }
+  return Buffer.concat(buffers);
+}
 
-  async function putMaster(id,content,type) {
-    ensureId(id);
-    if (!/^image\/(jpeg|png|webp)$/.test(type)) throw Object.assign(new Error('Unsupported image type.'),{status:415});
-    if (configured) return putObject(objectKey(id),content,type);
-    fs.writeFileSync(path.join(localFolder,id),content,{mode:0o600});
-    fs.writeFileSync(path.join(localFolder,id+'.type'),type,{mode:0o600});
-  }
-  async function hasMaster(id) {
-    ensureId(id);
-    if (!configured) return fs.existsSync(path.join(localFolder,id));
-    try { await client.send(new commands.HeadObjectCommand({Bucket:bucket,Key:objectKey(id)}));return true; }
-    catch(error){if(missing(error))return false;throw error;}
-  }
-  async function getMaster(id) {
-    ensureId(id);
-    if (!configured) {
-      const filepath=path.join(localFolder,id);
-      if(!fs.existsSync(filepath))return null;
-      return {bytes:fs.readFileSync(filepath),contentType:fs.readFileSync(filepath+'.type','utf8')};
+const types={jpg:'image/jpeg',png:'image/png',webp:'image/webp'};
+  function galleryFilename(id) {
+  ensureId(id);
+  if (id.startsWith('original-')) return `gallery-${Number(id.slice(9))}.jpg`;
+  const item=loadPhotos().find(photo=>photo.id===id);
+  return item && /^[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(item.file) ? item.file : null;
+}
+  async function findUploadedPhoto(id, needBody=false) {
+  ensureId(id);
+  // Existing admin uploads are retained in R2, and deleted-gallery photos are
+  // archived in the private bucket for customers with valid older purchases.
+  const known=galleryFilename(id);
+  const filenames=known?[known]:['jpg','png','webp'].map(ext=>`${id}.${ext}`);
+  for(const file of filenames) {
+    const ext=file.split('.').at(-1).toLowerCase();
+    if (!types[ext]) continue;
+    if(configured) {
+      for(const prefix of ['gallery-previews','past-purchases']) {
+        const Key=`${prefix}/${file}`;
+        if(!needBody) {
+          try {await client.send(new commands.HeadObjectCommand({Bucket:bucket,Key}));return {filename:file,contentType:types[ext]};}
+          catch(error){if(missing(error))continue;throw error;}
+        }
+        const object=await getObject(Key);
+        if(object)return {filename:file,contentType:object.ContentType||types[ext],bytes:await streamToBuffer(object.Body,25*1024*1024)};
+      }
+    } else {
+      const filePath=path.join(uploadFolder,file);
+      if(fs.existsSync(filePath))return {filename:file,contentType:types[ext],...(needBody?{bytes:fs.readFileSync(filePath)}:{})};
     }
-    const object=await getObject(objectKey(id));
-    if (!object)return null;
-    return {bytes:await streamToBuffer(object.Body,25*1024*1024),contentType:object.ContentType||'image/jpeg'};
   }
+  return null;
+}
+  async function hasGalleryImage(id) {
+  ensureId(id);
+  if(id.startsWith('original-')) {
+    try {return (await fs.promises.stat(path.join(rootDir,galleryFilename(id)))).isFile();}
+    catch(error){if(error.code==='ENOENT')return false;throw error;}
+  }
+  return Boolean(await findUploadedPhoto(id,false));
+}
+  async function getGalleryImage(id) {
+  ensureId(id);
+  if(id.startsWith('original-')) {
+    const filename=galleryFilename(id);
+    try{return {bytes:await fs.promises.readFile(path.join(rootDir,filename)),contentType:'image/jpeg'};}
+    catch(error){if(error.code==='ENOENT')return null;throw error;}
+  }
+  const found=await findUploadedPhoto(id,true);
+  return found?{bytes:found.bytes,contentType:found.contentType}:null;
+}
+  async function archivePreview(filename) {
+  if(!configured) return;
+  if(!/^[a-f0-9-]{36}\.(?:jpg|png|webp)$/.test(filename))throw new Error('Invalid preview filename.');
+  const original=await getPreview(filename);
+  if(original) {
+    await putObject(`past-purchases/${filename}`,original.bytes,original.contentType);
+  }
+}
+
   async function putPreview(filename,buffer,type) {
     if(!/^[a-f0-9-]{36}\.(?:jpg|png|webp)$/.test(filename))throw new Error('Invalid preview filename.');
     if(configured) await putObject(`gallery-previews/${filename}`,buffer,type);
@@ -105,5 +142,5 @@ module.exports = function createPrivateStorage(dataDir) {
     if(configured)await putObject(`orders/${sessionId}.json`,Buffer.from(JSON.stringify(entry,null,2)),'application/json');
     // Stripe itself is the authoritative payment ledger. R2 is the durable order copy.
   }
-  return {configured,idOk,putMaster,hasMaster,getMaster,putPreview,getPreview,deletePreview,loadGallery,saveGallery,recordPayment};
+  return {configured,idOk,hasGalleryImage,getGalleryImage,putPreview,getPreview,deletePreview,archivePreview,loadGallery,saveGallery,recordPayment};
 };

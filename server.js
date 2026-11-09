@@ -1,6 +1,6 @@
 /**
  * FRANKIE — small self-hosted photography backend; no external npm modules.
- * Requires Node.js 22+. A persistent DATA_DIR / disk is required in production.
+ * Requires Node.js 22+. Cloudflare R2 is required for durable admin uploads in production.
  * The admin / 1234 account is a LOCAL DEMONSTRATION ONLY.
  */
 'use strict';
@@ -23,7 +23,7 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const SESSION_LIFE = 8 * 60 * 60 * 1000;
 const sessions = new Map();
 const rateLimits = new Map();
-const privateStore = require('./private-storage')(DATA_DIR);
+const privateStore = require('./private-storage')(DATA_DIR, ROOT, readPhotos);
 const paymentApi = require('./payment-api')({
   DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos, privateStore
 });
@@ -134,28 +134,6 @@ const server = http.createServer(async (req, res) => {
     if (name === '/api/health' && req.method === 'GET') return send(res, 200, { online:true, uploadLimitMB:10 });
     if (await paymentApi.handle(req, res, name, url)) return;
 
-    // Private high-resolution originals. Only the signed-in admin can upload them.
-    // Never add this path to the public static file allowlist.
-    const masterMatch = name.match(/^\/api\/admin\/masters\/(original-(?:10|[1-9])|[0-9a-f-]{36})$/i);
-    if (masterMatch && req.method === 'GET') {
-      if (!getSession(req)) return send(res,401,{error:'Please sign in.'});
-      if (!privateStore.idOk(masterMatch[1])) return send(res,400,{error:'Invalid photograph ID.'});
-      return send(res,200,{exists:await privateStore.hasMaster(masterMatch[1]),cloud:privateStore.configured});
-    }
-    if (masterMatch && req.method === 'PUT') {
-      if (!authorisedWrite(req,res)) return;
-      const id=masterMatch[1];
-      if (!privateStore.idOk(id)) return send(res,400,{error:'Invalid photograph ID.'});
-      if (!privateStore.configured && IS_PROD) return send(res,503,{error:'Configure private Cloudflare R2 storage before uploading purchase originals.'});
-      if (!id.startsWith('original-') && !readPhotos().some(photo=>photo.id===id)) return send(res,404,{error:'Upload the gallery preview first.'});
-      const contentType=String(req.headers['content-type']||'').split(';')[0].toLowerCase();
-      if (!['image/jpeg','image/png','image/webp'].includes(contentType)) return send(res,415,{error:'Use a JPG, PNG or WebP original.'});
-      const buffer=await readBody(req,25*1024*1024);
-      const detected=detectImage(buffer);
-      if (!detected || detected.type!==contentType) return send(res,415,{error:'Image contents do not match its file type.'});
-      await privateStore.putMaster(id,buffer,contentType);
-      return send(res,200,{saved:true,photoId:id,private:privateStore.configured});
-    }
     if (name === '/api/photos' && req.method === 'GET') {
       const photos = readPhotos().map(({ id, title, file, createdAt }) => ({ id, title, url:`/uploads/${file}`, createdAt }));
       return send(res, 200, photos);
@@ -232,17 +210,24 @@ const server = http.createServer(async (req, res) => {
       if (!item) return send(res, 404, { error:'Photograph not found.' });
       const remaining=photos.filter(p=>p.id!==id);
       if(privateStore.configured) {
+        // Archive bytes before publishing removal, preserving existing buyers' access.
+        await privateStore.archivePreview(item.file);
         await privateStore.saveGallery(remaining);
-        await privateStore.deletePreview(item.file);
       }
       savePhotos(remaining);
-      try { fs.unlinkSync(path.join(UPLOAD_DIR,item.file)); } catch (error) { console.error('Uploaded image cleanup:', error.message); }
-      // Private master remains so prior buyers retain access to the file.
+      // Remove public thumbnail after the archived copy and gallery metadata are saved.
+      if(privateStore.configured) await privateStore.deletePreview(item.file);
+      if (privateStore.configured) {
+        try { fs.unlinkSync(path.join(UPLOAD_DIR,item.file)); } catch(error){if(error.code!=='ENOENT')console.error('Uploaded image cleanup:',error.message);}
+      }
+      // In sandbox local mode, keep uploaded bytes available for existing paid orders.
+      // Public /uploads URLs below only serve photographs still in the active gallery.
       return send(res, 200, { success:true });
     }
     const uploadMatch = name.match(/^\/uploads\/([0-9a-f-]{36}\.(?:jpg|png|webp))$/);
     if (uploadMatch && (req.method === 'GET' || req.method === 'HEAD')) {
       const filename = uploadMatch[1];
+      if(!readPhotos().some(photo=>photo.file===filename))return send(res,404,{error:'Photograph not found.'});
       const type = STATIC_MIMES[path.extname(filename)];
       if(privateStore.configured){
         const preview=await privateStore.getPreview(filename);

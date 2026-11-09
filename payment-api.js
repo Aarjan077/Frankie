@@ -1,7 +1,7 @@
 /**
  * Stripe Checkout: sandbox + explicitly gated live mode.
  * Photo copies are delivered only after a Stripe-verified paid Checkout session.
- * The customer's file is PRIVATE in Cloudflare R2 (not a public gallery URL).
+ * Purchased download is the exact same gallery image file (publicly accessible).
  * Fundraising and studio support are separate purposes.
  * Never store or expose API keys in public scripts or GitHub.
  */
@@ -51,7 +51,7 @@ module.exports = function createPayments({DATA_DIR,IS_PROD,send,validOrigin,read
   const sessionPattern=/^cs_(?:test|live)_[A-Za-z0-9_]{6,160}$/;
 
   function configuration() {
-    const base={enabled,mode,photoCopiesEnabled,studioEnabled,rightsEnabled,downloadStorage:privateStore.configured?'private_r2':'temporary_local',
+    const base={enabled,mode,photoCopiesEnabled,studioEnabled,rightsEnabled,downloadSource:'existing_gallery_file',downloadStorage:privateStore.configured?'private_r2':'temporary_local',
       label:mode==='live'?'Secure Stripe Checkout — live payments':'Stripe sandbox — no real money is collected'};
     if(!enabled)base.message=mode==='live'
       ? 'Live checkout disabled. Configure R2, a signing key, the correct live webhook, LIVE_PAYMENTS_ENABLED=yes and public site URL.'
@@ -156,9 +156,10 @@ module.exports = function createPayments({DATA_DIR,IS_PROD,send,validOrigin,read
         if(!photo){send(res,404,{error:'Photograph not found.'});return true;}
         if(data.type==='photo_copy'&&!photoCopiesEnabled){send(res,403,{error:'Photograph sales are not yet enabled.'});return true;}
         if(data.type==='photo_rights'&&!rightsEnabled){send(res,403,{error:'Copyright transfer requires a separate signed agreement. Contact Frankie for licensing.'});return true;}
-        // Never charge for a download that is missing from durable storage.
-        if(mode==='live' && data.type==='photo_copy' && !(await privateStore.hasMaster(photo.id))){
-          send(res,409,{error:'This photograph is not available for digital download yet. Please contact Frankie.'});return true;
+        // One upload is enough. The exact public gallery file is downloaded after payment.
+        // For live sales, this file must exist; admin uploads must be durable in R2.
+        if(data.type==='photo_copy' && !(await privateStore.hasGalleryImage(photo.id))){
+          send(res,409,{error:'This gallery photograph is temporarily unavailable. Please contact Frankie.'});return true;
         }
         photoId=photo.id;
         total=data.type==='photo_copy'?PHOTO_COPY_PENCE:PHOTO_RIGHTS_PENCE;
@@ -220,7 +221,7 @@ module.exports = function createPayments({DATA_DIR,IS_PROD,send,validOrigin,read
       if(paid)await recordPaid(session);
       let downloadUrl=null,availability='not_applicable';
       if(paid?.purpose==='photo_copy'){
-        availability=await privateStore.hasMaster(paid.photoId)?'ready':'missing_original';
+        availability=await privateStore.hasGalleryImage(paid.photoId)?'ready':'missing_gallery_image';
         if(availability==='ready'){
           const expires=String(Math.floor(Date.now()/1000)+DOWNLOAD_TOKEN_SECONDS);
           const signature=issueToken(session.id,expires);
@@ -249,8 +250,8 @@ module.exports = function createPayments({DATA_DIR,IS_PROD,send,validOrigin,read
       if(Math.floor(Date.now()/1000)-(session.created||0)>PURCHASE_VALID_SECONDS){
         send(res,410,{error:'This order’s automatic download period has ended. Please contact Frankie.'});return true;
       }
-      const original=await privateStore.getMaster(paid.photoId);
-      if(!original){send(res,404,{error:'The download file is temporarily unavailable. Contact Frankie for assistance.'});return true;}
+      const original=await privateStore.getGalleryImage(paid.photoId);
+      if(!original){send(res,404,{error:'The gallery photograph is temporarily unavailable. Contact Frankie for assistance.'});return true;}
       const allowedTypes={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
       const ext=allowedTypes[original.contentType]||'jpg';
       const photo=photoForId(paid.photoId);

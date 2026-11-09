@@ -79,7 +79,7 @@ form input::placeholder { color:var(--soft); opacity:.65; }
 @media(max-width:440px) { .dashboard-heading-row { display:block; } .logout { margin-top:20px; } .published-item { grid-template-columns:60px minmax(0,1fr) auto; gap:9px; } .published-item img { width:60px; height:67px; } .published-item h3 { font-size:18px; } .published-item button { padding:8px 5px; font-size:8px; } }
 @media(prefers-reduced-motion:reduce) { *, *::before, *::after { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
 
-/* Private originals: visually consistent with the existing admin panels */
+/* Customer downloads: visually consistent with the existing admin panels */
 .master-upload-panel { max-width:1050px; margin:32px auto 0; padding:clamp(24px,4vw,52px); border:1px solid var(--line); background:var(--paper); }
 .master-upload-panel h2 { font:400 clamp(39px,4vw,60px)/1.08 'Italiana',Georgia,serif; margin:36px 0 12px; }
 .master-upload-panel h2 em {font-weight:400;}

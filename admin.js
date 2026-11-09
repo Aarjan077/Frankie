@@ -24,50 +24,6 @@
     if (!response.ok) throw new Error(data.error || `Request failed (${response.status}).`);
     return data;
   }
-  const masterPhotoSelect=$('master-photo-id');
-  const originalTitles=[
-    'Greyhound Portrait','Blue in Motion',"Elephant's Gaze",'Still Waters',
-    'Coastal Wanderers','Shoreline Treasures','Fox Family','Midair Catch',
-    'Looking Beyond','Between Shadows'
-  ];
-  function refreshMasterChoices(uploaded=[]){
-    const chosen=masterPhotoSelect.value;
-    masterPhotoSelect.replaceChildren();
-    const all=[...originalTitles.map((title,i)=>({id:`original-${i+1}`,title})),...uploaded];
-    for(const photo of all){
-      const opt=document.createElement('option');opt.value=photo.id;opt.textContent=photo.title;
-      masterPhotoSelect.append(opt);
-    }
-    if(all.some(p=>p.id===chosen))masterPhotoSelect.value=chosen;
-    checkMasterAvailability();
-  }
-  async function checkMasterAvailability(){
-    if(!masterPhotoSelect.value||!csrf)return;
-    try{
-      const data=await api(`/api/admin/masters/${encodeURIComponent(masterPhotoSelect.value)}`);
-      status('master-status',data.exists?'Private original uploaded — ready for download after purchase.':'No private original uploaded yet.');
-    }catch(error){status('master-status',error.message,'error');}
-  }
-  masterPhotoSelect.addEventListener('change',checkMasterAvailability);
-  $('master-upload-form').addEventListener('submit',async event=>{
-    event.preventDefault();
-    const file=$('master-file').files?.[0];
-    if(!file||!masterPhotoSelect.value)return status('master-status','Select a photograph and a high-resolution file.','error');
-    if(file.size>25*1024*1024)return status('master-status','The image must be 25 MB or smaller.','error');
-    if(!['image/jpeg','image/png','image/webp'].includes(file.type))return status('master-status','Please select a JPG, PNG or WebP file.','error');
-    const button=$('master-upload-submit');button.disabled=true;
-    status('master-status','Saving the private download file…');
-    try{
-      await api(`/api/admin/masters/${encodeURIComponent(masterPhotoSelect.value)}`,{
-        method:'PUT',headers:{'X-CSRF-Token':csrf,'Content-Type':file.type},body:file
-      });
-      $('master-file').value='';
-      status('master-status','Private download saved. Customers who purchase this photograph can now download it.','success');
-    }catch(error){status('master-status',error.message,'error');}
-    finally{button.disabled=false;}
-  });
-  refreshMasterChoices();
-
   function showDashboard(session) {
     csrf = session.csrf || '';
     loginSection.hidden = true;
@@ -159,7 +115,6 @@
     try {
       const photos = await api('api/admin/photos');
       $('published-count').textContent = `${photos.length} UPLOAD${photos.length === 1 ? '' : 'S'}`;
-      refreshMasterChoices(photos);
       list.replaceChildren();
       if (!photos.length) {
         const empty = document.createElement('p'); empty.className = 'library-empty';
