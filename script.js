@@ -243,6 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const lightboxClose = document.querySelector(".lightbox-close");
   const lightboxBuyArea = document.getElementById("lightbox-buy-area");
   const photoStripeStatus = document.getElementById("stripe-photo-status");
+  const freeDownloadLink = document.getElementById("watermarked-download-link");
   const stripeBuyButtons = [...document.querySelectorAll(".stripe-buy-button")];
   let activeGalleryPhotoId = null;
   let stripeSandboxEnabled = false;
@@ -263,6 +264,11 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxDescription.textContent = photoDescriptions[filename] || "";
     const isGalleryPhoto = button.classList.contains("gallery-stack-card");
     activeGalleryPhotoId = isGalleryPhoto ? button.dataset.photoId : null;
+    if (freeDownloadLink) {
+      freeDownloadLink.href = activeGalleryPhotoId
+        ? `/api/photos/${encodeURIComponent(activeGalleryPhotoId)}/watermarked-download` : '#';
+      freeDownloadLink.hidden = !activeGalleryPhotoId;
+    }
     lightboxBuyArea.hidden = !isGalleryPhoto;
     photoStripeStatus.textContent = stripeSandboxEnabled ? "" : "STRIPE CHECKOUT IS NOT ACTIVE YET.";
     stripeBuyButtons.forEach(b => { b.disabled = !(b.dataset.checkoutType === "photo_copy" ? window.frankiePhotoCopiesEnabled : window.frankieRightsEnabled); });
@@ -287,6 +293,43 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!lightbox.classList.contains("active")) lightboxImg.removeAttribute("src");
     }, 400);
   }
+  // Right-click on a gallery photograph offers a free watermarked download
+  // instead of the browser's ordinary Save Image As menu.
+  const freeContextMenu = document.createElement('div');
+  freeContextMenu.className = 'watermark-context-menu';
+  freeContextMenu.hidden = true;
+  freeContextMenu.innerHTML = '<a href="#" class="watermark-context-download">DOWNLOAD WATERMARKED PHOTO ↓</a><button type="button" class="watermark-context-close">CLOSE ×</button>';
+  document.body.appendChild(freeContextMenu);
+  const contextDownload = freeContextMenu.querySelector('.watermark-context-download');
+  const contextClose = freeContextMenu.querySelector('.watermark-context-close');
+  function closeFreeMenu() { freeContextMenu.hidden = true; }
+  contextDownload.addEventListener('click',closeFreeMenu);
+  contextClose.addEventListener('click',closeFreeMenu);
+  document.addEventListener('click', event => {
+    if(!freeContextMenu.contains(event.target)) closeFreeMenu();
+  });
+  document.addEventListener('scroll',closeFreeMenu,true);
+  document.addEventListener('keydown',event=>{ if(event.key==='Escape') closeFreeMenu(); });
+  document.addEventListener('contextmenu', event => {
+    const card = event.target.closest?.('.gallery-stack-card');
+    const isLightboxPhoto = event.target === lightboxImg && activeGalleryPhotoId;
+    if(!card && !isLightboxPhoto) return;
+    const id = card?.dataset.photoId || activeGalleryPhotoId;
+    if(!id) return;
+    event.preventDefault();
+    const url = `/api/photos/${encodeURIComponent(id)}/watermarked-download`;
+    contextDownload.href = url;
+    freeContextMenu.hidden = false;
+    const bounds = freeContextMenu.getBoundingClientRect();
+    freeContextMenu.style.left = `${Math.max(8, Math.min(event.clientX,innerWidth-bounds.width-8))}px`;
+    freeContextMenu.style.top = `${Math.max(8, Math.min(event.clientY,innerHeight-bounds.height-8))}px`;
+    contextDownload.focus({preventScroll:true});
+  });
+  // Prevent dragging a clean photo to the desktop in the normal gallery UX.
+  document.addEventListener('dragstart', event => {
+    if (event.target.closest?.('.gallery-stack-card') || event.target === lightboxImg && activeGalleryPhotoId) event.preventDefault();
+  });
+
   photos.forEach(button => button.addEventListener("click", () => openPhoto(button)));
   lightboxClose.addEventListener("click", closePhoto);
   lightbox.addEventListener("click", event => { if (event.target === lightbox) closePhoto(); });

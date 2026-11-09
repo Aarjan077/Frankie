@@ -24,6 +24,7 @@ const SESSION_LIFE = 8 * 60 * 60 * 1000;
 const sessions = new Map();
 const rateLimits = new Map();
 const privateStore = require('./private-storage')(DATA_DIR, ROOT, readPhotos);
+const { createWatermarkedDownload } = require('./watermark-download');
 const paymentApi = require('./payment-api')({
   DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos, privateStore
 });
@@ -134,6 +135,28 @@ const server = http.createServer(async (req, res) => {
     if (name === '/api/health' && req.method === 'GET') return send(res, 200, { online:true, uploadLimitMB:10 });
     if (await paymentApi.handle(req, res, name, url)) return;
 
+    // Unpaid downloads of gallery images are watermarked permanently in the
+    // actual file bytes. This works for original GitHub images and R2 uploads.
+    // This route never provides the clean original. Paid Stripe route is separate.
+    const freeMatch = name.match(/^\/api\/photos\/(original-(?:10|[1-9])|[a-f0-9-]{36})\/watermarked-download$/i);
+    if (freeMatch && req.method === 'GET') {
+      const photoId = freeMatch[1];
+      if (!privateStore.idOk(photoId)) return send(res,400,{error:'Invalid photograph.'});
+      if (!photoId.startsWith('original-') && !readPhotos().some(p=>p.id===photoId))
+        return send(res,404,{error:'Photograph not found.'});
+      const original = await privateStore.getGalleryImage(photoId);
+      if (!original) return send(res,404,{error:'Photograph not found.'});
+      const marked = await createWatermarkedDownload(original.bytes, original.contentType);
+      const filename = `frankie-photo-${photoId}-THANK-YOU.${marked.ext}`;
+      res.writeHead(200,{
+        'Content-Type':marked.contentType,
+        'Content-Disposition':`attachment; filename="${filename}"`,
+        'Content-Length':marked.bytes.length,
+        'Cache-Control':'no-store',
+        'X-Content-Type-Options':'nosniff'
+      });
+      return res.end(marked.bytes);
+    }
     if (name === '/api/photos' && req.method === 'GET') {
       const photos = readPhotos().map(({ id, title, file, createdAt }) => ({ id, title, url:`/uploads/${file}`, createdAt }));
       return send(res, 200, photos);

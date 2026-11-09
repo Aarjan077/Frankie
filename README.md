@@ -82,3 +82,7 @@ npm start
 ```
 
 The tests cover exact byte-for-byte GitHub downloads, a one-time admin upload, sandbox checkout, expired/forged download links, order recording, delete behaviour, the R2 object lifecycle with a local simulated R2 client, live-payment locks and webhook signatures. Simulated tests do **not** charge real money or access your Cloudflare account.
+
+## Free downloads with watermark
+
+See [`WATERMARK_GUIDE.md`](WATERMARK_GUIDE.md). The gallery remains clean; the provided **DOWNLOAD WITHOUT PAYING** link and desktop right-click menu deliver a full-sized photograph with diagonal THANK YOU text baked into the file. Stripe-paid downloads remain clean. This is a university prototype: public clean image URLs remain accessible and cannot be made uncopiable through a web interface.
