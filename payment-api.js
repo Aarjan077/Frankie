@@ -90,7 +90,8 @@ module.exports = function setupPaymentApi({DATA_DIR, IS_PROD, send, validOrigin,
     let payload;
     try { payload = await response.json(); } catch { throw new Error('Stripe did not return valid JSON.'); }
     if (!response.ok) {
-      console.error('Stripe API status:', response.status, 'type:', payload?.error?.type || 'unknown');
+      // Safe diagnostics: never log API keys, email addresses or request bodies.
+      console.error('Stripe API error:', { status:response.status, type:payload?.error?.type || 'unknown', code:payload?.error?.code || 'unknown', parameter:payload?.error?.param || 'none', requestId:response.headers.get('request-id') || 'unknown' });
       throw Object.assign(new Error('Stripe could not start this test checkout. Please check your sandbox configuration.'), { status:502 });
     }
     return payload;
@@ -147,7 +148,8 @@ module.exports = function setupPaymentApi({DATA_DIR, IS_PROD, send, validOrigin,
 
       const parameters = new URLSearchParams();
       parameters.set('mode','payment');
-      parameters.set('payment_method_types[0]', 'card');
+      // Modern Stripe API versions (2026-09-30.endive onward) reject
+      // payment_method_types on Checkout Sessions. Use Stripe Dashboard settings.
       parameters.set('line_items[0][quantity]','1');
       parameters.set('line_items[0][price_data][currency]','gbp');
       parameters.set('line_items[0][price_data][unit_amount]',String(amountPence));
