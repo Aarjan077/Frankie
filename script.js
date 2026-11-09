@@ -264,8 +264,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const isGalleryPhoto = button.classList.contains("gallery-stack-card");
     activeGalleryPhotoId = isGalleryPhoto ? button.dataset.photoId : null;
     lightboxBuyArea.hidden = !isGalleryPhoto;
-    photoStripeStatus.textContent = stripeSandboxEnabled ? "" : "TEST CHECKOUT NOT YET CONFIGURED ON RENDER.";
-    stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
+    photoStripeStatus.textContent = stripeSandboxEnabled ? "" : "STRIPE CHECKOUT IS NOT ACTIVE YET.";
+    stripeBuyButtons.forEach(b => { b.disabled = !(b.dataset.checkoutType === "photo_copy" ? window.frankiePhotoCopiesEnabled : window.frankieRightsEnabled); });
     lightbox.classList.toggle("is-gallery-photo", isGalleryPhoto);
     lightboxPricing.hidden = !isGalleryPhoto;
     lightboxCharityFootnote.hidden = !isGalleryPhoto;
@@ -921,26 +921,78 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch("/api/payments/config", {cache:"no-store"});
       const data = await response.json();
-      stripeSandboxEnabled = response.ok && data.enabled === true && data.mode === "test";
+      stripeSandboxEnabled = response.ok && data.enabled === true;
+      const mode = data.mode === "live" ? "live" : "test";
+      window.frankieStripeMode = mode;
+      window.frankieStudioPaymentsEnabled = stripeSandboxEnabled && data.studioEnabled === true;
+      const photoReady = stripeSandboxEnabled && data.photoCopiesEnabled === true;
+      const rightsReady = stripeSandboxEnabled && data.rightsEnabled === true;
+      window.frankiePhotoCopiesEnabled = photoReady;
+      window.frankieRightsEnabled = rightsReady;
+      stripeBuyButtons.forEach(button => {
+        const isCopy = button.dataset.checkoutType === "photo_copy";
+        button.disabled = !(isCopy ? photoReady : rightsReady);
+        if (!isCopy && mode === "live") {
+          button.title = "Copyright transfers require a separately signed agreement. Contact Frankie.";
+          const label = button.querySelector("span");
+          if (label) label.textContent = "RIGHTS ENQUIRY*";
+        }
+      });
+      const topNote = document.querySelector(".checkout-demo-label");
+      if (topNote) topNote.textContent = mode === "live" ? "SECURE STRIPE CHECKOUT / LIVE" : "STRIPE SANDBOX / TEST PAYMENTS ONLY";
+      const studioButton = document.querySelector(".donation-preview-button span");
+      if (studioButton) studioButton.textContent = mode === "live" ? "CONTINUE TO SECURE CHECKOUT" : "CONTINUE TO STRIPE TEST CHECKOUT";
+      const studioNote = document.querySelector(".donation-form-bottom .contact-form-note");
+      if (studioNote) studioNote.textContent = mode === "live" ?
+        "* Required fields. Studio support is separate from photograph-sale charity fundraising. Stripe processes payment securely." :
+        "* Required fields. Sandbox only — no real payment is taken. Details are sent to Stripe only when you proceed.";
+      const charityNote = document.querySelector(".gallery-charity-note-detail");
+      if (charityNote && mode === "live") charityNote.textContent = "PHOTOGRAPH SALES PROPOSED IN AID OF CANCER RESEARCH UK. LIVE SALES ARE AVAILABLE ONLY AFTER FUNDRAISING APPROVAL.";
+      const galleryHint = document.querySelector(".gallery-bottom-hint");
+      if (galleryHint && mode === "live") galleryHint.textContent = "CLICK A PHOTOGRAPH TO VIEW OR PURCHASE · SECURE STRIPE CHECKOUT";
+      const photoNote = document.getElementById("lightbox-charity-footnote");
+      if (photoNote && mode === "live") photoNote.textContent = "Photograph sales proposed in aid of Cancer Research UK · Independent fundraiser";
+      const studioTile = document.querySelector(".studio-stripe-tile small");
+      if (studioTile && mode === "live") studioTile.textContent = "Secure checkout hosted by Stripe";
+      if (mode === "live") {
+        const intro = document.querySelector(".donation-form-intro > p");
+        if (intro) intro.textContent = "Support my ambition to open a photography studio for emerging photographers. This studio project is separate from Cancer Research UK photograph sales and is not a registered charity donation.";
+        const infoBadge = document.querySelector(".donation-form-coming");
+        if (infoBadge) infoBadge.textContent = window.frankieStudioPaymentsEnabled ? "SECURE LIVE PAYMENTS" : "STUDIO SUPPORT NOT YET AVAILABLE";
+        const formTop = document.querySelector(".donation-form-panel .contact-form-top > span:first-child");
+        if (formTop) formTop.textContent = "STUDIO SUPPORT / SECURE STRIPE";
+        const modeLabel = document.querySelector(".donation-payment-heading span:last-child");
+        if (modeLabel) modeLabel.textContent = window.frankieStudioPaymentsEnabled ? "LIVE" : "NOT YET OPEN";
+        const explainer = document.querySelector(".donation-payment-placeholder > p");
+        if (explainer) explainer.textContent = "If studio support is enabled, Stripe will take a real payment. This is not eligible for charitable Gift Aid and is separate from photograph-sale fundraising.";
+      }
+      if (mode === "live" && window.frankieStudioPaymentsEnabled) {
+        const badge = document.querySelector(".donation-availability");
+        if (badge) badge.textContent = "STUDIO SUPPORT OPEN";
+        const upcoming = document.querySelector(".donation-coming-soon span:first-child");
+        if (upcoming) upcoming.textContent = "SUPPORT THE STUDIO BELOW";
+        const footnote = document.querySelector(".donation-card-footnote");
+        if (footnote) footnote.textContent = "Studio contributions are separate from photograph sales in aid of Cancer Research UK.";
+      }
       if (!stripeSandboxEnabled) {
-        const msg = "TEST CHECKOUT IS NOT CONFIGURED YET. Add the Stripe test key, webhook secret and site URL on Render.";
+        const msg = data.message || "Stripe checkout is not active yet.";
         photoStripeStatus.textContent = msg;
         const note = document.getElementById("donation-preview-status");
         if (note) note.textContent = msg;
-      }
-    } catch { stripeSandboxEnabled = false; }
-    stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
+      } else if (!photoReady) photoStripeStatus.textContent = "Photograph purchases are not yet activated.";
+    } catch { stripeSandboxEnabled = false; window.frankieStudioPaymentsEnabled = false; }
+    if (!stripeSandboxEnabled) stripeBuyButtons.forEach(b => { b.disabled = true; });
   }
   checkStripeAvailability();
   stripeBuyButtons.forEach(button => button.addEventListener("click", async () => {
-    if (!activeGalleryPhotoId || !stripeSandboxEnabled) return;
+    if (!activeGalleryPhotoId || !stripeSandboxEnabled || button.disabled) return;
     stripeBuyButtons.forEach(b => { b.disabled = true; });
-    photoStripeStatus.textContent = "Opening Stripe's secure sandbox checkout…";
+    photoStripeStatus.textContent = "Opening Stripe's secure checkout…";
     try {
       await createStripeCheckout({type:button.dataset.checkoutType, photoId:activeGalleryPhotoId});
     } catch(error) {
       photoStripeStatus.textContent = error.message;
-      stripeBuyButtons.forEach(b => { b.disabled = !stripeSandboxEnabled; });
+      checkStripeAvailability();
     }
   }));
 
@@ -1031,15 +1083,15 @@ document.addEventListener("DOMContentLoaded", () => {
         clearDonorPreview();
         return;
       }
-      if (!stripeSandboxEnabled) {
-        previewStatus.textContent = "Stripe test checkout is not configured on Render yet.";
+      if (!stripeSandboxEnabled || !window.frankieStudioPaymentsEnabled) {
+        previewStatus.textContent = "Studio support checkout is not active yet.";
         previewStatus.className = "contact-status donation-preview-status is-visible is-error";
         return;
       }
       const submitButton = donorForm.querySelector('[type="submit"]');
       submitButton.disabled = true;
       const formattedAmount = currencyFormatter.format(Number(donorFields.amount.value));
-      previewStatus.textContent = `Opening Stripe sandbox for ${formattedAmount} of studio support…`;
+      previewStatus.textContent = `Opening Stripe for ${formattedAmount} of studio support…`;
       previewStatus.className = "contact-status donation-preview-status is-visible";
       try {
         await createStripeCheckout({

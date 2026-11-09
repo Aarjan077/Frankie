@@ -78,3 +78,12 @@ form input::placeholder { color:var(--soft); opacity:.65; }
 @media(max-width:740px) { .admin-header { min-height:70px; } .admin-header-tag { display:none; } .admin-head-actions { gap:13px; } .admin-theme span { display:none; } .view-site { font-size:9px; } main { width:88%; } .login-section { display:flex; flex-direction:column; align-items:stretch; gap:50px; padding:60px 0; } .login-intro h1 { font-size:78px; } .login-line { display:none; } .login-panel { padding:30px; } .dashboard-section { padding:55px 0; } .dashboard-heading-row { align-items:flex-start; } .dashboard-heading-row h1 { font-size:60px; } .dashboard-footnote { flex-wrap:wrap; } .admin-footer span:last-child { display:none; } }
 @media(max-width:440px) { .dashboard-heading-row { display:block; } .logout { margin-top:20px; } .published-item { grid-template-columns:60px minmax(0,1fr) auto; gap:9px; } .published-item img { width:60px; height:67px; } .published-item h3 { font-size:18px; } .published-item button { padding:8px 5px; font-size:8px; } }
 @media(prefers-reduced-motion:reduce) { *, *::before, *::after { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
+
+/* Private originals: visually consistent with the existing admin panels */
+.master-upload-panel { max-width:1050px; margin:32px auto 0; padding:clamp(24px,4vw,52px); border:1px solid var(--line); background:var(--paper); }
+.master-upload-panel h2 { font:400 clamp(39px,4vw,60px)/1.08 'Italiana',Georgia,serif; margin:36px 0 12px; }
+.master-upload-panel h2 em {font-weight:400;}
+.master-upload-panel select,.master-upload-panel input[type="file"] { display:block; width:100%; background:transparent; color:var(--text); padding:14px 10px; font:400 13px/1.6 'DM Sans',sans-serif; border:1px solid var(--line); }
+.master-upload-panel select option{color:#191919;background:#f9f9f7;}
+.master-upload-panel small,.master-upload-panel .storage-warning{display:block;margin-top:15px;color:var(--soft);font:400 12px/1.8 'DM Sans',sans-serif;}
+.master-upload-panel .storage-warning{margin-top:30px;border-top:1px solid var(--line);padding-top:18px;}

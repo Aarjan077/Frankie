@@ -23,8 +23,9 @@ const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const SESSION_LIFE = 8 * 60 * 60 * 1000;
 const sessions = new Map();
 const rateLimits = new Map();
+const privateStore = require('./private-storage')(DATA_DIR);
 const paymentApi = require('./payment-api')({
-  DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos
+  DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos, privateStore
 });
 
 if (IS_PROD && (!ADMIN_PASSWORD || ADMIN_PASSWORD.length < 12 || ADMIN_PASSWORD === '1234')) {
@@ -133,6 +134,28 @@ const server = http.createServer(async (req, res) => {
     if (name === '/api/health' && req.method === 'GET') return send(res, 200, { online:true, uploadLimitMB:10 });
     if (await paymentApi.handle(req, res, name, url)) return;
 
+    // Private high-resolution originals. Only the signed-in admin can upload them.
+    // Never add this path to the public static file allowlist.
+    const masterMatch = name.match(/^\/api\/admin\/masters\/(original-(?:10|[1-9])|[0-9a-f-]{36})$/i);
+    if (masterMatch && req.method === 'GET') {
+      if (!getSession(req)) return send(res,401,{error:'Please sign in.'});
+      if (!privateStore.idOk(masterMatch[1])) return send(res,400,{error:'Invalid photograph ID.'});
+      return send(res,200,{exists:await privateStore.hasMaster(masterMatch[1]),cloud:privateStore.configured});
+    }
+    if (masterMatch && req.method === 'PUT') {
+      if (!authorisedWrite(req,res)) return;
+      const id=masterMatch[1];
+      if (!privateStore.idOk(id)) return send(res,400,{error:'Invalid photograph ID.'});
+      if (!privateStore.configured && IS_PROD) return send(res,503,{error:'Configure private Cloudflare R2 storage before uploading purchase originals.'});
+      if (!id.startsWith('original-') && !readPhotos().some(photo=>photo.id===id)) return send(res,404,{error:'Upload the gallery preview first.'});
+      const contentType=String(req.headers['content-type']||'').split(';')[0].toLowerCase();
+      if (!['image/jpeg','image/png','image/webp'].includes(contentType)) return send(res,415,{error:'Use a JPG, PNG or WebP original.'});
+      const buffer=await readBody(req,25*1024*1024);
+      const detected=detectImage(buffer);
+      if (!detected || detected.type!==contentType) return send(res,415,{error:'Image contents do not match its file type.'});
+      await privateStore.putMaster(id,buffer,contentType);
+      return send(res,200,{saved:true,photoId:id,private:privateStore.configured});
+    }
     if (name === '/api/photos' && req.method === 'GET') {
       const photos = readPhotos().map(({ id, title, file, createdAt }) => ({ id, title, url:`/uploads/${file}`, createdAt }));
       return send(res, 200, photos);
@@ -181,11 +204,14 @@ const server = http.createServer(async (req, res) => {
       if (!kind || kind.type !== contentType) return send(res, 415, { error:'The file is not a valid supported image format.' });
       const id = crypto.randomUUID();
       const file = `${id}.${kind.ext}`;
+      // Save a durable copy of the public preview when R2 is configured.
+      if (privateStore.configured) await privateStore.putPreview(file,buffer,contentType);
       fs.writeFileSync(path.join(UPLOAD_DIR, file), buffer, { flag:'wx', mode:0o644 });
       try {
         const photos = readPhotos();
         const item = { id, file, title, createdAt:new Date().toISOString() };
         photos.push(item);
+        if (privateStore.configured) await privateStore.saveGallery(photos);
         savePhotos(photos);
         return send(res, 201, { id, title, url:`/uploads/${file}`, createdAt:item.createdAt });
       } catch(error) {
@@ -204,14 +230,28 @@ const server = http.createServer(async (req, res) => {
       const photos = readPhotos();
       const item = photos.find(p => p.id === id);
       if (!item) return send(res, 404, { error:'Photograph not found.' });
-      savePhotos(photos.filter(p => p.id !== id));
+      const remaining=photos.filter(p=>p.id!==id);
+      if(privateStore.configured) {
+        await privateStore.saveGallery(remaining);
+        await privateStore.deletePreview(item.file);
+      }
+      savePhotos(remaining);
       try { fs.unlinkSync(path.join(UPLOAD_DIR,item.file)); } catch (error) { console.error('Uploaded image cleanup:', error.message); }
+      // Private master remains so prior buyers retain access to the file.
       return send(res, 200, { success:true });
     }
     const uploadMatch = name.match(/^\/uploads\/([0-9a-f-]{36}\.(?:jpg|png|webp))$/);
     if (uploadMatch && (req.method === 'GET' || req.method === 'HEAD')) {
       const filename = uploadMatch[1];
       const type = STATIC_MIMES[path.extname(filename)];
+      if(privateStore.configured){
+        const preview=await privateStore.getPreview(filename);
+        if(preview){
+          res.writeHead(200,{'Content-Type':preview.contentType,'Content-Length':preview.bytes.length,'Cache-Control':'public, max-age=86400'});
+          if(req.method==='HEAD')return res.end();
+          return res.end(preview.bytes);
+        }
+      }
       return sendFile(req, res, path.join(UPLOAD_DIR,filename), type, 'public, max-age=86400');
     }
     if (name.startsWith('/api/') || name.startsWith('/uploads/')) return send(res, 404, { error:'Not found.' });
@@ -240,8 +280,24 @@ const server = http.createServer(async (req, res) => {
     return send(res, 500, { error:'Something went wrong. Please try again.' });
   }
 });
-server.listen(PORT, () => {
-  console.log(`Frankie website + backend running at http://localhost:${PORT}`);
-  console.log(`Persistent gallery storage: ${DATA_DIR}`);
-  if (!IS_PROD) console.warn('DEVELOPMENT MODE ONLY: Demo credentials admin / 1234 if no ADMIN_PASSWORD is set. Never deploy them.');
-});
+async function startServer(){
+  if(privateStore.configured){
+    // Recover gallery metadata from R2 after a Render restart or redeploy.
+    // R2 is authoritative; the local file is only a runtime cache.
+    const saved=await privateStore.loadGallery();
+    if(saved){
+      const temp=`${META_FILE}.${crypto.randomUUID()}.tmp`;
+      fs.writeFileSync(temp,JSON.stringify(saved,null,2)+'\n');
+      fs.renameSync(temp,META_FILE);
+    }else{
+      const local=readPhotos();
+      await privateStore.saveGallery(local);
+    }
+  }
+  server.listen(PORT, () => {
+    console.log(`Frankie website + backend running at http://localhost:${PORT}`);
+    console.log(`Gallery storage: ${privateStore.configured?'R2 durable cloud storage':'LOCAL TEMPORARY disk, do not sell files on this setup'}`);
+    if (!IS_PROD) console.warn('DEVELOPMENT MODE ONLY: Demo credentials admin / 1234 if no ADMIN_PASSWORD is set. Never deploy them.');
+  });
+}
+startServer().catch(error=>{console.error('Cannot initialise durable gallery storage:',error);process.exit(1);});

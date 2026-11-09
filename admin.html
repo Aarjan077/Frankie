@@ -80,6 +80,21 @@
           <p id="library-status" class="form-status" role="status" aria-live="polite"></p>
         </section>
       </div>
+      <section class="master-upload-panel" aria-labelledby="masters-heading">
+        <div class="panel-top"><span>03 / CUSTOMER DOWNLOADS</span><span>PRIVATE ORIGINALS</span></div>
+        <h2 id="masters-heading">Prepare a <em>download.</em></h2>
+        <p class="panel-intro">Choose a photo from your gallery and upload its high-resolution original separately. Originals are stored privately in Cloudflare R2 and are only delivered to confirmed £2.50 customers. Existing gallery previews do not change.</p>
+        <form id="master-upload-form">
+          <label for="master-photo-id">CHOOSE A GALLERY PHOTOGRAPH</label>
+          <select id="master-photo-id" name="photoId" required></select>
+          <label for="master-file">PRIVATE DIGITAL DOWNLOAD FILE</label>
+          <input id="master-file" name="masterFile" type="file" accept="image/jpeg,image/png,image/webp" required>
+          <small>JPG, PNG or WebP · up to 25 MB · replaces any previous private original for this photograph.</small>
+          <button class="button-primary" id="master-upload-submit" type="submit"><span>SAVE PRIVATE ORIGINAL</span><span aria-hidden="true">↗</span></button>
+          <p id="master-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+        <p class="storage-warning">To accept real payments, configure a private Cloudflare R2 bucket. Never put purchased originals in the GitHub repository or a public gallery URL.</p>
+      </section>
       <div class="dashboard-footnote"><span>FRANKIE / STUDIO ADMINISTRATION</span><span>ONLY YOU CAN PUBLISH OR REMOVE UPLOADED PHOTOGRAPHS</span></div>
     </section>
   </main>

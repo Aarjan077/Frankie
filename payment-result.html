@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Frankie | Stripe Test Checkout</title>
+  <meta name="referrer" content="no-referrer">
+  <title>Frankie | Your Order</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Italiana&display=swap" rel="stylesheet">
@@ -26,12 +27,17 @@
 <body>
   <main class="payment-receipt">
     <a class="payment-logo" href="/">FRANKIE.</a>
-    <p class="payment-kicker">STRIPE SANDBOX / 2026</p>
-    <h1 id="result-heading">Checking your test checkout.</h1>
+    <p class="payment-kicker">PAYMENT CONFIRMATION / FRANKIE</p>
+    <h1 id="result-heading">Checking your checkout.</h1>
     <p id="result-message" role="status" aria-live="polite">We are checking the payment status directly with Stripe.</p>
     <p id="result-details"></p>
-    <a class="payment-link" href="/">BACK TO FRANKIE ↗</a>
-    <p class="payment-notice">Test environment only. No actual money has moved. Image files are not automatically delivered and copyright is not transferred by this demonstration checkout.</p>
+    <div id="download-box" hidden>
+      <a id="photo-download-link" class="payment-link" href="#" download>DOWNLOAD PHOTOGRAPH ↓</a>
+      <p class="payment-notice">Personal-use digital copy. You may save and enjoy the photograph; copyright stays with Frankie. No resale, republication, redistribution or commercial use is included.</p>
+      <p class="payment-notice">Download links refresh when you revisit this confirmation page, for up to 30 days after purchase. Save your file somewhere safe.</p>
+    </div>
+    <a class="payment-link" href="/" style="margin-top:18px">BACK TO FRANKIE ↗</a>
+    <p class="payment-notice" id="environment-notice">Payments are verified directly with Stripe. Copyright transfers and charitable transfers are not automatic.</p>
   </main>
 </body>
 </html>

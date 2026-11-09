@@ -1,236 +1,269 @@
 /**
- * Stripe Checkout (TEST MODE ONLY) for Frankie Photography.
- * Node 22+ built-in fetch and HMAC; no external packages or public secrets.
- * - Server owns photo prices and validates every product id.
- * - Studio contributions are distinct from intended Cancer Research UK sales.
- * - Webhooks are verified against RAW request bytes before recording successes.
- * - No digital deliveries, copyright assignments, live charges or charity transfers.
+ * Stripe Checkout: sandbox + explicitly gated live mode.
+ * Photo copies are delivered only after a Stripe-verified paid Checkout session.
+ * The customer's file is PRIVATE in Cloudflare R2 (not a public gallery URL).
+ * Fundraising and studio support are separate purposes.
+ * Never store or expose API keys in public scripts or GitHub.
  */
 'use strict';
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const crypto = require('node:crypto');
 
-const ORIGINAL_TITLES = Object.freeze([
-  'Greyhound Portrait', 'Blue in Motion', "Elephant's Gaze", 'Still Waters',
-  'Coastal Wanderers', 'Shoreline Treasures', 'Fox Family', 'Midair Catch',
-  'Looking Beyond', 'Between Shadows'
-]);
-const COPY_PENCE = 250;
-const RIGHTS_PENCE = 30000;
+const ORIGINAL_TITLES = [
+  'Greyhound Portrait','Blue in Motion',"Elephant's Gaze",'Still Waters',
+  'Coastal Wanderers','Shoreline Treasures','Fox Family','Midair Catch',
+  'Looking Beyond','Between Shadows'
+];
+const PHOTO_COPY_PENCE = 250;
+const PHOTO_RIGHTS_PENCE = 30000;
 const MIN_STUDIO_PENCE = 100;
 const MAX_STUDIO_PENCE = 500000;
+const PURCHASE_VALID_SECONDS = 30 * 86400;
+const DOWNLOAD_TOKEN_SECONDS = 600;
+const yes = (name) => process.env[name] === 'yes';
 
-module.exports = function setupPaymentApi({DATA_DIR, IS_PROD, send, validOrigin, readBody, readPhotos}) {
-  const stripeSecret = (process.env.STRIPE_SECRET_KEY || '').trim();
-  const webhookSecret = (process.env.STRIPE_WEBHOOK_SECRET || '').trim();
-  const siteUrlString = (process.env.PUBLIC_SITE_URL || '').trim().replace(/\/$/, '');
-  const isSandboxKey = stripeSecret.startsWith('sk_test_') && stripeSecret.length > 14;
-  const hasWebhookSecret = webhookSecret.startsWith('whsec_') && webhookSecret.length > 12;
-  let siteOrigin = '';
+module.exports = function createPayments({DATA_DIR,IS_PROD,send,validOrigin,readBody,readPhotos,privateStore}) {
+  const apiKey=(process.env.STRIPE_SECRET_KEY||'').trim();
+  const signingSecret=(process.env.STRIPE_WEBHOOK_SECRET||'').trim();
+  const mode = apiKey.startsWith('sk_live_') ? 'live' : 'test';
+  const prefix = mode === 'live' ? 'cs_live_' : 'cs_test_';
+  const keyValid = apiKey.startsWith(mode==='live'?'sk_live_':'sk_test_') && apiKey.length>14;
+  const webhookValid = signingSecret.startsWith('whsec_') && signingSecret.length>12;
+  const downloadSigningKey=(process.env.DOWNLOAD_SIGNING_SECRET||'').trim();
+  let origin='';
   try {
-    const site = new URL(siteUrlString);
-    const safeScheme = site.protocol === 'https:' || (!IS_PROD && site.protocol === 'http:' && site.hostname === 'localhost');
-    if (safeScheme && !site.username && !site.password && !site.search && !site.hash && (site.pathname === '/' || !site.pathname)) {
-      siteOrigin = site.origin;
-    }
-  } catch { /* disabled until configured */ }
-  // In a public environment this project intentionally refuses ALL sk_live_ keys.
-  // This prevents premature selling / collecting contributions before legal approval.
-  const enabled = Boolean(isSandboxKey && hasWebhookSecret && siteOrigin);
-  const apiRoot = !IS_PROD && /^https?:\/\/127\.0\.0\.1:\d+$/.test(process.env.STRIPE_API_BASE || '')
-    ? process.env.STRIPE_API_BASE
-    : 'https://api.stripe.com';
-  const paymentsFile = path.join(DATA_DIR, 'payments.json');
+    const url=new URL((process.env.PUBLIC_SITE_URL||'').trim().replace(/\/$/,''));
+    if ((url.protocol==='https:' || (!IS_PROD&&url.protocol==='http:'&&['localhost','127.0.0.1'].includes(url.hostname))) &&
+        !url.username&&!url.password&&!url.search&&!url.hash&&url.pathname==='/')origin=url.origin;
+  }catch{}
+  // Two-stage activation: key alone never switches the website to real charges.
+  const liveReady=mode==='live' && yes('LIVE_PAYMENTS_ENABLED') && privateStore.configured && downloadSigningKey.length>=32;
+  const enabled=Boolean(keyValid&&webhookValid&&origin&&(mode==='test'||liveReady));
+  const photoCopiesEnabled=enabled && (mode==='test'||yes('LIVE_PHOTO_SALES_CLEARED'));
+  const studioEnabled=enabled && (mode==='test'||yes('LIVE_STUDIO_SUPPORT_CLEARED'));
+  // There is no automatic copyright assignment: live rights checkout stays OFF.
+  const rightsEnabled=enabled && mode==='test';
+  const apiRoot=!IS_PROD&&/^https?:\/\/127\.0\.0\.1:\d+$/.test(process.env.STRIPE_API_BASE||'')
+    ? process.env.STRIPE_API_BASE : 'https://api.stripe.com';
+  const paymentsFile=path.join(DATA_DIR,'payments.json');
+  const tokenKey=mode==='live'?downloadSigningKey:(downloadSigningKey||signingSecret);
+  const sessionPattern=/^cs_(?:test|live)_[A-Za-z0-9_]{6,160}$/;
 
-  function readPayments() {
-    try {
-      const records = JSON.parse(fs.readFileSync(paymentsFile, 'utf8'));
-      if (!Array.isArray(records)) throw new Error('Invalid payment records');
-      return records;
-    } catch(error) {
-      if (error.code === 'ENOENT') return [];
-      throw error;
-    }
-  }
-  function savePayments(records) {
-    const temporary = `${paymentsFile}.${crypto.randomUUID()}.tmp`;
-    fs.writeFileSync(temporary, JSON.stringify(records, null, 2) + '\n', { flag:'wx', mode:0o600 });
-    fs.renameSync(temporary, paymentsFile);
-  }
-
-  function paymentConfiguration() {
-    return {
-      enabled, mode:'test',
-      label:'Stripe sandbox — no real money is collected',
-      ...(!enabled ? {message:'Configure STRIPE_SECRET_KEY (sk_test_), STRIPE_WEBHOOK_SECRET and PUBLIC_SITE_URL on Render.'} : {})
-    };
-  }
-  function safeAmount(amount) {
-    const text = typeof amount === 'number' ? String(amount) : amount;
-    if (typeof text !== 'string' || !/^\d{1,4}(?:\.\d{1,2})?$/.test(text)) return null;
-    const [pounds, pence=''] = text.split('.');
-    const pennies = Number(pounds) * 100 + Number((pence+'00').slice(0,2));
-    if (!Number.isSafeInteger(pennies) || pennies < MIN_STUDIO_PENCE || pennies > MAX_STUDIO_PENCE) return null;
-    return pennies;
+  function configuration() {
+    const base={enabled,mode,photoCopiesEnabled,studioEnabled,rightsEnabled,downloadStorage:privateStore.configured?'private_r2':'temporary_local',
+      label:mode==='live'?'Secure Stripe Checkout — live payments':'Stripe sandbox — no real money is collected'};
+    if(!enabled)base.message=mode==='live'
+      ? 'Live checkout disabled. Configure R2, a signing key, the correct live webhook, LIVE_PAYMENTS_ENABLED=yes and public site URL.'
+      : 'Configure the Stripe sandbox key, webhook signing secret and public site URL.';
+    return base;
   }
   function photoForId(id) {
-    const match = /^original-(10|[1-9])$/.exec(id || '');
-    if (match) return { id, title:ORIGINAL_TITLES[Number(match[1])-1] };
-    if (typeof id !== 'string' || !/^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/i.test(id)) return null;
-    const photo = readPhotos().find(photo => photo.id === id);
-    return photo ? { id:photo.id, title:photo.title.slice(0,80) } : null;
+    if(typeof id!=='string')return null;
+    const original=/^original-(10|[1-9])$/.exec(id);
+    if(original)return {id,title:ORIGINAL_TITLES[Number(original[1])-1]};
+    if(!privateStore.idOk(id))return null;
+    const photo=readPhotos().find(p=>p.id===id);
+    return photo?{id,title:String(photo.title).slice(0,80)}:null;
+  }
+  function amountPence(text) {
+    if(typeof text==='number')text=String(text);
+    if(typeof text!=='string'||!/^[0-9]{1,4}(?:\.[0-9]{1,2})?$/.test(text))return null;
+    const [pounds,sub='']=text.split('.');
+    const n=Number(pounds)*100+Number((sub+'00').slice(0,2));
+    return Number.isSafeInteger(n)&&n>=MIN_STUDIO_PENCE&&n<=MAX_STUDIO_PENCE?n:null;
   }
   async function stripeRequest(route, options={}) {
-    const response = await fetch(`${apiRoot}${route}`, {
+    const result=await fetch(`${apiRoot}${route}`,{
       ...options,
-      headers:{Authorization:`Bearer ${stripeSecret}`, ...(options.headers || {})},
+      headers:{Authorization:`Bearer ${apiKey}`,...(options.headers||{})},
       signal:AbortSignal.timeout(15000)
     });
-    let payload;
-    try { payload = await response.json(); } catch { throw new Error('Stripe did not return valid JSON.'); }
-    if (!response.ok) {
-      // Safe diagnostics: never log API keys, email addresses or request bodies.
-      console.error('Stripe API error:', { status:response.status, type:payload?.error?.type || 'unknown', code:payload?.error?.code || 'unknown', parameter:payload?.error?.param || 'none', requestId:response.headers.get('request-id') || 'unknown' });
-      throw Object.assign(new Error('Stripe could not start this test checkout. Please check your sandbox configuration.'), { status:502 });
+    const body=await result.json().catch(()=>null);
+    if(!result.ok){
+      console.error('Stripe API error:',{status:result.status,code:body?.error?.code||'unknown',param:body?.error?.param||'none',requestId:result.headers.get('request-id')||'unknown'});
+      throw Object.assign(new Error('Stripe cannot process this checkout. Please contact Frankie.'),{status:502});
     }
-    return payload;
+    if(!body)throw Object.assign(new Error('Stripe returned an invalid response.'),{status:502});
+    return body;
   }
-  function verifyStripeSignature(rawBody, header) {
-    if (!hasWebhookSecret || typeof header !== 'string' || header.length > 4096) return false;
-    const pieces = header.split(',').map(part => part.trim());
-    const timestampText = pieces.find(s => s.startsWith('t='))?.slice(2);
-    const signatures = pieces.filter(s => /^v1=[a-f0-9]{64}$/.test(s)).map(s => s.slice(3));
-    if (!timestampText || !/^\d{10,12}$/.test(timestampText) || !signatures.length) return false;
-    const timestamp = Number(timestampText);
-    if (Math.abs(Math.floor(Date.now()/1000) - timestamp) > 300) return false;
-    const expected = crypto.createHmac('sha256', webhookSecret)
-      .update(`${timestamp}.`).update(rawBody).digest();
-    return signatures.some(s => crypto.timingSafeEqual(Buffer.from(s, 'hex'), expected));
+  function verifySignature(payload,header) {
+    if(!webhookValid||typeof header!=='string'||header.length>4096)return false;
+    const fields=header.split(',').map(s=>s.trim());
+    const stamp=fields.find(f=>f.startsWith('t='))?.slice(2);
+    const signatures=fields.filter(f=>/^v1=[a-f\d]{64}$/.test(f)).map(f=>Buffer.from(f.slice(3),'hex'));
+    if(!/^\d{10,12}$/.test(stamp||'')||!signatures.length||Math.abs(Math.floor(Date.now()/1000)-Number(stamp))>300)return false;
+    const expected=crypto.createHmac('sha256',signingSecret).update(`${stamp}.`).update(payload).digest();
+    return signatures.some(s=>crypto.timingSafeEqual(s,expected));
   }
-  async function handle(req, res, name, url) {
-    if (!name.startsWith('/api/payments/')) return false;
-
-    if (name === '/api/payments/config' && req.method === 'GET') {
-      send(res, 200, paymentConfiguration());
-      return true;
+  function validatedPaid(session) {
+    if(!session||session.object!=='checkout.session'||!sessionPattern.test(session.id||'')||
+       !session.id.startsWith(prefix)||session.livemode!==(mode==='live')||
+       session.payment_status!=='paid'||session.currency!=='gbp'||
+       !Number.isSafeInteger(session.amount_total))return null;
+    const purpose=session.metadata?.purpose;
+    const amount=session.amount_total;
+    if(purpose==='photo_copy' && amount===PHOTO_COPY_PENCE && privateStore.idOk(session.metadata?.photo_id))return {purpose,photoId:session.metadata.photo_id,amountPence:amount};
+    if(purpose==='photo_rights' && amount===PHOTO_RIGHTS_PENCE && mode==='test' && privateStore.idOk(session.metadata?.photo_id))return {purpose,photoId:session.metadata.photo_id,amountPence:amount};
+    if(purpose==='studio_support' && amount>=MIN_STUDIO_PENCE && amount<=MAX_STUDIO_PENCE)return {purpose,photoId:null,amountPence:amount};
+    return null;
+  }
+  async function recordPaid(session) {
+    const valid=validatedPaid(session);
+    if(!valid)return false;
+    const entry={sessionId:session.id,...valid,currency:'gbp',mode,paidAt:new Date().toISOString()};
+    if(privateStore.configured)await privateStore.recordPayment(session.id,entry);
+    else {
+      // Sandbox only. Live mode requires R2 and never depends on this ephemeral file.
+      let arr=[];try{arr=JSON.parse(fs.readFileSync(paymentsFile,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e;}
+      if(!arr.some(i=>i.sessionId===session.id)){
+        arr.push(entry);
+        const temp=`${paymentsFile}.${crypto.randomUUID()}.tmp`;
+        fs.writeFileSync(temp,JSON.stringify(arr,null,2),{mode:0o600});fs.renameSync(temp,paymentsFile);
+      }
     }
-
-    if (name === '/api/payments/checkout' && req.method === 'POST') {
-      if (!validOrigin(req)) { send(res, 403, {error:'Start checkout from the website.'}); return true; }
-      if (!enabled) { send(res, 503, {error:'Stripe sandbox is not ready. Configure the test key, webhook secret and public site URL in Render.'}); return true; }
-      const contentType = req.headers['content-type'] || '';
-      if (!String(contentType).startsWith('application/json')) { send(res, 415, {error:'Expected a JSON request.'}); return true; }
-      const data = JSON.parse((await readBody(req, 4096)).toString('utf8'));
-      if (!data || typeof data !== 'object' || Array.isArray(data)) { send(res,400,{error:'Invalid checkout request.'}); return true; }
-
-      const kind = data.type;
-      let title, amountPence, description, photoId = '', email = '', donorName = '';
-      if (kind === 'photo_copy' || kind === 'photo_rights') {
-        const photo = photoForId(data.photoId);
-        if (!photo) { send(res,404,{error:'Photograph not found.'}); return true; }
-        photoId = photo.id;
-        title = kind === 'photo_copy' ? `Photograph copy — ${photo.title}` : `Photo rights option — ${photo.title}`;
-        amountPence = kind === 'photo_copy' ? COPY_PENCE : RIGHTS_PENCE;
-        description = kind === 'photo_copy'
-          ? 'Photography purchase — sandbox test. Digital image delivered manually after a real order is confirmed.'
-          : 'Photography rights — sandbox test. Rights transfer requires a separately signed written agreement.';
-      } else if (kind === 'studio_support') {
-        amountPence = safeAmount(data.amount);
-        donorName = typeof data.name === 'string' ? data.name.trim() : '';
-        email = typeof data.email === 'string' ? data.email.trim() : '';
-        if (!amountPence || donorName.length < 2 || donorName.length > 90 || !/^\S+@\S+\.\S+$/.test(email) || email.length > 254) {
-          send(res,400,{error:'Please provide your name, a valid email and an amount between £1 and £5,000.'}); return true;
-        }
-        title = 'Frankie Photography — future studio support';
-        description = 'Sandbox only. Studio project support is separate from Cancer Research UK sales. Not a charitable donation.';
-      } else { send(res,400,{error:'Unknown product or contribution type.'}); return true; }
-
-      const parameters = new URLSearchParams();
-      parameters.set('mode','payment');
-      // Modern Stripe API versions (2026-09-30.endive onward) reject
-      // payment_method_types on Checkout Sessions. Use Stripe Dashboard settings.
-      parameters.set('line_items[0][quantity]','1');
-      parameters.set('line_items[0][price_data][currency]','gbp');
-      parameters.set('line_items[0][price_data][unit_amount]',String(amountPence));
-      parameters.set('line_items[0][price_data][product_data][name]',title);
-      parameters.set('line_items[0][price_data][product_data][description]',description);
-      parameters.set('metadata[purpose]',kind);
-      if (photoId) { parameters.set('metadata[photo_id]',photoId); parameters.set('metadata[photo_title]',title.slice(0,90)); }
-      if (email) parameters.set('customer_email',email);
-      if (donorName) parameters.set('metadata[donor_name]',donorName);
-      // Donor name is handled by Stripe and is not saved to local payment records.
-      parameters.set('success_url',`${siteOrigin}/payment-result.html?session_id={CHECKOUT_SESSION_ID}`);
-      parameters.set('cancel_url',`${siteOrigin}/payment-result.html?cancelled=1`);
-      const session = await stripeRequest('/v1/checkout/sessions', {
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:parameters.toString()
-      });
-      if (session?.livemode === true || !/^cs_test_[A-Za-z0-9_]+$/.test(session?.id || '') ||
-          typeof session.url !== 'string' || !session.url.startsWith('https://checkout.stripe.com/')) {
-        send(res,502,{error:'Stripe returned an unexpected checkout session.'}); return true;
-      }
-      send(res,200,{url:session.url});
-      return true;
-    }
-
-    if (name === '/api/payments/webhook' && req.method === 'POST') {
-      if (!enabled) { send(res,503,{error:'Webhook not configured.'}); return true; }
-      const raw = await readBody(req, 1024*1024);
-      if (!verifyStripeSignature(raw,req.headers['stripe-signature'])) {
-        send(res,400,{error:'Invalid Stripe signature.'}); return true;
-      }
-      const event = JSON.parse(raw.toString('utf8'));
-      // Handle only successfully paid TEST Checkout Sessions, including delayed payments.
-      if (['checkout.session.completed','checkout.session.async_payment_succeeded'].includes(event.type)) {
-        const session = event.data?.object;
-        const acceptablePurposes = ['photo_copy','photo_rights','studio_support'];
-        if (session?.object === 'checkout.session' && session.livemode === false &&
-            /^cs_test_[A-Za-z0-9_]+$/.test(session.id || '') &&
-            session.payment_status === 'paid' && session.currency === 'gbp' &&
-            Number.isSafeInteger(session.amount_total) && session.amount_total > 0 &&
-            acceptablePurposes.includes(session.metadata?.purpose)) {
-          const current = readPayments();
-          if (!current.some(p => p.sessionId === session.id)) {
-            const item = {
-              sessionId:session.id, purpose:session.metadata.purpose,
-              photoId:session.metadata.photo_id || null,
-              amountPence:session.amount_total, currency:'gbp',
-              confirmedAt:new Date().toISOString(), testOnly:true
-            };
-            current.push(item);
-            savePayments(current);
-            console.log('Stripe sandbox payment confirmed:',item.purpose,item.amountPence,'pence');
-          }
-        }
-      }
-      send(res,200,{received:true});
-      return true;
-    }
-
-    if (name === '/api/payments/status' && req.method === 'GET') {
-      if (!enabled) { send(res,503,{error:'Stripe sandbox not configured.'}); return true; }
-      const sessionId = url.searchParams.get('session_id');
-      if (!sessionId || !/^cs_test_[A-Za-z0-9_]{6,160}$/.test(sessionId)) {
-        send(res,400,{error:'Invalid checkout session.'}); return true;
-      }
-      // Read directly from Stripe; the browser cannot mark an order paid.
-      const session = await stripeRequest(`/v1/checkout/sessions/${encodeURIComponent(sessionId)}`);
-      if (session.livemode !== false || session.id !== sessionId) {
-        send(res,404,{error:'Session not found.'}); return true;
-      }
-      send(res,200,{
-        mode:'test', paid:session.payment_status === 'paid',
-        amountPence:Number.isSafeInteger(session.amount_total) ? session.amount_total : 0,
-        purpose:session.metadata?.purpose || 'test_checkout'
-      });
-      return true;
-    }
-    send(res,404,{error:'Not found.'});
     return true;
   }
-  if (stripeSecret.startsWith('sk_live_')) console.error('LIVE STRIPE KEY REFUSED: this build allows only sandbox keys.');
-  if (!enabled) console.warn('Stripe test checkout disabled until STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET and PUBLIC_SITE_URL are configured.');
-  return {handle, verifyStripeSignature, paymentConfiguration};
+  function issueToken(sessionId,expiration) {
+    return crypto.createHmac('sha256',tokenKey).update(`${sessionId}:${expiration}`).digest('hex');
+  }
+  function tokenValid(sessionId,expiration,token) {
+    if(!/^\d{10,13}$/.test(expiration||'')||!/^[a-f\d]{64}$/.test(token||''))return false;
+    const expiry=Number(expiration);
+    if(expiry<=Math.floor(Date.now()/1000)||expiry>Math.floor(Date.now()/1000)+DOWNLOAD_TOKEN_SECONDS+10)return false;
+    return crypto.timingSafeEqual(Buffer.from(token,'hex'),Buffer.from(issueToken(sessionId,expiration),'hex'));
+  }
+  async function getSession(id) {
+    if(!sessionPattern.test(id||'')||!id.startsWith(prefix))throw Object.assign(new Error('Invalid checkout reference.'),{status:400});
+    const session=await stripeRequest(`/v1/checkout/sessions/${encodeURIComponent(id)}`);
+    if(session.id!==id||session.livemode!==(mode==='live'))throw Object.assign(new Error('Checkout not found.'),{status:404});
+    return session;
+  }
+  async function handle(req,res,name,url){
+    if(!name.startsWith('/api/payments/'))return false;
+    res.setHeader('Referrer-Policy','no-referrer');
+    if(name==='/api/payments/config'&&req.method==='GET'){send(res,200,configuration());return true;}
+
+    if(name==='/api/payments/checkout'&&req.method==='POST'){
+      if(!validOrigin(req)){send(res,403,{error:'Start checkout from the website.'});return true;}
+      if(!enabled){send(res,503,{error:'Stripe payments are not enabled yet.'});return true;}
+      if(!String(req.headers['content-type']||'').startsWith('application/json')){send(res,415,{error:'Expected JSON.'});return true;}
+      const data=JSON.parse((await readBody(req,4096)).toString('utf8'));
+      if(!data||typeof data!=='object'||Array.isArray(data)){send(res,400,{error:'Invalid checkout request.'});return true;}
+      let title,description,total,photoId='',email='',donorName='';
+      if(data.type==='photo_copy'||data.type==='photo_rights'){
+        const photo=photoForId(data.photoId);
+        if(!photo){send(res,404,{error:'Photograph not found.'});return true;}
+        if(data.type==='photo_copy'&&!photoCopiesEnabled){send(res,403,{error:'Photograph sales are not yet enabled.'});return true;}
+        if(data.type==='photo_rights'&&!rightsEnabled){send(res,403,{error:'Copyright transfer requires a separate signed agreement. Contact Frankie for licensing.'});return true;}
+        // Never charge for a download that is missing from durable storage.
+        if(mode==='live' && data.type==='photo_copy' && !(await privateStore.hasMaster(photo.id))){
+          send(res,409,{error:'This photograph is not available for digital download yet. Please contact Frankie.'});return true;
+        }
+        photoId=photo.id;
+        total=data.type==='photo_copy'?PHOTO_COPY_PENCE:PHOTO_RIGHTS_PENCE;
+        title=data.type==='photo_copy'?`Digital copy — ${photo.title}`:`Photo rights enquiry — ${photo.title}`;
+        description=data.type==='photo_copy'
+          ? 'One downloadable photograph; personal-use licence only. Separate fundraising terms apply.'
+          : 'Sandbox demonstration only; no copyright rights are transferred by payment.';
+      }else if(data.type==='studio_support'){
+        if(!studioEnabled){send(res,403,{error:'Studio support payments are not currently enabled.'});return true;}
+        total=amountPence(data.amount);
+        email=typeof data.email==='string'?data.email.trim():'';
+        donorName=typeof data.name==='string'?data.name.trim():'';
+        if(!total||donorName.length<2||donorName.length>90||email.length>254||!/^\S+@\S+\.\S+$/.test(email)){
+          send(res,400,{error:'Enter your name, email and an amount from £1 to £5,000.'});return true;
+        }
+        title='Frankie Photography — studio project support';
+        description='Support for a proposed photography studio, separate from Cancer Research UK. Not a registered charity donation.';
+      }else{send(res,400,{error:'Unknown payment type.'});return true;}
+
+      const params=new URLSearchParams();
+      params.set('mode','payment');
+      params.set('line_items[0][quantity]','1');
+      params.set('line_items[0][price_data][currency]','gbp');
+      params.set('line_items[0][price_data][unit_amount]',String(total));
+      params.set('line_items[0][price_data][product_data][name]',title);
+      params.set('line_items[0][price_data][product_data][description]',description);
+      params.set('metadata[purpose]',data.type);
+      if(photoId){params.set('metadata[photo_id]',photoId);params.set('metadata[photo_title]',title.slice(0,80));}
+      if(email)params.set('customer_email',email);
+      if(donorName)params.set('metadata[donor_name]',donorName);
+      params.set('success_url',`${origin}/payment-result.html?session_id={CHECKOUT_SESSION_ID}`);
+      params.set('cancel_url',`${origin}/payment-result.html?cancelled=1`);
+      const session=await stripeRequest('/v1/checkout/sessions',{
+        method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:params.toString()
+      });
+      if(!session.id?.startsWith(prefix)||session.livemode!==(mode==='live')||
+         !/^https:\/\/checkout\.stripe\.com\//.test(session.url||'')){
+        send(res,502,{error:'Stripe returned an unexpected Checkout Session.'});return true;
+      }
+      send(res,200,{url:session.url});return true;
+    }
+    if(name==='/api/payments/webhook'&&req.method==='POST'){
+      if(!enabled){send(res,503,{error:'Webhook is not configured.'});return true;}
+      const raw=await readBody(req,1024*1024);
+      if(!verifySignature(raw,req.headers['stripe-signature'])){send(res,400,{error:'Invalid Stripe signature.'});return true;}
+      const event=JSON.parse(raw.toString('utf8'));
+      if(['checkout.session.completed','checkout.session.async_payment_succeeded'].includes(event.type)){
+        const session=event.data?.object;
+        if(validatedPaid(session))await recordPaid(session);
+      }
+      send(res,200,{received:true});return true;
+    }
+    if(name==='/api/payments/status'&&req.method==='GET'){
+      if(!enabled){send(res,503,{error:'Payments not configured.'});return true;}
+      const session=await getSession(url.searchParams.get('session_id'));
+      const paid=validatedPaid(session);
+      // Record on the success page too, so fulfilment is not dependent on a redirect
+      // or on webhook delivery order. Stripe is always the source of truth.
+      if(paid)await recordPaid(session);
+      let downloadUrl=null,availability='not_applicable';
+      if(paid?.purpose==='photo_copy'){
+        availability=await privateStore.hasMaster(paid.photoId)?'ready':'missing_original';
+        if(availability==='ready'){
+          const expires=String(Math.floor(Date.now()/1000)+DOWNLOAD_TOKEN_SECONDS);
+          const signature=issueToken(session.id,expires);
+          downloadUrl=`/api/payments/download?session_id=${encodeURIComponent(session.id)}&expires=${expires}&signature=${signature}`;
+        }
+      }
+      send(res,200,{
+        mode,paid:!!paid,purpose:paid?.purpose||session.metadata?.purpose||null,
+        amountPence:paid?.amountPence||0,downloadUrl,downloadAvailability:availability,
+        customerEmail:session.customer_details?.email?session.customer_details.email.replace(/^(.{1,2}).*(@.*)$/,'$1***$2'):null
+      });return true;
+    }
+    if(name==='/api/payments/download'&&req.method==='GET'){
+      if(!enabled){send(res,503,{error:'Downloads are not available.'});return true;}
+      const id=url.searchParams.get('session_id');
+      const expiry=url.searchParams.get('expires');
+      const sig=url.searchParams.get('signature');
+      if(!id||!sessionPattern.test(id)||!id.startsWith(prefix)||!tokenValid(id,expiry,sig)){
+        send(res,403,{error:'Your download link is invalid or has expired. Return to the payment confirmation page for a fresh link.'});return true;
+      }
+      const session=await getSession(id);
+      const paid=validatedPaid(session);
+      if(!paid||paid.purpose!=='photo_copy'){
+        send(res,403,{error:'A verified paid photograph order is required.'});return true;
+      }
+      if(Math.floor(Date.now()/1000)-(session.created||0)>PURCHASE_VALID_SECONDS){
+        send(res,410,{error:'This order’s automatic download period has ended. Please contact Frankie.'});return true;
+      }
+      const original=await privateStore.getMaster(paid.photoId);
+      if(!original){send(res,404,{error:'The download file is temporarily unavailable. Contact Frankie for assistance.'});return true;}
+      const allowedTypes={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+      const ext=allowedTypes[original.contentType]||'jpg';
+      const photo=photoForId(paid.photoId);
+      const filename=((photo?.title||'Frankie Photography').normalize('NFKD').replace(/[^a-zA-Z0-9 -]/g,'').trim().replace(/\s+/g,'-')||'Frankie-Photography').slice(0,70)+'.'+ext;
+      res.writeHead(200,{
+        'Content-Type':original.contentType,'Content-Length':original.bytes.length,
+        'Content-Disposition':`attachment; filename="${filename}"`,
+        'Cache-Control':'no-store, private','X-Content-Type-Options':'nosniff',
+        'Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow'
+      });res.end(original.bytes);return true;
+    }
+    send(res,404,{error:'Not found.'});return true;
+  }
+  if(mode==='live'&&!enabled)console.warn('STRIPE LIVE PAYMENTS ARE LOCKED. Configure R2, DOWNLOAD_SIGNING_SECRET, LIVE_PAYMENTS_ENABLED=yes, the live webhook, and public URL.');
+  return {handle,configuration,verifySignature};
 };
